@@ -1,0 +1,311 @@
+/* -------------------------------------- */
+/* 1. PALETA DE COLORES Y FUENTES (Variables) */
+/* -------------------------------------- */
+:root {
+    --color-primary: #5C3D2E;   /* Marrón Oscuro - Titulares, Footer */
+    --color-accent: #B8860B;    /* Dorado/Ocre - Botones CTA, Acentos */
+    --color-background: #F7F7F7;/* Blanco Roto - Fondo principal */
+    --color-text-body: #333333; /* Gris Oscuro - Párrafos */
+    --color-white: #FFFFFF;
+    
+    /* Tipografía */
+    --font-serif: 'Merriweather', serif; /* Para solemnidad */
+    --font-sans: 'Roboto', sans-serif;   /* Para legibilidad */
+}
+
+/* Reset básico y fondo */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: var(--font-sans);
+    background-color: var(--color-background);
+    color: var(--color-text-body);
+    line-height: 1.6;
+}
+
+/* Contenedor central (para centrar contenido) */
+.contenedor {
+    width: 90%;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+/* -------------------------------------- */
+/* 2. TIPOGRAFÍA Y TÍTULOS */
+/* -------------------------------------- */
+h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    color: var(--color-primary);
+    margin-bottom: 0.5em;
+}
+
+h2 { font-size: 2.5em; }
+h3 { font-size: 1.8em; }
+
+/* -------------------------------------- */
+/* 3. BOTONES (Llamadas a la Acción) */
+/* -------------------------------------- */
+.btn-principal, .btn-acento {
+    display: inline-block;
+    padding: 10px 20px;
+    text-decoration: none;
+    border-radius: 4px;
+    font-weight: 700;
+    transition: background-color 0.3s;
+}
+
+/* Botón principal (para el banner) */
+.btn-principal {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+}
+
+/* Botón de acento (para Planificar Visita) */
+.btn-acento {
+    background-color: var(--color-accent);
+    color: var(--color-white);
+}
+
+.btn-principal:hover, .btn-acento:hover {
+    opacity: 0.9;
+}
+
+/* -------------------------------------- */
+/* 4. HEADER Y NAVEGACIÓN */
+/* -------------------------------------- */
+.header-principal {
+    background-color: var(--color-white);
+    padding: 1em 0;
+    border-bottom: 1px solid #ddd;
+}
+
+.header-principal .contenedor {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navegacion a {
+    color: var(--color-text-body);
+    text-decoration: none;
+    margin-left: 20px;
+}
+
+.navegacion a:hover {
+    color: var(--color-accent); /* Resaltar en Dorado al pasar el mouse */
+}
+
+/* -------------------------------------- */
+/* 5. SECCIÓN HÉROE */
+/* -------------------------------------- */
+.hero {
+    background-color: var(--color-primary); /* Fondo sólido por ahora */
+    /* Aquí se pondría la imagen de fondo: url('../img/banner-home.jpg') */
+    min-height: 400px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 2em;
+}
+
+.hero-contenido h2, .hero-contenido p {
+    color: var(--color-white);
+}
+
+.hero-contenido {
+    max-width: 600px;
+}
+
+/* -------------------------------------- */
+/* 6. PIE DE PÁGINA (Footer) */
+/* -------------------------------------- */
+.footer-principal {
+    background-color: var(--color-primary); /* Marrón Oscuro */
+    color: var(--color-background); /* Texto Blanco Roto */
+    padding: 2em 0;
+    text-align: center;
+    margin-top: 3em;
+}
+
+.footer-principal p {
+    margin: 0.5em 0;
+}
+
+/* -------------------------------------- */
+/* 7. PILARES (Ejemplo de cuadrícula) */
+/* -------------------------------------- */
+.pilares {
+    padding: 3em 0;
+    text-align: center;
+}
+
+.pilares-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 2em;
+}
+
+.pilar-item {
+    background-color: var(--color-white);
+    padding: 2em;
+    border: 1px solid #eee;
+    border-top: 5px solid var(--color-accent); /* Detalle Dorado */
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+}
+
+.pilar-item span {
+    font-size: 3em;
+    display: block;
+    margin-bottom: 0.3em;
+}
+
+/* -------------------------------------- */
+/* 8. RESPONSIVE BÁSICO (Para móviles) */
+/* -------------------------------------- */
+@media (max-width: 768px) {
+    .header-principal .contenedor {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .navegacion {
+        display: flex;
+        flex-direction: column;
+        margin-top: 1em;
+    }
+
+    .navegacion a {
+        margin: 5px 0;
+    }
+    
+    .hero {
+        min-height: 300px;
+    }
+
+    .hero-contenido h2 {
+        font-size: 1.8em;
+    }
+}
+/* -------------------------------------- */
+/* 5. ESTILOS ESPECÍFICOS DEL LOGO */
+/* -------------------------------------- */
+
+.logo-link {
+    /* Asegura que el logo no tenga decoración de texto (si fuera necesario) */
+    text-decoration: none;
+    line-height: 0; /* Elimina cualquier espacio adicional vertical */
+}
+
+.logo-img {
+    /* Define el tamaño máximo del logo en la cabecera */
+    max-height: 50px; /* Ajusta este valor según el tamaño deseado */
+    width: auto;
+    display: block;
+}
+
+/* Opcional: Si el logo es ancho, puedes necesitar reducir un poco la tipografía del menú en móvil */
+@media (max-width: 768px) {
+    .logo-img {
+        max-height: 40px; /* Reducir un poco el logo en pantallas pequeñas */
+        margin-bottom: 10px;
+    }
+}
+
+/* Borrar el estilo del h1.logo anterior si lo mantuvieras:
+.logo { color: var(--color-primary); margin: 0; }
+*/
+/* -------------------------------------- */
+/* 5. ESTILOS ESPECÍFICOS DEL LOGO Y TEXTO */
+/* -------------------------------------- */
+
+.identidad-header {
+    display: flex; /* Alinea los elementos internos (logo e imágenes) en una fila */
+    align-items: center; /* Centra verticalmente el logo y el texto */
+    text-decoration: none; /* Quita el subrayado del enlace */
+}
+
+.logo-img {
+    max-height: 50px; /* Tamaño del logo */
+    width: auto;
+    margin-right: 10px; /* Espacio entre el logo y el texto */
+    display: block;
+}
+
+.header-texto {
+    /* Contenedor del título y subtítulo */
+    line-height: 1.2;
+}
+
+.titulo-iglesia {
+    font-family: var(--font-serif); /* Fuente Seria (Merriweather) para el nombre principal */
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--color-primary); /* Color Marrón Oscuro */
+    margin: 0;
+}
+
+.subtitulo-identidad {
+    font-family: var(--font-sans); /* Fuente Simple (Roboto) para la identidad */
+    font-size: 0.8em;
+    color: var(--color-text-body); /* Gris Oscuro */
+    margin: 0;
+}
+
+/* -------------------------------------- */
+/* AJUSTE MÓVIL (para que no se rompa) */
+/* -------------------------------------- */
+@media (max-width: 768px) {
+    .identidad-header {
+        /* Permite que el bloque se centre en móvil si es necesario */
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+}
+/* -------------------------------------- */
+/* 9. ESTILOS PARA VIDEOS RESPONSIVE (16:9) */
+/* -------------------------------------- */
+
+.video-responsive {
+    /* 1. Establece la posición relativa */
+    position: relative;
+    /* 2. Padding inferior calcula la altura para mantener la proporción 16:9 */
+    /* 9/16 = 0.5625 (56.25%) */
+    padding-bottom: 56.25%; 
+    padding-top: 30px;
+    height: 0;
+    overflow: hidden; /* Oculta cualquier cosa fuera de las proporciones */
+    margin-bottom: 20px; /* Espacio después del video */
+}
+
+.video-responsive iframe, 
+.video-responsive object, 
+.video-responsive embed {
+    /* 3. Estira el reproductor para cubrir toda el área del contenedor */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* Estilos de la sección Sermón */
+.sermon-item {
+    margin-bottom: 3em;
+    padding-bottom: 2em;
+    border-bottom: 1px solid #eee;
+}
+
+.titulo-sermon {
+    color: var(--color-primary); /* Marrón Oscuro */
+    font-size: 1.5em;
+}
+
+.descripcion-sermon {
+    margin-top: 10px;
+}
