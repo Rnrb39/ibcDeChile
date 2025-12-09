@@ -1,19 +1,22 @@
 /* -------------------------------------- */
-/* 1. PALETA DE COLORES Y FUENTES (Variables) */
+/* 1. PALETA DE COLORES Y FUENTES (Variables) y Reset */
 /* -------------------------------------- */
 :root {
-    --color-primary: #5C3D2E;   /* Marrón Oscuro - Titulares, Footer */
-    --color-accent: #B8860B;    /* Dorado/Ocre - Botones CTA, Acentos */
-    --color-background: #F7F7F7;/* Blanco Roto - Fondo principal */
-    --color-text-body: #333333; /* Gris Oscuro - Párrafos */
+    /* PALETA DE COLORES */
+    --color-primary: #603939;        /* Marrón Profundo (Titulares, Footer) */
+    --color-secondary: #9E674F;      /* Marrón Terroso (Detalle, Hover Principal) */
+    --color-accent: #D4AC67;         /* Dorado/Ocre (Botones CTA, Highlight) */
+    --color-accent-hover: #B98A4D;   /* Dorado Oscuro (Hover CTA) */
+    --color-background: #F7F4EF;     /* Crema/Blanco Roto (Fondo alternativo) */
+    --color-text-body: #222222;      /* Negro Oscuro (Párrafos) */
     --color-white: #FFFFFF;
     
     /* Tipografía */
-    --font-serif: 'Merriweather', serif; /* Para solemnidad */
-    --font-sans: 'Roboto', sans-serif;   /* Para legibilidad */
+    --font-serif: 'Merriweather', serif; /* Títulos (Formalidad) */
+    --font-sans: 'Lora', serif;          /* Cuerpo de Texto (Legibilidad) */
 }
 
-/* Reset básico y fondo */
+/* Reset básico (Evita márgenes y rellenos por defecto) */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -22,7 +25,7 @@
 
 body {
     font-family: var(--font-sans);
-    background-color: var(--color-background);
+    background-color: var(--color-white);
     color: var(--color-text-body);
     line-height: 1.6;
 }
@@ -41,8 +44,10 @@ h1, h2, h3, h4 {
     font-family: var(--font-serif);
     color: var(--color-primary);
     margin-bottom: 0.5em;
+    line-height: 1.1; /* Ajuste para títulos */
 }
 
+h1 { font-size: 3em; } /* Usado en el Hero si la página es index */
 h2 { font-size: 2.5em; }
 h3 { font-size: 1.8em; }
 
@@ -51,36 +56,50 @@ h3 { font-size: 1.8em; }
 /* -------------------------------------- */
 .btn-principal, .btn-acento {
     display: inline-block;
-    padding: 10px 20px;
+    padding: 12px 24px; /* Un poco más de padding para destacar */
     text-decoration: none;
     border-radius: 4px;
     font-weight: 700;
-    transition: background-color 0.3s;
+    transition: background-color 0.3s ease-in-out;
+    border: none;
+    cursor: pointer;
 }
 
-/* Botón principal (para el banner) */
+/* Botón principal (Marrón Profundo) */
 .btn-principal {
     background-color: var(--color-primary);
     color: var(--color-white);
 }
 
-/* Botón de acento (para Planificar Visita) */
+/* Botón de acento (Dorado/Ocre) */
 .btn-acento {
     background-color: var(--color-accent);
     color: var(--color-white);
 }
 
-.btn-principal:hover, .btn-acento:hover {
-    opacity: 0.9;
+/* Estado Hover y Focus (Accesibilidad) */
+.btn-principal:hover, 
+.btn-principal:focus {
+    background-color: var(--color-secondary); /* Marrón Terroso */
+    outline: 2px solid var(--color-accent); /* Resaltar con acento en focus */
+}
+
+.btn-acento:hover,
+.btn-acento:focus {
+    background-color: var(--color-accent-hover); /* Dorado Oscuro */
+    outline: 2px solid var(--color-primary); /* Resaltar con primario en focus */
 }
 
 /* -------------------------------------- */
-/* 4. HEADER Y NAVEGACIÓN */
+/* 4. HEADER, LOGO Y NAVEGACIÓN (Consolidado) */
 /* -------------------------------------- */
 .header-principal {
     background-color: var(--color-white);
     padding: 1em 0;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid var(--color-background);
+    position: sticky; /* Opcional: para fijar la cabecera al hacer scroll */
+    top: 0;
+    z-index: 100;
 }
 
 .header-principal .contenedor {
@@ -89,22 +108,62 @@ h3 { font-size: 1.8em; }
     align-items: center;
 }
 
+/* Estilos de la identidad (Logo y Texto) */
+.identidad-header {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.logo-img {
+    max-height: 50px;
+    width: auto;
+    margin-right: 10px;
+    display: block;
+}
+
+.header-texto {
+    line-height: 1.2;
+}
+
+.titulo-iglesia {
+    font-family: var(--font-serif);
+    font-size: 1.2em;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0;
+}
+
+.subtitulo-identidad {
+    font-family: var(--font-sans);
+    font-size: 0.8em;
+    color: var(--color-text-body);
+    margin: 0;
+}
+
+/* Estilos de la navegación */
 .navegacion a {
     color: var(--color-text-body);
     text-decoration: none;
     margin-left: 20px;
+    transition: color 0.3s;
 }
 
-.navegacion a:hover {
-    color: var(--color-accent); /* Resaltar en Dorado al pasar el mouse */
+.navegacion a:hover,
+.navegacion a:focus { /* Añadido estado focus */
+    color: var(--color-accent);
+    outline: none; /* Se recomienda solo si se aplica otro indicador visual */
 }
 
 /* -------------------------------------- */
-/* 5. SECCIÓN HÉROE */
+/* 5. SECCIÓN HÉROE Y BANNERS DE PÁGINAS */
 /* -------------------------------------- */
 .hero {
-    background-color: var(--color-primary); /* Fondo sólido por ahora */
-    /* Aquí se pondría la imagen de fondo: url('../img/banner-home.jpg') */
+    background-color: var(--color-primary); 
+    /* Si agregas imagen de fondo: */
+    /* background-image: url('../img/banner-home.jpg'); */
+    /* background-size: cover; */
+    /* background-position: center center; */
     min-height: 400px;
     display: flex;
     justify-content: center;
@@ -113,23 +172,206 @@ h3 { font-size: 1.8em; }
     padding: 2em;
 }
 
-.hero-contenido h2, .hero-contenido p {
+.hero-contenido h1,
+.hero-contenido p {
     color: var(--color-white);
 }
 
 .hero-contenido {
-    max-width: 600px;
+    max-width: 700px;
+}
+
+/* NUEVO: Cabecera para páginas interiores (Sermones, Fe, Contacto) */
+.page-header {
+    background-color: var(--color-primary); /* Fondo Marrón Profundo */
+    color: var(--color-white);
+    padding: 3em 0; /* Menos alto que el Hero principal */
+    text-align: center;
+    margin-bottom: 3em;
+}
+
+.page-header h1 {
+    color: var(--color-white); /* Título en blanco */
+    font-size: 2.5em;
+    margin: 0;
+}
+
+.page-header p {
+    font-size: 1.1em;
+    margin-top: 0.5em;
+    opacity: 0.9;
+}
+
+
+/* -------------------------------------- */
+/* 6. PILARES (Ejemplo de cuadrícula) */
+/* -------------------------------------- */
+.pilares {
+    padding: 4em 0; /* Más espacio */
+    text-align: center;
+    background-color: var(--color-background); 
+}
+
+.pilares-grid {
+    display: grid;
+    /* Auto-fit es perfecto para adaptabilidad */
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 30px;
+    margin-top: 3em;
+}
+
+.pilar-item {
+    background-color: var(--color-white);
+    padding: 2em;
+    border: 1px solid var(--color-background);
+    border-top: 5px solid var(--color-accent);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s;
+}
+
+.pilar-item:hover {
+    box-shadow: 0 8px 16px rgba(0,0,0,0.1); /* Sombra al pasar el mouse */
+}
+
+.pilar-item span {
+    font-size: 3em;
+    display: block;
+    margin-bottom: 0.3em;
+    color: var(--color-primary);
 }
 
 /* -------------------------------------- */
-/* 6. PIE DE PÁGINA (Footer) */
+/* 7. ELEMENTOS DE CONTENIDO (Videos y Sermones) - MODIFICACIONES */
 /* -------------------------------------- */
-.footer-principal {
-    background-color: var(--color-primary); /* Marrón Oscuro */
-    color: var(--color-background); /* Texto Blanco Roto */
-    padding: 2em 0;
+
+.seccion-sermones {
+    padding-bottom: 3em; 
+}
+
+/* NUEVO: Contenedor del Último Sermón (para destacarlo visualmente) */
+.sermon-principal {
+    background-color: var(--color-background); /* Fondo Crema para destacarlo */
+    padding: 2.5em;
+    margin-bottom: 3em;
+    border-radius: 6px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08); /* Sombra sutil */
+}
+
+.sermon-principal h2 { 
+    font-size: 2em; /* Título principal del contenido */
+    margin-bottom: 0.8em;
+}
+
+.sermon-item {
+    margin-bottom: 3em;
+    padding-bottom: 2em;
+    /* Eliminamos el border-bottom si usamos el fondo sermon-principal, 
+       pero lo dejamos si el contenido va directo al contenedor */
+    /* border-bottom: 1px solid var(--color-background); */
+}
+
+.titulo-sermon {
+    color: var(--color-text-body); /* Título del sermón en Negro Oscuro */
+    font-size: 1.6em; /* Un poco más grande y legible */
+    font-family: var(--font-serif);
+    margin-bottom: 1em; /* Espacio antes del video */
+}
+
+.descripcion-sermon {
+    margin-top: 10px;
+}
+
+/* Separador horizontal entre el último sermón y el archivo */
+.sermon-item hr {
+    border: 0;
+    height: 1px;
+    background-color: var(--color-secondary); /* Separador color Marrón Terroso */
+    margin: 3em 0;
+}
+
+/* Estilo para el título secundario (Archivos de Sermones) */
+.titulo-seccion-secundaria {
     text-align: center;
     margin-top: 3em;
+    margin-bottom: 1.5em;
+    font-size: 2em;
+}
+
+/* Cuadrícula para la lista de sermones anteriores */
+.sermones-lista {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 20px;
+}
+
+/* Estilo de cada tarjeta individual de sermón */
+.sermon-tarjeta {
+    background-color: var(--color-background);
+    padding: 1.5em;
+    border: 1px solid rgba(0,0,0,0.05);
+    border-left: 5px solid var(--color-secondary);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    transition: transform 0.3s ease;
+}
+
+.sermon-tarjeta:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 15px rgba(0,0,0,0.1);
+}
+
+.sermon-fecha {
+    font-size: 0.85em;
+    color: var(--color-secondary);
+    margin-bottom: 0.5em;
+    font-weight: 700;
+}
+
+.titulo-sermon-tarjeta {
+    font-size: 1.3em;
+    margin-bottom: 0.3em;
+    line-height: 1.2;
+}
+
+.sermon-referencia {
+    font-style: italic;
+    color: var(--color-text-body);
+    margin-bottom: 1em;
+}
+
+.btn-reproducir {
+    padding: 8px 15px;
+    font-size: 0.9em;
+}
+
+/* Estilos para videos responsive (16:9) */
+.video-responsive {
+    position: relative;
+    padding-bottom: 56.25%; /* 9 / 16 = 0.5625 (16:9 ratio) */
+    padding-top: 30px;
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 20px;
+}
+
+.video-responsive iframe, 
+.video-responsive object, 
+.video-responsive embed {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* -------------------------------------- */
+/* 8. PIE DE PÁGINA (Footer) */
+/* -------------------------------------- */
+.footer-principal {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    padding: 2em 0;
+    text-align: center;
+    margin-top: 4em; /* Más espacio antes del footer */
 }
 
 .footer-principal p {
@@ -137,41 +379,19 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 7. PILARES (Ejemplo de cuadrícula) */
-/* -------------------------------------- */
-.pilares {
-    padding: 3em 0;
-    text-align: center;
-}
-
-.pilares-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 30px;
-    margin-top: 2em;
-}
-
-.pilar-item {
-    background-color: var(--color-white);
-    padding: 2em;
-    border: 1px solid #eee;
-    border-top: 5px solid var(--color-accent); /* Detalle Dorado */
-    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
-}
-
-.pilar-item span {
-    font-size: 3em;
-    display: block;
-    margin-bottom: 0.3em;
-}
-
-/* -------------------------------------- */
-/* 8. RESPONSIVE BÁSICO (Para móviles) */
+/* 9. RESPONSIVE BÁSICO (Para móviles) */
 /* -------------------------------------- */
 @media (max-width: 768px) {
+    
+    /* Adaptación del Header */
     .header-principal .contenedor {
         flex-direction: column;
         text-align: center;
+    }
+
+    .identidad-header {
+        justify-content: center;
+        margin-bottom: 15px;
     }
     
     .navegacion {
@@ -184,128 +404,104 @@ h3 { font-size: 1.8em; }
         margin: 5px 0;
     }
     
+    /* Adaptación del Hero */
     .hero {
         min-height: 300px;
+        padding: 1.5em;
     }
 
-    .hero-contenido h2 {
+    .hero-contenido h1 {
         font-size: 1.8em;
     }
-}
-/* -------------------------------------- */
-/* 5. ESTILOS ESPECÍFICOS DEL LOGO */
-/* -------------------------------------- */
-
-.logo-link {
-    /* Asegura que el logo no tenga decoración de texto (si fuera necesario) */
-    text-decoration: none;
-    line-height: 0; /* Elimina cualquier espacio adicional vertical */
-}
-
-.logo-img {
-    /* Define el tamaño máximo del logo en la cabecera */
-    max-height: 50px; /* Ajusta este valor según el tamaño deseado */
-    width: auto;
-    display: block;
-}
-
-/* Opcional: Si el logo es ancho, puedes necesitar reducir un poco la tipografía del menú en móvil */
-@media (max-width: 768px) {
-    .logo-img {
-        max-height: 40px; /* Reducir un poco el logo en pantallas pequeñas */
-        margin-bottom: 10px;
+    
+    /* Adaptación del Banner de Página */
+    .page-header {
+        padding: 2em 0;
+    }
+    
+    .page-header h1 {
+        font-size: 2em;
     }
 }
 
-/* Borrar el estilo del h1.logo anterior si lo mantuvieras:
-.logo { color: var(--color-primary); margin: 0; }
-*/
 /* -------------------------------------- */
-/* 5. ESTILOS ESPECÍFICOS DEL LOGO Y TEXTO */
+/* 10. PÁGINA DE CONTACTO (GRID y Formulario) */
 /* -------------------------------------- */
 
-.identidad-header {
-    display: flex; /* Alinea los elementos internos (logo e imágenes) en una fila */
-    align-items: center; /* Centra verticalmente el logo y el texto */
-    text-decoration: none; /* Quita el subrayado del enlace */
+.seccion-contacto {
+    padding: 4em 0;
 }
 
-.logo-img {
-    max-height: 50px; /* Tamaño del logo */
-    width: auto;
-    margin-right: 10px; /* Espacio entre el logo y el texto */
+.contacto-grid {
+    display: grid;
+    /* Dos columnas: 1 para info, 2 para el formulario. Se colapsan en móvil. */
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    margin-top: 2em;
+}
+
+/* ------------------ */
+/* Estilos del Formulario */
+/* ------------------ */
+
+.formulario-contacto label {
     display: block;
-}
-
-.header-texto {
-    /* Contenedor del título y subtítulo */
-    line-height: 1.2;
-}
-
-.titulo-iglesia {
-    font-family: var(--font-serif); /* Fuente Seria (Merriweather) para el nombre principal */
-    font-size: 1.2em;
+    margin-top: 15px;
+    margin-bottom: 5px;
     font-weight: 700;
-    color: var(--color-primary); /* Color Marrón Oscuro */
-    margin: 0;
+    color: var(--color-primary);
 }
 
-.subtitulo-identidad {
-    font-family: var(--font-sans); /* Fuente Simple (Roboto) para la identidad */
-    font-size: 0.8em;
-    color: var(--color-text-body); /* Gris Oscuro */
-    margin: 0;
-}
-
-/* -------------------------------------- */
-/* AJUSTE MÓVIL (para que no se rompa) */
-/* -------------------------------------- */
-@media (max-width: 768px) {
-    .identidad-header {
-        /* Permite que el bloque se centre en móvil si es necesario */
-        justify-content: center;
-        margin-bottom: 10px;
-    }
-}
-/* -------------------------------------- */
-/* 9. ESTILOS PARA VIDEOS RESPONSIVE (16:9) */
-/* -------------------------------------- */
-
-.video-responsive {
-    /* 1. Establece la posición relativa */
-    position: relative;
-    /* 2. Padding inferior calcula la altura para mantener la proporción 16:9 */
-    /* 9/16 = 0.5625 (56.25%) */
-    padding-bottom: 56.25%; 
-    padding-top: 30px;
-    height: 0;
-    overflow: hidden; /* Oculta cualquier cosa fuera de las proporciones */
-    margin-bottom: 20px; /* Espacio después del video */
-}
-
-.video-responsive iframe, 
-.video-responsive object, 
-.video-responsive embed {
-    /* 3. Estira el reproductor para cubrir toda el área del contenedor */
-    position: absolute;
-    top: 0;
-    left: 0;
+.formulario-contacto input[type="text"],
+.formulario-contacto input[type="email"],
+.formulario-contacto textarea {
     width: 100%;
-    height: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 4px;
+    background-color: var(--color-white);
+    font-family: var(--font-sans);
+    color: var(--color-text-body);
+    transition: border-color 0.3s;
 }
 
-/* Estilos de la sección Sermón */
-.sermon-item {
-    margin-bottom: 3em;
-    padding-bottom: 2em;
-    border-bottom: 1px solid #eee;
+.formulario-contacto input:focus,
+.formulario-contacto textarea:focus {
+    border-color: var(--color-accent); /* Borde Dorado al enfocar */
+    outline: none;
+    box-shadow: 0 0 5px rgba(212, 172, 103, 0.5);
 }
 
-.titulo-sermon {
-    color: var(--color-primary); /* Marrón Oscuro */
-    font-size: 1.5em;
+.formulario-contacto textarea {
+    resize: vertical; /* Permite redimensionar solo verticalmente */
 }
 
-.descripcion-sermon {
-    margin-top: 10px;
+.formulario-container .btn-principal {
+    width: 100%; /* El botón ocupa todo el ancho del formulario */
+    margin-top: 25px;
+}
+
+/* ------------------ */
+/* Estilos de Información y Mapa */
+/* ------------------ */
+
+.info-contacto h3 {
+    margin-top: 0;
+    border-bottom: 2px solid var(--color-secondary);
+    padding-bottom: 0.5em;
+}
+
+.info-contacto p {
+    margin-bottom: 1em;
+}
+
+.datos-contacto {
+    margin: 1.5em 0;
+    padding: 1em;
+    background-color: var(--color-background);
+    border-left: 5px solid var(--color-accent); /* Detalle Dorado */
+}
+
+.mapa-ubicacion {
+    margin-top: 2em;
 }
