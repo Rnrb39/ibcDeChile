@@ -3,17 +3,17 @@
 /* -------------------------------------- */
 :root {
     /* PALETA DE COLORES */
-    --color-primary: #603939;        /* Marrón Profundo (Titulares, Footer) */
-    --color-secondary: #9E674F;      /* Marrón Terroso (Detalle, Hover Principal) */
-    --color-accent: #D4AC67;         /* Dorado/Ocre (Botones CTA, Highlight) */
-    --color-accent-hover: #B98A4D;   /* Dorado Oscuro (Hover CTA) */
-    --color-background: #F7F4EF;     /* Crema/Blanco Roto (Fondo alternativo) */
-    --color-text-body: #222222;      /* Negro Oscuro (Párrafos) */
+    --color-primary: #603939;        /* Marrón Profundo (Titulares, Footer) */
+    --color-secondary: #9E674F;      /* Marrón Terroso (Detalle, Hover Principal) */
+    --color-accent: #D4AC67;         /* Dorado/Ocre (Botones CTA, Highlight) */
+    --color-accent-hover: #B98A4D;   /* Dorado Oscuro (Hover CTA) */
+    --color-background: #F7F4EF;     /* Crema/Blanco Roto (Fondo alternativo) */
+    --color-text-body: #222222;      /* Negro Oscuro (Párrafos) */
     --color-white: #FFFFFF;
     
     /* Tipografía */
     --font-serif: 'Merriweather', serif; /* Títulos (Formalidad) */
-    --font-sans: 'Lora', serif;          /* Cuerpo de Texto (Legibilidad) */
+    --font-sans: 'Lora', serif;          /* Cuerpo de Texto (Legibilidad) */
 }
 
 /* Reset básico (Evita márgenes y rellenos por defecto) */
@@ -50,13 +50,6 @@ h1, h2, h3, h4 {
 h1 { font-size: 3em; } /* Usado en el Hero si la página es index */
 h2 { font-size: 2.5em; }
 h3 { font-size: 1.8em; }
-
-/* NUEVO: Clase de utilidad para centrar texto y limitar ancho (usada en Fe) */
-.intro-centrada {
-    max-width: 800px; 
-    margin: 0 auto 3em auto;
-    text-align: center;
-}
 
 /* -------------------------------------- */
 /* 3. BOTONES (Llamadas a la Acción) */
@@ -97,11 +90,6 @@ h3 { font-size: 1.8em; }
     outline: 2px solid var(--color-primary); /* Resaltar con primario en focus */
 }
 
-.btn-reproducir {
-    padding: 8px 15px;
-    font-size: 0.9em;
-}
-
 /* -------------------------------------- */
 /* 4. HEADER, LOGO Y NAVEGACIÓN (Consolidado) */
 /* -------------------------------------- */
@@ -109,7 +97,7 @@ h3 { font-size: 1.8em; }
     background-color: var(--color-white);
     padding: 1em 0;
     border-bottom: 1px solid var(--color-background);
-    position: sticky; /* Fija la cabecera */
+    position: sticky; /* Opcional: para fijar la cabecera al hacer scroll */
     top: 0;
     z-index: 100;
 }
@@ -128,7 +116,7 @@ h3 { font-size: 1.8em; }
 }
 
 .logo-img {
-    max-height: 50px;
+    max-height: 60px;
     width: auto;
     margin-right: 10px;
     display: block;
@@ -162,8 +150,9 @@ h3 { font-size: 1.8em; }
 }
 
 .navegacion a:hover,
-.navegacion a:focus { /* Mejorado: Mantiene el focus ring del navegador */
+.navegacion a:focus { /* Añadido estado focus */
     color: var(--color-accent);
+    outline: none; /* Se recomienda solo si se aplica otro indicador visual */
 }
 
 /* -------------------------------------- */
@@ -171,6 +160,10 @@ h3 { font-size: 1.8em; }
 /* -------------------------------------- */
 .hero {
     background-color: var(--color-primary); 
+    /* Si agregas imagen de fondo: */
+    /* background-image: url('../img/banner-home.jpg'); */
+    /* background-size: cover; */
+    /* background-position: center center; */
     min-height: 400px;
     display: flex;
     justify-content: center;
@@ -188,7 +181,7 @@ h3 { font-size: 1.8em; }
     max-width: 700px;
 }
 
-/* Cabecera para páginas interiores (Sermones, Fe, Contacto) */
+/* NUEVO: Cabecera para páginas interiores (Sermones, Fe, Contacto) */
 .page-header {
     background-color: var(--color-primary); /* Fondo Marrón Profundo */
     color: var(--color-white);
@@ -209,58 +202,63 @@ h3 { font-size: 1.8em; }
     opacity: 0.9;
 }
 
-
 /* -------------------------------------- */
 /* 6. PILARES (Ejemplo de cuadrícula) */
 /* -------------------------------------- */
 
 .pilares {
-    padding: 4em 0;
-}
-
-.pilares h3 {
+    padding: 4em 0; 
     text-align: center;
-    margin-bottom: 2em;
+    background-color: var(--color-background); 
 }
 
-.pilares-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 30px;
-    text-align: center;
+/* ... (pilares-grid y pilar-item se mantienen) ... */
+
+.pilar-item {
+    background-color: var(--color-white);
+    padding: 2em;
+    border: 1px solid var(--color-background);
+    border-top: 5px solid var(--color-accent);
+    box-shadow: 0 4px 8px rgba(0,0,0,0.05);
+    transition: box-shadow 0.3s;
 }
 
+/* ESTA ES LA REGLA CLAVE PARA CENTRAR LA IMAGEN */
 .pilar-item span {
-    display: flex; /* Usar flex para centrar contenido interno */
-    justify-content: center;
-    align-items: center;
+    display: flex; /* Convierte el span en un contenedor flexible */
+    justify-content: center; /* Centra horizontalmente */
+    align-items: center; /* Centra verticalmente */
     
-    /* Le damos un tamaño fijo si contiene imágenes o emojis */
-    height: 60px; 
-    width: 60px;
+    height: 150px; /* Tamaño del contenedor del icono */
+    width: 150px;
+    margin: 0.5em auto; /* Centrar el bloque span */
     
-    margin: 0.5em auto; /* Centrar el bloque y darle margen */
-    
-    /* Estilo para los iconos de texto/emoji */
+    /* Si decides usar texto/emoji en lugar de imagen, este tamaño es útil: */
     font-size: 3em; 
-    line-height: 1; /* Asegura que el emoji no se salga */
+    line-height: 1; 
+    
+    color: var(--color-primary);
 }
 
-/* Aseguramos que la imagen dentro del span sea pequeña */
+/* NUEVA REGLA CRUCIAL PARA LA IMAGEN */
 .pilar-item span img {
-    max-height: 100%;
+    /* Esto asegura que la imagen se ajuste perfectamente al contenedor de 60x60 */
+    max-height: 100%; 
     max-width: 100%;
+    height: auto;
+    width: auto;
+    object-fit: contain; /* Evita que la imagen se recorte si es grande */
 }
 
 /* -------------------------------------- */
-/* 7. ELEMENTOS DE CONTENIDO (Videos y Sermones) */
+/* 7. ELEMENTOS DE CONTENIDO (Videos y Sermones) - MODIFICACIONES */
 /* -------------------------------------- */
 
 .seccion-sermones {
-    padding: 3em 0 5em 0; 
+    padding-bottom: 3em; 
 }
 
-/* Contenedor del Último Sermón (para destacarlo visualmente) */
+/* NUEVO: Contenedor del Último Sermón (para destacarlo visualmente) */
 .sermon-principal {
     background-color: var(--color-background); /* Fondo Crema para destacarlo */
     padding: 2.5em;
@@ -275,7 +273,11 @@ h3 { font-size: 1.8em; }
 }
 
 .sermon-item {
-    padding-bottom: 1em;
+    margin-bottom: 3em;
+    padding-bottom: 2em;
+    /* Eliminamos el border-bottom si usamos el fondo sermon-principal, 
+       pero lo dejamos si el contenido va directo al contenedor */
+    /* border-bottom: 1px solid var(--color-background); */
 }
 
 .titulo-sermon {
@@ -287,6 +289,14 @@ h3 { font-size: 1.8em; }
 
 .descripcion-sermon {
     margin-top: 10px;
+}
+
+/* Separador horizontal entre el último sermón y el archivo */
+.sermon-item hr {
+    border: 0;
+    height: 1px;
+    background-color: var(--color-secondary); /* Separador color Marrón Terroso */
+    margin: 3em 0;
 }
 
 /* Estilo para el título secundario (Archivos de Sermones) */
@@ -302,8 +312,6 @@ h3 { font-size: 1.8em; }
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
-    /* Se agrega un margen inferior si el botón de archivo va después */
-    margin-bottom: 3em;
 }
 
 /* Estilo de cada tarjeta individual de sermón */
@@ -340,11 +348,22 @@ h3 { font-size: 1.8em; }
     margin-bottom: 1em;
 }
 
-/* Estilos para videos responsive (16:9) */
+.btn-reproducir {
+    padding: 8px 15px;
+    font-size: 0.9em;
+}
+
+/* -------------------------------------- */
+/* 9. ESTILOS PARA VIDEOS RESPONSIVE (16:9) */
+/* -------------------------------------- */
+
 .video-responsive {
     position: relative;
-    padding-bottom: 56.25%; /* 9 / 16 = 0.5625 (16:9 ratio) */
-    padding-top: 30px;
+    padding-bottom: 177.78%; 
+    
+    /* ✅ Cambiado a 0px para eliminar el espacio superior innecesario */
+    padding-top: 0; 
+    
     height: 0;
     overflow: hidden;
     margin-bottom: 20px;
@@ -353,12 +372,28 @@ h3 { font-size: 1.8em; }
 .video-responsive iframe, 
 .video-responsive object, 
 .video-responsive embed {
+    /* 3. Estira el reproductor para cubrir toda el área del contenedor */
     position: absolute;
     top: 0;
     left: 0;
-    width: 100%;
-    height: 100%;
-    border: none; /* Asegura que el iframe no tenga bordes por defecto */
+    width: 50%;
+    height: 500%;
+}
+
+/* Estilos de la sección Sermón */
+.sermon-item {
+    margin-bottom: 3em;
+    padding-bottom: 2em;
+    border-bottom: 1px solid #eee;
+}
+
+.titulo-sermon {
+    color: var(--color-primary); /* Marrón Oscuro */
+    font-size: 1.5em;
+}
+
+.descripcion-sermon {
+    margin-top: 10px;
 }
 
 /* -------------------------------------- */
@@ -433,12 +468,15 @@ h3 { font-size: 1.8em; }
 .contacto-grid {
     display: grid;
     /* Dos columnas: 1 para info, 2 para el formulario. Se colapsan en móvil. */
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Mínimo ajustado a 300px */
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
     gap: 40px;
     margin-top: 2em;
 }
 
+/* ------------------ */
 /* Estilos del Formulario */
+/* ------------------ */
+
 .formulario-contacto label {
     display: block;
     margin-top: 15px;
@@ -476,7 +514,10 @@ h3 { font-size: 1.8em; }
     margin-top: 25px;
 }
 
+/* ------------------ */
 /* Estilos de Información y Mapa */
+/* ------------------ */
+
 .info-contacto h3 {
     margin-top: 0;
     border-bottom: 2px solid var(--color-secondary);
@@ -496,100 +537,4 @@ h3 { font-size: 1.8em; }
 
 .mapa-ubicacion {
     margin-top: 2em;
-}
-
-/* -------------------------------------- */
-/* 11. PÁGINA "NUESTRA FE" (Quienes Somos) */
-/* -------------------------------------- */
-
-.seccion-fe {
-    padding: 3em 0 5em 0;
-}
-
-/* Bloques de Doctrina (Grid de 3 Columnas) */
-.doctrina-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Mínimo ajustado a 300px */
-    gap: 30px;
-    margin-top: 3em;
-    text-align: center;
-}
-
-.doctrina-item {
-    padding: 2em;
-    background-color: var(--color-background); /* Fondo Crema/Roto */
-    border-bottom: 3px solid var(--color-secondary); /* Detalle de línea */
-    border-radius: 4px;
-    transition: background-color 0.3s;
-}
-
-.doctrina-item:hover {
-    background-color: #f0ebe4; /* Un crema ligeramente más oscuro */
-}
-
-.doctrina-item .icon {
-    font-size: 2.5em;
-    color: var(--color-accent); /* Icono Dorado */
-    margin-bottom: 0.3em;
-    display: block;
-}
-
-.doctrina-item h3 {
-    font-family: var(--font-sans); /* Títulos más limpios en sans-serif */
-    font-size: 1.5em;
-    margin-bottom: 0.5em;
-    color: var(--color-primary);
-}
-
-/* Acordeón de Declaraciones de Fe */
-.acordeon-fe {
-    max-width: 900px;
-    margin: 4em auto 0 auto;
-}
-
-.acordeon-item {
-    border: 1px solid var(--color-background);
-    margin-bottom: 10px;
-    border-radius: 4px;
-    overflow: hidden;
-}
-
-.acordeon-titulo {
-    background-color: var(--color-primary); /* Marrón Profundo */
-    color: var(--color-white);
-    padding: 15px 20px;
-    cursor: pointer;
-    font-family: var(--font-serif);
-    font-size: 1.1em;
-    display: block;
-    transition: background-color 0.3s;
-}
-
-.acordeon-titulo:hover {
-    background-color: var(--color-secondary); /* Marrón Terroso al hacer hover */
-}
-
-.acordeon-titulo::after {
-    content: '+';
-    float: right;
-    font-size: 1.2em;
-    font-weight: bold;
-    transition: transform 0.3s;
-}
-
-.acordeon-item.activo .acordeon-titulo {
-    background-color: var(--color-secondary);
-}
-
-.acordeon-item.activo .acordeon-titulo::after {
-    content: '–'; /* Cambia a guion al abrir */
-}
-
-.acordeon-contenido {
-    padding: 20px;
-    background-color: var(--color-white);
-    /* Estas líneas requieren JavaScript para la funcionalidad completa: */
-    /* max-height: 0;
-    overflow: hidden;
-    transition: max-height 0.3s ease-out; */
 }
