@@ -1,26 +1,50 @@
+
+
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. Selecciona todos los títulos de acordeón
     const acordeonTitulos = document.querySelectorAll('.acordeon-titulo');
 
     acordeonTitulos.forEach(titulo => {
         titulo.addEventListener('click', function() {
-            // Encuentra el elemento padre (el .acordeon-item)
-            const item = this.parentElement;
+            // Utilizamos 'closest' para encontrar el contenedor principal (.acordeon-item)
+            // de forma segura, incluso si el 'titulo' no es su hijo directo.
+            const itemActual = this.closest('.acordeon-item');
+            
+            // Si el item no se encuentra, salimos para evitar el error 'null'
+            if (!itemActual) { 
+                console.error("El elemento .acordeon-item no fue encontrado.");
+                return;
+            }
 
-            // Encuentra el contenido que debe expandirse
-            const contenido = item.querySelector('.acordeon-contenido');
+            const contenidoActual = itemActual.querySelector('.acordeon-contenido');
+            
+            // Si el contenido tampoco se encuentra, salimos
+            if (!contenidoActual) {
+                 console.error("El elemento .acordeon-contenido no fue encontrado dentro de .acordeon-item.");
+                return;
+            }
+            
+            // --- El código de despliegue/ocultamiento continua aquí ---
+            const estaActivo = itemActual.classList.contains('activo');
 
-            // 2. Alternar la clase 'activo' en el elemento padre
-            // Esto cambia el color del título y el signo '+' a '–' (gracias al CSS)
-            item.classList.toggle('activo');
+            // 1. Cerrar todos los demás elementos
+            document.querySelectorAll('.acordeon-item.activo').forEach(otroItem => {
+                if (otroItem !== itemActual) {
+                    const otroContenido = otroItem.querySelector('.acordeon-contenido');
+                    otroItem.classList.remove('activo');
+                    if (otroContenido) {
+                        otroContenido.style.maxHeight = '0';
+                    }
+                }
+            });
 
-            // 3. Ajustar la altura para la animación de apertura/cierre
-            if (item.classList.contains('activo')) {
-                // Si está activo, establece la altura real del contenido para abrirlo suavemente
-                contenido.style.maxHeight = contenido.scrollHeight + "px";
+            // 2. Abrir o cerrar el elemento actual
+            if (!estaActivo) {
+                itemActual.classList.add('activo');
+                // IMPORTANTE: Este es el cálculo que usa scrollHeight
+                contenidoActual.style.maxHeight = contenidoActual.scrollHeight + "px";
             } else {
-                // Si no está activo, establece la altura a 0 para cerrarlo
-                contenido.style.maxHeight = "0";
+                itemActual.classList.remove('activo');
+                contenidoActual.style.maxHeight = "0";
             }
         });
     });

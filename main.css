@@ -537,6 +537,31 @@ h3 { font-size: 1.8em; }
 /* Estilos de Información y Mapa */
 /* ------------------ */
 
+.mapa-responsive {
+    position: relative;
+    
+    /* 75% es la proporción 4:3 (para mapas) o usa 56.25% para 16:9 */
+    padding-bottom: 75%; 
+    
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 30px; /* Separación después del mapa */
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); /* Opcional: una sombra bonita */
+}
+
+.mapa-responsive iframe {
+    /* Estas reglas aseguran que el iframe ocupe todo el espacio 4:3 */
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    
+    /* Nota: Si el mapa no carga, prueba añadiendo !important a width y height */
+    /* width: 100% !important; */
+    /* height: 100% !important; */
+}
+
 .info-contacto h3 {
     margin-top: 0;
     border-bottom: 2px solid var(--color-secondary);
@@ -555,5 +580,129 @@ h3 { font-size: 1.8em; }
 }
 
 .mapa-ubicacion {
-    margin-top: 2em;
+    margin-top: 1em;
 }
+
+/* --- 11.2 Acordeón de Declaraciones de Fe --- */
+
+.acordeon-item {
+    border: 1px solid var(--color-background);
+    margin-bottom: 10px;
+    border-radius: 4px;
+    /*overflow: hidden;*/
+}
+
+.acordeon-titulo {
+    background-color: var(--color-primary); /* Marrón Profundo */
+    color: var(--color-white);
+    padding: 15px 20px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    font-family: var(--font-serif);
+    font-size: 1.3em; /* Lo hacemos más grande para títulos de capítulos */
+    display: block;
+    transition: background-color 0.3s;
+    user-select: none;
+}
+
+/* Opcional: Estilo de Hover */
+.acordeon-titulo:hover {
+    background-color: var(--color-secondary); /* Marrón Terroso al hacer hover */
+}
+
+/* Icono de expansión (+) o (-) */
+.acordeon-titulo::after {
+    content: '+';
+    float: right;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.acordeon-item.activo .acordeon-titulo {
+    background-color: var(--color-secondary);
+}
+
+.acordeon-item.activo .acordeon-titulo::after {
+    content: '-'; 
+}
+
+.acordeon-contenido {
+    /* ... */
+    /* El padding inicial debe ser 0 para que maxHeight: 0 funcione limpiamente */
+    padding: 0 20px; 
+    background-color: var(--color-white);
+    max-height: 0; /* Oculto por defecto */
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out; 
+}
+
+.acordeon-item.activo .acordeon-contenido {
+    /* Este padding se animará junto con el maxHeight y mostrará el contenido */
+    padding: 20px; 
+}
+
+/* -------------------------------------- */
+/* 12. DOCUMENTOS LARGOS (Confesiones) */
+/* -------------------------------------- */
+
+.seccion-subtitulo { /* se cambio seccion-subtitulo */
+    padding: 1em 0 1em 0;
+}
+
+.documento-largo {
+    max-width: 850px; /* Limita el ancho para mejor lectura */
+    margin: 0 auto; /* Centra el contenido */
+    line-height: 1.7; /* Aumenta el interlineado para legibilidad */
+    font-family: var(--font-serif);
+    color: var(--color-text-body);
+}
+
+.documento-largo .capitulo-titulo {
+    font-size: 1.8em;
+    color: var(--color-primary);
+    margin-top: 2em;
+    margin-bottom: 1em;
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 5px;
+}
+
+/* Estilo para las referencias bíblicas o notas */
+.documento-largo sup {
+    font-size: 0.7em; /* Un poco más pequeña */
+    color: var(--color-accent); /* Color Dorado */
+    font-weight: bold;
+    line-height: 0; /* Asegura que el superíndice no afecte el interlineado */
+}
+
+/* (Dentro de tu Sección 12. DOCUMENTOS LARGOS) */
+
+.documento-largo .seccion-subtitulo {
+    font-size: 1.3em;
+    color: var(--color-secondary);
+    margin-top: 1.5em; /* Asegura un buen espacio sobre el subtítulo */
+    margin-bottom: 0.5em;
+}
+
+/* --- Estilos del Contenedor de la Página --- */
+.contenedor {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 0 15px;
+}
+
+.documento-largo {
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden; /* Importante para bordes */
+}
+
+/* --- Estilos del Ítem del Acordeón --- */
+.acordeon-item {
+    border-bottom: 1px solid #eee;
+}
+
+.acordeon-item:last-child {
+    border-bottom: none;
+}
+
