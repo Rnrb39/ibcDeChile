@@ -354,7 +354,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 9. ESTILOS PARA VIDEOS RESPONSIVE (16:9) */
+/* 9. ESTILOS PARA VIDEOS RESPONSIVE (9:16) */
 /* -------------------------------------- */
 
 .video-responsive {
@@ -378,6 +378,25 @@ h3 { font-size: 1.8em; }
     left: 0;
     width: 100%;
     height: 100%;
+}
+
+@media (max-width: 768px) {
+    
+    /* Aseguramos que el contenedor principal de la página use todo el espacio */
+    .contenedor {
+        width: 100%; /* El contenedor usa todo el ancho disponible */
+        padding-left: 15px; /* Añadimos un pequeño padding lateral */
+        padding-right: 15px;
+    }
+    
+    /* ... (otros estilos de navegación) ... */
+
+    /* Garantizamos que el área del sermón se expanda */
+    .sermon-principal {
+        padding-left: 0;
+        padding-right: 0;
+        border-radius: 0; /* Opcional: eliminar bordes redondeados en móvil */
+    }
 }
 
 /* Estilos de la sección Sermón */
