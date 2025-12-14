@@ -116,7 +116,7 @@ h3 { font-size: 1.8em; }
 }
 
 .logo-img {
-    max-height: 60px;
+    max-height: 100px;
     width: auto;
     margin-right: 10px;
     display: block;
@@ -128,7 +128,7 @@ h3 { font-size: 1.8em; }
 
 .titulo-iglesia {
     font-family: var(--font-serif);
-    font-size: 1.2em;
+    font-size: 1.8em;
     font-weight: 700;
     color: var(--color-primary);
     margin: 0;
@@ -136,7 +136,7 @@ h3 { font-size: 1.8em; }
 
 .subtitulo-identidad {
     font-family: var(--font-sans);
-    font-size: 0.8em;
+    font-size: 1.5em;
     color: var(--color-text-body);
     margin: 0;
 }
@@ -147,6 +147,7 @@ h3 { font-size: 1.8em; }
     text-decoration: none;
     margin-left: 20px;
     transition: color 0.3s;
+    font-size: 1.2em;
 }
 
 .navegacion a:hover,
@@ -706,3 +707,76 @@ h3 { font-size: 1.8em; }
     border-bottom: none;
 }
 
+/* Estilos generales para el botón */
+.boton-flotante {
+    /* **1. Posicionamiento Fijo y Flotante** */
+    position: fixed; /* Esto hace que el elemento permanezca en su posición incluso al hacer scroll */
+    bottom: 20px;    /* Lo posiciona a 20px del borde inferior de la ventana */
+    right: 20px;     /* Lo posiciona a 20px del borde derecho de la ventana */
+    z-index: 1000;   /* Asegura que el botón esté por encima de otros elementos */
+
+    /* **2. Estilos de Apariencia** */
+    background-color: #603939; /* Color de fondo marrón */
+    color: white;              /* Color del texto */
+    padding: 15px 25px;        /* Relleno interior */
+    border-radius: 50px;       /* Bordes redondeados para un aspecto de píldora */
+    text-decoration: none;     /* Quita el subrayado del enlace */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
+    
+    /* **3. Transiciones para un mejor UX (Opcional)** */
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+/* Estilo al pasar el mouse por encima (Hover) */
+.boton-flotante:hover {
+    background-color: #9E674F; /* Un azul más oscuro */
+    transform: scale(1.05);    /* Un ligero crecimiento */
+}
+
+/* Estilo para que se vea como un círculo (Opcional) */
+/* Si solo quieres un ícono, puedes usar un 'padding' igual en todas las direcciones 
+   y un 'border-radius: 50%' para hacerlo un círculo perfecto. */
+.boton-circular {
+    position: fixed;
+    bottom: 30px;
+    right: 30px;
+    background-color: #28a745; /* Verde */
+    color: white;
+    padding: 15px; /* Relleno igual */
+    border-radius: 50%; /* Círculo */
+    text-align: center;
+    font-size: 24px; /* Tamaño del ícono */
+    width: 50px; /* Tamaño fijo */
+    height: 50px; /* Tamaño fijo */
+    line-height: 20px; /* Centrado vertical */
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.whatsapp-flotante {
+            position: fixed;
+            bottom: 20px;
+            left: 20px; 
+            z-index: 1000;
+            background-color: #25D366;
+            color: white;
+            padding: 30px;             
+            border-radius: 50%;        
+            text-decoration: none;     
+            text-align: center;
+            font-size: 50px; /* Tamaño del ícono */
+            width: 50px;    
+            height: 50px;
+            line-height: 50px; 
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+            transition: transform 0.3s ease;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .whatsapp-flotante:hover {
+            background-color: #128C7E;
+            transform: scale(1.1);
+        }
+        /* Contenido para hacer scroll */
+        body { height: 1500px; padding: 50px; }
