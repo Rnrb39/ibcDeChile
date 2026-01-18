@@ -116,9 +116,9 @@ h3 { font-size: 1.8em; }
 }
 
 .logo-img {
-    max-height: 100px;
+    max-height: 50px;
     width: auto;
-    margin-right: 10px;
+    margin-right: 5px;
     display: block;
 }
 
@@ -128,7 +128,7 @@ h3 { font-size: 1.8em; }
 
 .titulo-iglesia {
     font-family: var(--font-serif);
-    font-size: 1.8em;
+    font-size: 1.3em;
     font-weight: 700;
     color: var(--color-primary);
     margin: 0;
@@ -136,7 +136,7 @@ h3 { font-size: 1.8em; }
 
 .subtitulo-identidad {
     font-family: var(--font-sans);
-    font-size: 1.5em;
+    font-size: 1em;
     color: var(--color-text-body);
     margin: 0;
 }
