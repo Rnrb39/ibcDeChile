@@ -11,7 +11,6 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:wght@300;400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
 </head>
 <body>
 
@@ -25,7 +24,7 @@
                 </div>
             </a>
     
-            <!-- NUEVO: Botón de tres líneas (Hamburguesa) -->
+            <!-- Botón de tres líneas (Hamburguesa) -->
             <button class="menu-hamburguesa" aria-label="Abrir menú">
                 <span></span>
                 <span></span>
@@ -99,8 +98,63 @@
             <p>&copy; 2024. Soli Deo Gloria.</p>
         </div>
     </footer>
+
     <a href="https://wa.me/+56985212609" target="_blank" class="whatsapp-flotante" title="Contáctenos por WhatsApp">
         <i class="fab fa-whatsapp"></i> 
     </a>
+
+    <!-- ==========================================================================
+       JAVASCRIPT CONSOLIDADO (Menú Móvil + Acordeón de Declaraciones)
+       ========================================================================== -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            
+            // 1. CONTROL DEL MENÚ HAMBURGUESA
+            const botonMenu = document.querySelector('.menu-hamburguesa');
+            const menuNavegacion = document.querySelector('.navegacion');
+
+            if (botonMenu && menuNavegacion) {
+                botonMenu.addEventListener('click', function(e) {
+                    e.stopPropagation(); // Evita interferencias de otros clics
+                    menuNavegacion.classList.toggle('activo');
+                });
+            }
+
+            // 2. CONTROL DEL ACORDEÓN (DECLARACIONES DE FE)
+            const acordeonTitulos = document.querySelectorAll('.acordeon-titulo');
+
+            acordeonTitulos.forEach(titulo => {
+                titulo.addEventListener('click', function() {
+                    const itemActual = this.closest('.acordeon-item');
+                    if (!itemActual) return;
+
+                    const contenidoActual = itemActual.querySelector('.acordeon-contenido');
+                    if (!contenidoActual) return;
+                    
+                    const estaActivo = itemActual.classList.contains('activo');
+
+                    // Cerrar todos los demás elementos del acordeón
+                    document.querySelectorAll('.acordeon-item.activo').forEach(otroItem => {
+                        if (otroItem !== itemActual) {
+                            const otroContenido = otroItem.querySelector('.acordeon-contenido');
+                            otroItem.classList.remove('activo');
+                            if (otroContenido) {
+                                otroContenido.style.maxHeight = '0';
+                            }
+                        }
+                    });
+
+                    // Desplegar/Ocultar elemento actual con scrollHeight
+                    if (!estaActivo) {
+                        itemActual.classList.add('activo');
+                        contenidoActual.style.maxHeight = contenidoActual.scrollHeight + "px";
+                    } else {
+                        itemActual.classList.remove('activo');
+                        contenidoActual.style.maxHeight = "0";
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>
