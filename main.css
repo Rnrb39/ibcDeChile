@@ -2,21 +2,18 @@
 /* 1. PALETA DE COLORES Y FUENTES (Variables) y Reset */
 /* -------------------------------------- */
 :root {
-    /* PALETA DE COLORES */
-    --color-primary: #603939;        /* Marrón Profundo (Titulares, Footer) */
-    --color-secondary: #9E674F;      /* Marrón Terroso (Detalle, Hover Principal) */
-    --color-accent: #D4AC67;         /* Dorado/Ocre (Botones CTA, Highlight) */
-    --color-accent-hover: #B98A4D;   /* Dorado Oscuro (Hover CTA) */
-    --color-background: #F7F4EF;     /* Crema/Blanco Roto (Fondo alternativo) */
-    --color-text-body: #222222;      /* Negro Oscuro (Párrafos) */
+    --color-primary: #603939;        /* Marrón Profundo */
+    --color-secondary: #9E674F;      /* Marrón Terroso */
+    --color-accent: #D4AC67;         /* Dorado/Ocre */
+    --color-accent-hover: #B98A4D;   /* Dorado Oscuro */
+    --color-background: #F7F4EF;     /* Crema/Blanco Roto */
+    --color-text-body: #222222;      /* Negro Oscuro */
     --color-white: #FFFFFF;
     
-    /* Tipografía */
-    --font-serif: 'Merriweather', serif; /* Títulos (Formalidad) */
-    --font-sans: 'Lora', serif;          /* Cuerpo de Texto (Legibilidad) */
+    --font-serif: 'Merriweather', serif; 
+    --font-sans: 'Lora', serif;          
 }
 
-/* Reset básico (Evita márgenes y rellenos por defecto) */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -30,7 +27,6 @@ body {
     line-height: 1.6;
 }
 
-/* Contenedor central (para centrar contenido) */
 .contenedor {
     width: 90%;
     max-width: 1200px;
@@ -52,7 +48,7 @@ h2 { font-size: 2.5em; }
 h3 { font-size: 1.8em; }
 
 /* -------------------------------------- */
-/* 3. BOTONES (Llamadas a la Acción) */
+/* 3. BOTONES */
 /* -------------------------------------- */
 .btn-principal, .btn-acento {
     display: inline-block;
@@ -88,7 +84,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 4. HEADER, LOGO Y NAVEGACIÓN (Consolidado) */
+/* 4. HEADER, LOGO Y NAVEGACIÓN */
 /* -------------------------------------- */
 .header-principal {
     background-color: var(--color-white);
@@ -138,7 +134,6 @@ h3 { font-size: 1.8em; }
     margin: 0;
 }
 
-/* Botón de 3 líneas (oculto en PC) */
 .menu-hamburguesa {
     display: none;
     flex-direction: column;
@@ -159,7 +154,6 @@ h3 { font-size: 1.8em; }
     transition: all 0.3s ease;
 }
 
-/* Estilos de la navegación en PC */
 .navegacion a {
     color: var(--color-text-body);
     text-decoration: none;
@@ -175,7 +169,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 5. SECCIÓN HÉROE Y BANNERS DE PÁGINAS */
+/* 5. SECCIÓN HÉROE Y BANNERS */
 /* -------------------------------------- */
 .hero {
     background-color: var(--color-primary); 
@@ -217,12 +211,19 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 6. PILARES (Ejemplo de cuadrícula) */
+/* 6. PILARES */
 /* -------------------------------------- */
 .pilares {
     padding: 4em 0; 
     text-align: center;
     background-color: var(--color-background); 
+}
+
+.pilares-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 2em;
 }
 
 .pilar-item {
@@ -255,7 +256,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 7. ELEMENTOS DE CONTENIDO (Videos y Sermones) */
+/* 7. ELEMENTOS DE CONTENIDO */
 /* -------------------------------------- */
 .seccion-sermones {
     padding-bottom: 3em; 
@@ -277,11 +278,12 @@ h3 { font-size: 1.8em; }
 .sermon-item {
     margin-bottom: 3em;
     padding-bottom: 2em;
+    border-bottom: 1px solid #eee;
 }
 
 .titulo-sermon {
-    color: var(--color-text-body);
-    font-size: 1.6em;
+    color: var(--color-primary);
+    font-size: 1.5em;
     font-family: var(--font-serif);
     margin-bottom: 1em;
 }
@@ -349,7 +351,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 8. ESTILOS PARA VIDEOS RESPONSIVE (9:16) */
+/* 8. VIDEOS RESPONSIVE */
 /* -------------------------------------- */
 .video-responsive {
     position: relative;
@@ -360,9 +362,7 @@ h3 { font-size: 1.8em; }
     margin-bottom: 20px;
 }
 
-.video-responsive iframe, 
-.video-responsive object, 
-.video-responsive embed {
+.video-responsive iframe {
     position: absolute;
     top: 0;
     left: 0;
@@ -371,7 +371,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 9. PIE DE PÁGINA (Footer) */
+/* 9. FOOTER */
 /* -------------------------------------- */
 .footer-principal {
     background-color: var(--color-primary);
@@ -386,15 +386,8 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 10. RESPONSIVE BÁSICO (Para móviles) */
+/* 10. RESPONSIVE MÓVIL (Media Query) */
 /* -------------------------------------- */
-.pilares-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 2em;
-}
-
 @media (max-width: 768px) {
     .header-principal {
         position: relative !important;
@@ -430,38 +423,37 @@ h3 { font-size: 1.8em; }
         display: flex !important;
     }
 
-    /* SOLUCIÓN AL MENÚ: Oculto por defecto usando la prioridad correcta */
-    /* INTERFAZ MÓVIL: Se oculta por defecto (SIN !important para permitir que JS actúe) */
+    /* Ocultamos el menú removiendo el !important conflictivo */
     .navegacion {
         display: none; 
-        flex-direction: column !important; 
-        position: absolute !important;
-        top: 100% !important; 
-        left: 0 !important;
-        width: 100% !important;
-        background-color: var(--color-white) !important;
-        padding: 20px !important;
-        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08) !important;
-        z-index: 99999 !important; /* Capa superior absoluta */
+        flex-direction: column; 
+        position: absolute;
+        top: 100%; 
+        left: 0;
+        width: 100%;
+        background-color: var(--color-white);
+        padding: 20px;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
+        z-index: 99999; 
     }
 
-   /* CUANDO JS SE ACTIVA: Este !important ahora sí destruye el display: none anterior */
+    /* Activación del menú mediante clase JS */
     .navegacion.activo {
         display: flex !important;
     }
 
     .navegacion a {
         margin: 0 !important; 
-        font-size: 1.1em !important;
-        padding: 12px 0 !important; 
-        width: 100% !important;
-        text-align: center !important;
-        border-bottom: 1px solid var(--color-background) !important;
-        display: block !important;
+        font-size: 1.1em;
+        padding: 12px 0; 
+        width: 100%;
+        text-align: center;
+        border-bottom: 1px solid var(--color-background);
+        display: block;
     }
 
     .navegacion a:last-child {
-        border-bottom: none !important;
+        border-bottom: none;
     }
     
     .hero {
@@ -479,14 +471,25 @@ h3 { font-size: 1.8em; }
     }
 
     .sermon-principal {
-        padding-left: 15px !important;
-        padding-right: 15px !important;
+        padding-left: 15px;
+        padding-right: 15px;
         border-radius: 0; 
+    }
+
+    /* Transformación visual del botón hamburguesa a una X */
+    .menu-hamburguesa.activo span:nth-child(1) {
+        transform: rotate(45deg) translate(5px, 5px);
+    }
+    .menu-hamburguesa.activo span:nth-child(2) {
+        opacity: 0;
+    }
+    .menu-hamburguesa.activo span:nth-child(3) {
+        transform: rotate(-45deg) translate(6px, -6px);
     }
 }
 
 /* -------------------------------------- */
-/* 11. PÁGINA DE CONTACTO (GRID y Formulario) */
+/* 11. PÁGINA DE CONTACTO Y FORMULARIO */
 /* -------------------------------------- */
 .seccion-contacto {
     padding: 4em 0;
@@ -499,9 +502,6 @@ h3 { font-size: 1.8em; }
     margin-top: 2em;
 }
 
-/* ------------------ */
-/* 12. Estilos del Formulario */
-/* ------------------ */
 .formulario-contacto label {
     display: block;
     margin-top: 15px;
@@ -540,7 +540,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* ------------------ */
-/* 13. Estilos de Información y Mapa */
+/* 12. MAPA E INFORMACIÓN */
 /* ------------------ */
 .mapa-responsive {
     position: relative;
@@ -576,11 +576,18 @@ h3 { font-size: 1.8em; }
     border-left: 5px solid var(--color-accent);
 }
 
-/* --- 13.2 Acordeón de Declaraciones de Fe --- */
+/* -------------------------------------- */
+/* 13. ACORDEÓN DE DECLARACIONES DE FE */
+/* -------------------------------------- */
 .acordeon-item {
     border: 1px solid var(--color-background);
     margin-bottom: 10px;
     border-radius: 4px;
+    border-bottom: 1px solid #eee;
+}
+
+.acordeon-item:last-child {
+    border-bottom: none;
 }
 
 .acordeon-titulo {
@@ -629,7 +636,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 14. DOCUMENTOS LARGOS (Confesiones) */
+/* 14. DOCUMENTOS LARGOS Y FLOTANTES */
 /* -------------------------------------- */
 .seccion-subtitulo {
     padding: 1em 0;
@@ -640,7 +647,7 @@ h3 { font-size: 1.8em; }
     margin: 0 auto;
     line-height: 1.7;
     font-family: var(--font-serif);
-    color: var(--color-text-body);
+    color: var(--text-body);
     border: 1px solid #ccc;
     border-radius: 8px;
     overflow: hidden;
@@ -669,11 +676,6 @@ h3 { font-size: 1.8em; }
     margin-bottom: 0.5em;
 }
 
-.acordeon-item:last-child {
-    border-bottom: none;
-}
-
-/* Botones e iconos flotantes */
 .boton-flotante {
     position: fixed;
     bottom: 20px;
@@ -697,7 +699,7 @@ h3 { font-size: 1.8em; }
     position: fixed;
     bottom: 20px;
     left: 20px; 
-    z-index: 99999; /* Subido para evitar que el fondo de la lista lo solape */
+    z-index: 99999; 
     background-color: #25D366;
     color: white;
     padding: 0;
