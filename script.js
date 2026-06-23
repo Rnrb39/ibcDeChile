@@ -1,12 +1,29 @@
 
 
 document.addEventListener('DOMContentLoaded', function() {
+    
+    /* ==========================================================================
+       1. CÓDIGO DEL MENÚ HAMBURGUESA (MÓVIL)
+       ========================================================================== */
+    const botonMenu = document.querySelector('.menu-hamburguesa');
+    const menuNavegacion = document.querySelector('.navegacion');
+
+    // Verificamos que los elementos existan en la página antes de asignar el evento
+    if (botonMenu && menuNavegacion) {
+        botonMenu.addEventListener('click', function() {
+            menuNavegacion.classList.toggle('activo');
+        });
+    }
+
+
+    /* ==========================================================================
+       2. CÓDIGO DEL ACORDEÓN (DECLARACIONES DE FE)
+       ========================================================================== */
     const acordeonTitulos = document.querySelectorAll('.acordeon-titulo');
 
     acordeonTitulos.forEach(titulo => {
         titulo.addEventListener('click', function() {
             // Utilizamos 'closest' para encontrar el contenedor principal (.acordeon-item)
-            // de forma segura, incluso si el 'titulo' no es su hijo directo.
             const itemActual = this.closest('.acordeon-item');
             
             // Si el item no se encuentra, salimos para evitar el error 'null'
@@ -23,7 +40,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             
-            // --- El código de despliegue/ocultamiento continua aquí ---
             const estaActivo = itemActual.classList.contains('activo');
 
             // 1. Cerrar todos los demás elementos
@@ -40,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             // 2. Abrir o cerrar el elemento actual
             if (!estaActivo) {
                 itemActual.classList.add('activo');
-                // IMPORTANTE: Este es el cálculo que usa scrollHeight
+                // Cálculo dinámico usando scrollHeight
                 contenidoActual.style.maxHeight = contenidoActual.scrollHeight + "px";
             } else {
                 itemActual.classList.remove('activo');
