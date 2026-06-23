@@ -8,10 +8,19 @@ document.addEventListener('DOMContentLoaded', function() {
     const botonMenu = document.querySelector('.menu-hamburguesa');
     const menuNavegacion = document.querySelector('.navegacion');
 
-    // Verificamos que los elementos existan en la página antes de asignar el evento
     if (botonMenu && menuNavegacion) {
-        botonMenu.addEventListener('click', function() {
+        botonMenu.addEventListener('click', function(e) {
+            e.stopPropagation(); // Evita que el clic se propague a otros elementos
+            botonMenu.classList.toggle('activo');
             menuNavegacion.classList.toggle('activo');
+        });
+        
+        // Cierra el menú automáticamente si haces clic fuera de él
+        document.addEventListener('click', function(e) {
+            if (!menuNavegacion.contains(e.target) && !botonMenu.contains(e.target)) {
+                botonMenu.classList.remove('activo');
+                menuNavegacion.classList.remove('activo');
+            }
         });
     }
 
@@ -23,20 +32,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     acordeonTitulos.forEach(titulo => {
         titulo.addEventListener('click', function() {
-            // Utilizamos 'closest' para encontrar el contenedor principal (.acordeon-item)
             const itemActual = this.closest('.acordeon-item');
             
-            // Si el item no se encuentra, salimos para evitar el error 'null'
             if (!itemActual) { 
-                console.error("El elemento .acordeon-item no fue encontrado.");
                 return;
             }
 
             const contenidoActual = itemActual.querySelector('.acordeon-contenido');
             
-            // Si el contenido tampoco se encuentra, salimos
             if (!contenidoActual) {
-                 console.error("El elemento .acordeon-contenido no fue encontrado dentro de .acordeon-item.");
                 return;
             }
             
@@ -56,7 +60,6 @@ document.addEventListener('DOMContentLoaded', function() {
             // 2. Abrir o cerrar el elemento actual
             if (!estaActivo) {
                 itemActual.classList.add('activo');
-                // Cálculo dinámico usando scrollHeight
                 contenidoActual.style.maxHeight = contenidoActual.scrollHeight + "px";
             } else {
                 itemActual.classList.remove('activo');
