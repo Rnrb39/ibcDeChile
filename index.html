@@ -102,61 +102,8 @@
         <i class="fab fa-whatsapp"></i> 
     </a>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            
-            // 1. MENÚ HAMBURGUESA
-            const botonMenu = document.querySelector('.menu-hamburguesa');
-            const menuNavegacion = document.querySelector('.navegacion');
+       <script src="script.js"></script>
 
-            if (botonMenu && menuNavegacion) {
-                botonMenu.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    botonMenu.classList.toggle('activo');
-                    menuNavegacion.classList.toggle('activo');
-                });
-
-                document.addEventListener('click', function(e) {
-                    if (!menuNavegacion.contains(e.target) && !botonMenu.contains(e.target)) {
-                        botonMenu.classList.remove('activo');
-                        menuNavegacion.classList.remove('activo');
-                    }
-                });
-            }
-
-            // 2. ACORDEÓN DE DECLARACIONES
-            const acordeonTitulos = document.querySelectorAll('.acordeon-titulo');
-
-            acordeonTitulos.forEach(titulo => {
-                titulo.addEventListener('click', function() {
-                    const itemActual = this.closest('.acordeon-item');
-                    if (!itemActual) return;
-
-                    const contenidoActual = itemActual.querySelector('.acordeon-contenido');
-                    if (!contenidoActual) return;
-                    
-                    const estaActivo = itemActual.classList.contains('activo');
-
-                    document.querySelectorAll('.acordeon-item.activo').forEach(otroItem => {
-                        if (otroItem !== itemActual) {
-                            const otroContenido = otroItem.querySelector('.acordeon-contenido');
-                            otroItem.classList.remove('activo');
-                            if (otroContenido) {
-                                otroContenido.style.maxHeight = '0';
-                            }
-                        }
-                    });
-
-                    if (!estaActivo) {
-                        itemActual.classList.add('activo');
-                        contenidoActual.style.maxHeight = contenidoActual.scrollHeight + "px";
-                    } else {
-                        itemActual.classList.remove('activo');
-                        contenidoActual.style.maxHeight = "0";
-                    }
-                });
-            });
-        });
-    </script>
+ 
 </body>
 </html>
