@@ -505,16 +505,16 @@ h3 { font-size: 1.8em; }
 
     /* CORRECCIÓN INTERFAZ MÓVIL: Oculta el menú por defecto y lo prepara como lista vertical */
     .navegacion {
-        display: none; /* Se mantiene oculto por defecto */
+        display: flex !important;
         flex-direction: column; 
-        position: absolute;
+        position: absolute !important;
         top: 100%; /* Se despliega exactamente debajo del header */
         left: 0;
         width: 100%;
         background-color: var(--color-white);
         padding: 20px;
         box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08);
-        z-index: 105;
+        z-index: 9999 !important; /* Le subimos al máximo para descartar bloqueos de otras secciones *
     }
 
     /* CLASE DE ACTIVACIÓN CORREGIDA: !important rompe el 'display: none' anterior al hacer clic */
