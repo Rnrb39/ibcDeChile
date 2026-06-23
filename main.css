@@ -2,7 +2,7 @@
 /* 1. PALETA DE COLORES Y FUENTES (Variables) y Reset */
 /* -------------------------------------- */
 :root {
-    --color-primary: #603939;        /* Marrón Profundo */
+    --color-primary: #FFFFFF;        /* Marrón Profundo */
     --color-secondary: #9E674F;      /* Marrón Terroso */
     --color-accent: #D4AC67;         /* Dorado/Ocre */
     --color-accent-hover: #B98A4D;   /* Dorado Oscuro */
