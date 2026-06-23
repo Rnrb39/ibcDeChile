@@ -366,4 +366,350 @@ h3 { font-size: 1.8em; }
     position: absolute;
     top: 0;
     left: 0;
-    width: 100
+    width: 100%;
+    height: 100%;
+}
+
+/* -------------------------------------- */
+/* 9. PIE DE PÁGINA (Footer) */
+/* -------------------------------------- */
+.footer-principal {
+    background-color: var(--color-primary);
+    color: var(--color-background);
+    padding: 2em 0;
+    text-align: center;
+    margin-top: 4em;
+}
+
+.footer-principal p {
+    margin: 0.5em 0;
+}
+
+/* -------------------------------------- */
+/* 10. RESPONSIVE BÁSICO (Para móviles) */
+/* -------------------------------------- */
+.pilares-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 2em;
+}
+
+@media (max-width: 768px) {
+    .header-principal {
+        position: relative !important;
+    }
+
+    .contenedor {
+        width: 100% !important;
+        padding-left: 20px !important;
+        padding-right: 20px !important;
+    }
+    
+    .header-principal .contenedor {
+        display: flex !important;
+        flex-direction: row !important;
+        justify-content: space-between !important;
+        align-items: center !important;
+    }
+
+    .identidad-header {
+        margin-bottom: 0;
+        max-width: 75%; 
+    }
+
+    .titulo-iglesia {
+        font-size: 1em; 
+    }
+
+    .subtitulo-identidad {
+        font-size: 0.85em;
+    }
+
+    .menu-hamburguesa {
+        display: flex !important;
+    }
+
+    /* SOLUCIÓN AL MENÚ: Oculto por defecto usando la prioridad correcta */
+    /* INTERFAZ MÓVIL: Se oculta por defecto (SIN !important para permitir que JS actúe) */
+    .navegacion {
+        display: none; 
+        flex-direction: column !important; 
+        position: absolute !important;
+        top: 100% !important; 
+        left: 0 !important;
+        width: 100% !important;
+        background-color: var(--color-white) !important;
+        padding: 20px !important;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.08) !important;
+        z-index: 99999 !important; /* Capa superior absoluta */
+    }
+
+   /* CUANDO JS SE ACTIVA: Este !important ahora sí destruye el display: none anterior */
+    .navegacion.activo {
+        display: flex !important;
+    }
+
+    .navegacion a {
+        margin: 0 !important; 
+        font-size: 1.1em !important;
+        padding: 12px 0 !important; 
+        width: 100% !important;
+        text-align: center !important;
+        border-bottom: 1px solid var(--color-background) !important;
+        display: block !important;
+    }
+
+    .navegacion a:last-child {
+        border-bottom: none !important;
+    }
+    
+    .hero {
+        min-height: 280px;
+        padding: 2em 15px;
+    }
+
+    h1 {
+        font-size: 1.8em; 
+    }
+    
+    .hero-contenido p {
+        font-size: 1em;
+        margin-bottom: 15px;
+    }
+
+    .sermon-principal {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+        border-radius: 0; 
+    }
+}
+
+/* -------------------------------------- */
+/* 11. PÁGINA DE CONTACTO (GRID y Formulario) */
+/* -------------------------------------- */
+.seccion-contacto {
+    padding: 4em 0;
+}
+
+.contacto-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+    gap: 40px;
+    margin-top: 2em;
+}
+
+/* ------------------ */
+/* 12. Estilos del Formulario */
+/* ------------------ */
+.formulario-contacto label {
+    display: block;
+    margin-top: 15px;
+    margin-bottom: 5px;
+    font-weight: 700;
+    color: var(--color-primary);
+}
+
+.formulario-contacto input[type="text"],
+.formulario-contacto input[type="email"],
+.formulario-contacto textarea {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid var(--color-secondary);
+    border-radius: 4px;
+    background-color: var(--color-white);
+    font-family: var(--font-sans);
+    color: var(--color-text-body);
+    transition: border-color 0.3s;
+}
+
+.formulario-contacto input:focus,
+.formulario-contacto textarea:focus {
+    border-color: var(--color-accent);
+    outline: none;
+    box-shadow: 0 0 5px rgba(212, 172, 103, 0.5);
+}
+
+.formulario-contacto textarea {
+    resize: vertical;
+}
+
+.formulario-container .btn-principal {
+    width: 100%;
+    margin-top: 25px;
+}
+
+/* ------------------ */
+/* 13. Estilos de Información y Mapa */
+/* ------------------ */
+.mapa-responsive {
+    position: relative;
+    padding-bottom: 75%; 
+    height: 0;
+    overflow: hidden;
+    margin-bottom: 30px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.mapa-responsive iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.info-contacto h3 {
+    margin-top: 0;
+    border-bottom: 2px solid var(--color-secondary);
+    padding-bottom: 0.5em;
+}
+
+.info-contacto p {
+    margin-bottom: 1em;
+}
+
+.datos-contacto {
+    margin: 1.5em 0;
+    padding: 1em;
+    background-color: var(--color-background);
+    border-left: 5px solid var(--color-accent);
+}
+
+/* --- 13.2 Acordeón de Declaraciones de Fe --- */
+.acordeon-item {
+    border: 1px solid var(--color-background);
+    margin-bottom: 10px;
+    border-radius: 4px;
+}
+
+.acordeon-titulo {
+    background-color: var(--color-primary);
+    color: var(--color-white);
+    padding: 15px 20px;
+    cursor: pointer;
+    border: 1px solid #ccc;
+    border-bottom: none;
+    font-family: var(--font-serif);
+    font-size: 1.3em;
+    display: block;
+    transition: background-color 0.3s;
+    user-select: none;
+}
+
+.acordeon-titulo:hover {
+    background-color: var(--color-secondary);
+}
+
+.acordeon-titulo::after {
+    content: '+';
+    float: right;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+
+.acordeon-item.activo .acordeon-titulo {
+    background-color: var(--color-secondary);
+}
+
+.acordeon-item.activo .acordeon-titulo::after {
+    content: '-'; 
+}
+
+.acordeon-contenido {
+    padding: 0 20px; 
+    background-color: var(--color-white);
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease-in-out, padding 0.3s ease-in-out; 
+}
+
+.acordeon-item.activo .acordeon-contenido {
+    padding: 20px; 
+}
+
+/* -------------------------------------- */
+/* 14. DOCUMENTOS LARGOS (Confesiones) */
+/* -------------------------------------- */
+.seccion-subtitulo {
+    padding: 1em 0;
+}
+
+.documento-largo {
+    max-width: 850px;
+    margin: 0 auto;
+    line-height: 1.7;
+    font-family: var(--font-serif);
+    color: var(--color-text-body);
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.documento-largo .capitulo-titulo {
+    font-size: 1.8em;
+    color: var(--color-primary);
+    margin-top: 2em;
+    margin-bottom: 1em;
+    border-bottom: 2px solid var(--color-accent);
+    padding-bottom: 5px;
+}
+
+.documento-largo sup {
+    font-size: 0.7em;
+    color: var(--color-accent);
+    font-weight: bold;
+    line-height: 0;
+}
+
+.documento-largo .seccion-subtitulo {
+    font-size: 1.3em;
+    color: var(--color-secondary);
+    margin-top: 1.5em;
+    margin-bottom: 0.5em;
+}
+
+.acordeon-item:last-child {
+    border-bottom: none;
+}
+
+/* Botones e iconos flotantes */
+.boton-flotante {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    z-index: 1000;
+    background-color: #603939;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 50px;
+    text-decoration: none;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease, transform 0.3s ease;
+}
+
+.boton-flotante:hover {
+    background-color: #9E674F;
+    transform: scale(1.05);
+}
+
+.whatsapp-flotante {
+    position: fixed;
+    bottom: 20px;
+    left: 20px; 
+    z-index: 99999; /* Subido para evitar que el fondo de la lista lo solape */
+    background-color: #25D366;
+    color: white;
+    padding: 0;
+    border-radius: 50%;        
+    text-decoration: none;     
+    text-align: center;
+    font-size: 28px;
+    width: 55px;    
+    height: 55px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    transition: transform 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
