@@ -376,7 +376,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 9. ESTILOS PARA VIDEOS RESPONSIVE (9:16) */
+/* 8. ESTILOS PARA VIDEOS RESPONSIVE (9:16) */
 /* -------------------------------------- */
 
 .video-responsive {
@@ -438,7 +438,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 8. PIE DE PÁGINA (Footer) */
+/* 9. PIE DE PÁGINA (Footer) */
 /* -------------------------------------- */
 .footer-principal {
     background-color: var(--color-primary);
@@ -453,7 +453,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 9. RESPONSIVE BÁSICO (Para móviles) */
+/* 10. RESPONSIVE BÁSICO (Para móviles) */
 /* -------------------------------------- */
 
 /* Esto activa la cuadrícula para las 5 Solas en computadoras */
@@ -465,6 +465,11 @@ h3 { font-size: 1.8em; }
 }
 
 @media (max-width: 768px) {
+    /* Forzamos al header a ser el contenedor de referencia */
+    .header-principal {
+        position: relative; /* Clave para que 'top: 100%' no se rompa */
+    }
+
     /* Evitamos que el contenedor toque los bordes físicos del teléfono */
     .contenedor {
         width: 100%;
@@ -495,12 +500,12 @@ h3 { font-size: 1.8em; }
 
     /* Muestra el botón de tres líneas en móviles */
     .menu-hamburguesa {
-        display: flex;
+        display: flex !important; /* Forzamos su visibilidad en móviles */
     }
 
     /* CORRECCIÓN INTERFAZ MÓVIL: Oculta el menú por defecto y lo prepara como lista vertical */
     .navegacion {
-        display: none; 
+        display: none; /* Se mantiene oculto por defecto */
         flex-direction: column; 
         position: absolute;
         top: 100%; /* Se despliega exactamente debajo del header */
@@ -512,23 +517,24 @@ h3 { font-size: 1.8em; }
         z-index: 105;
     }
 
+    /* CLASE DE ACTIVACIÓN CORREGIDA: !important rompe el 'display: none' anterior al hacer clic */
+    .navegacion.activo {
+        display: flex !important;
+    }
+
     /* Estilo para los enlaces apilados verticalmente en celular */
     .navegacion a {
-        margin: 0;
+        margin: 0 !important; /* Eliminamos el margin-left: 20px de la versión de PC */
         font-size: 1.1em;
         padding: 12px 0; 
         width: 100%;
         text-align: center;
         border-bottom: 1px solid var(--color-background);
+        display: block; /* Asegura que ocupe todo el ancho para poder presionarlo fácil con el dedo */
     }
 
     .navegacion a:last-child {
         border-bottom: none;
-    }
-
-    /* CLASE DE ACTIVACIÓN: Cuando JS agregue "activo", el menú se mostrará */
-    .navegacion.activo {
-        display: flex;
     }
     
     /* Adaptación del Hero principal */
@@ -547,7 +553,7 @@ h3 { font-size: 1.8em; }
     }
 }
 /* -------------------------------------- */
-/* 10. PÁGINA DE CONTACTO (GRID y Formulario) */
+/* 11. PÁGINA DE CONTACTO (GRID y Formulario) */
 /* -------------------------------------- */
 
 .seccion-contacto {
@@ -563,7 +569,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* ------------------ */
-/* Estilos del Formulario */
+/* 12. Estilos del Formulario */
 /* ------------------ */
 
 .formulario-contacto label {
@@ -604,7 +610,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* ------------------ */
-/* Estilos de Información y Mapa */
+/*  13. Estilos de Información y Mapa */
 /* ------------------ */
 
 .mapa-responsive {
@@ -653,7 +659,7 @@ h3 { font-size: 1.8em; }
     margin-top: 1em;
 }
 
-/* --- 11.2 Acordeón de Declaraciones de Fe --- */
+/* --- 13.2 Acordeón de Declaraciones de Fe --- */
 
 .acordeon-item {
     border: 1px solid var(--color-background);
@@ -713,7 +719,7 @@ h3 { font-size: 1.8em; }
 }
 
 /* -------------------------------------- */
-/* 12. DOCUMENTOS LARGOS (Confesiones) */
+/* 14. DOCUMENTOS LARGOS (Confesiones) */
 /* -------------------------------------- */
 
 .seccion-subtitulo { /* se cambio seccion-subtitulo */
