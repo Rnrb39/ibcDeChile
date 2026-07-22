@@ -1,3 +1,14 @@
+/* Previene el desplazamiento horizontal no deseado en celulares */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  padding: 0;
+  overflow-x: hidden; /* Corta cualquier elemento que intente salirse a la derecha */
+}
+
 /* -------------------------------------- */
 /* 1. PALETA DE COLORES Y FUENTES (Variables) y Reset */
 /* -------------------------------------- */
