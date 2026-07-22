@@ -772,3 +772,44 @@ p  { font-size: 1.0em;}
     justify-content: center;
     align-items: center;
 }
+
+/* 1. SEGURO GLOBAL ANTI-DESPLAZAMIENTO */
+*, *::before, *::after {
+    box-sizing: border-box !important;
+}
+
+html, body {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important; /* Evita el scroll horizontal */
+    margin: 0;
+    padding: 0;
+}
+
+/* 2. AJUSTE DE CONTENEDORES PARA MÓVILES */
+.contenedor {
+    width: 100% !important;
+    max-width: 1200px; /* O el tamaño máximo que tengas para PC */
+    margin: 0 auto;
+    padding-left: 15px !important;
+    padding-right: 15px !important;
+}
+
+.contacto-grid {
+    width: 100% !important;
+    max-width: 100% !important;
+    display: block; /* Para asegurarnos que en móvil no fuerce columnas más anchas */
+}
+
+/* 3. AJUSTE DE MAPA E IFRAME */
+.info-contacto,
+.mapa-ubicacion,
+.mapa-responsive {
+    width: 100% !important;
+    max-width: 100% !important;
+}
+
+.mapa-responsive iframe {
+    width: 100% !important;
+    max-width: 100% !important;
+}
