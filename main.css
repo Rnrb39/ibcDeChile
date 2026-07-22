@@ -581,22 +581,21 @@ p  { font-size: 1.0em;}
 /* 12. MAPA E INFORMACIÓN */
 /* ------------------ */
 .mapa-responsive {
-    position: relative;
-    padding-bottom: 75%; 
-    height: 0;
-    overflow: hidden;
-    margin-bottom: 30px;
-    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  position: relative;
+  width: 100%;             /* Se adapta exactamente al ancho del contenedor */
+  max-width: 100%;         /* NUNCA permite que se salga de la pantalla */
+  aspect-ratio: 16 / 9;    /* Mantiene la proporción perfecta en cualquier pantalla */
+  margin-bottom: 30px;
+  border-radius: 8px;      /* Opcional: le da esquinas redondeadas muy elegantes */
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
 }
 
 .mapa-responsive iframe {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+  width: 100%;
+  height: 100%;
+  border: 0;
 }
-
 .info-contacto h3 {
     margin-top: 0;
     border-bottom: 2px solid var(--color-secondary);
