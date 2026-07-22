@@ -2,57 +2,51 @@
 <html lang="es">
 <head>
     <link rel="stylesheet" href="main.css">
-    <meta charset="UTF-8"> <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sermones - Iglesia Bíblica Cristiana</title>
+    <meta charset="UTF-8"> 
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sermones y Series - Iglesia Bíblica Cristiana</title>
 </head>
 <body>
     
-    <header class="header-principal">
-        </header>
+    <header class="header-principal"></header>
 
     <div class="page-header">
         <div class="contenedor">
-            <h1>Archivo de Sermones</h1>
+            <h1>Recursos y Predicaciones</h1>
             <p>Centrados en la Palabra de Dios para la edificación de Su Iglesia.</p>
         </div>
     </div>
 
     <main>
-        <section class="seccion-sermones">
-    <div class="contenedor">
-        <h2>Último Sermón: Del esplendor a la derrota y la verguenza.</h2>
+        <!-- SECCIÓN 1: SERIES Y LISTAS DE REPRODUCCIÓN -->
+        <section class="seccion-playlists" style="padding: 3em 0; background-color: rgba(0,0,0,0.02);">
+            <div class="contenedor">
+                <h2 style="margin-bottom: 0.3em;">Series de Predicación (Playlists)</h2>
+                <p style="margin-bottom: 2em; color: #555;">Estudios expositivos completos libro por libro o por temas.</p>
+                
+                <!-- Aquí JavaScript cargará las listas de reproducción -->
+                <div id="contenedorPlaylists" class="sermones-lista"></div>
+            </div>
+        </section>
 
-        <div class="sermon-item">
-        <h3 class="titulo-sermon">(Segundo Libro de los Reyes)</h3>
-        
-        <div class="video-responsive">
-            
-            <iframe 
-                src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2FIBCdeChile%2Fvideos%2F1415692236557384%2F&show_text=false&width=267&t=0"
-                width="100%" 
-                height="100%" 
-                style="border:none;overflow:hidden" 
-                scrolling="no" 
-                frameborder="0" 
-                allowfullscreen="true" 
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share"
-            ></iframe>
-            
-        </div>
-        
-        <p class="descripcion-sermon">Sermón impartido por nuestro Pastor Sergio Arias Caceres, donde exploramos el segundo libro de Reyes.</p>
-        <a href="#" class="btn-principal" style="margin-top: 15px;">Descargar Audio (MP3)</a>
-    </div>
-    
-        
-        </div>
-</section>
+        <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 0;">
+
+        <!-- SECCIÓN 2: SERMONES INDIVIDUALES -->
+        <section class="seccion-sermones" style="padding: 3em 0;">
+            <div class="contenedor">
+                <h2 style="margin-bottom: 0.3em;">Sermones Recientes</h2>
+                <p style="margin-bottom: 2em; color: #555;">Mensajes individuales transmitidos en nuestros cultos dominicales.</p>
+
+                <!-- Aquí JavaScript cargará los sermones individuales -->
+                <div id="contenedorSermones" class="sermones-lista"></div>
+            </div>
+        </section>
     </main>
 
-    <footer class="footer-principal">
-        </footer>
-    <a href="index.html" class="boton-flotante">
-                Volver a Inicio
-    </a>
+    <footer class="footer-principal"></footer>
+
+    <a href="index.html" class="boton-flotante">Volver a Inicio</a>
+
+    <script src="script.js"></script>
 </body>
 </html>
