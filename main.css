@@ -169,18 +169,6 @@ p  { font-size: 1.0em;}
     outline: none; 
 }
 
-/* -------------------------------------- */
-/* 5. SECCIÓN HÉROE Y BANNERS */
-/* -------------------------------------- */
-/*.hero {
-    background-color: var(--color-primary); 
-    min-height: 400px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
-    padding: 2em;
-}*/
 
 /* -------------------------------------- */
 /* 5. SECCIÓN HÉROE Y BANNERS */
@@ -226,14 +214,6 @@ p  { font-size: 1.0em;}
     margin-bottom: 1.5em;
 }
 
-/*.hero-contenido h1,
-.hero-contenido p {
-    color: var(--color-white);
-}
-
-.hero-contenido {
-    max-width: 700px;
-}*/
 
 .page-header {
     background-color: var(--color-primary);
@@ -751,6 +731,15 @@ p  { font-size: 1.0em;}
 .boton-flotante:hover {
     background-color: var(--color-secondary); /* Utilizando la variable */
     transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+  .boton-flotante {
+    padding: 8px 14px;      /* Reducimos el relleno interno (era 15px 25px) */
+    font-size: 12px;        /* Achicamos un poco la letra */
+    bottom: 15px;           /* Lo pegamos un poquito más al borde inferior */
+    right: 15px;
+  }
 }
 
 .whatsapp-flotante {
