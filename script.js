@@ -1,6 +1,3 @@
-
-
-
 // ==========================================
 // 1. BASE DE DATOS DE LISTAS DE REPRODUCCIÓN (SERIES)
 // ==========================================
@@ -9,24 +6,22 @@ const playlists = [
         titulo: "Serie Expositiva: Carta a los Efesios",
         descripcion: "Estudio completo a través de la carta a los Efesios.",
         cantidadMensajes: "24 Sermones",
-        playlistId: "PL1NYVaAlZ1M8KJGvz5qd79WJPIy6fPnyN" // REEMPLAZA por el ID de tu lista de YouTube
-    },
-    
+        playlistId: "PL1NYVaAlZ1M8KJGvz5qd79WJPIy6fPnyN"
+    }
 ];
 
 // ==========================================
 // 2. BASE DE DATOS DE SERMONES INDIVIDUALES
-// (El sermón que esté más arriba en la lista se considerará el más reciente)
 // ==========================================
 const sermones = [
- {
+    {
         titulo: "De la desesperanza a la Esperanza",
         pasaje: "Rut 1:15-18",
         fecha: "02 de Marzo, 2025",
         youtubeId: "ns4xn3xRGps"
     },
     {
-        titulo: "Pronto se apartaron del camino en que anduvieron sus padres…",
+        titulo: "Pronto se apartaron del camino en que anduvieron sus padres...",
         pasaje: "Jueces 2:17",
         fecha: "26 de Enero, 2025",
         youtubeId: "qAwtOhJqdHc"
@@ -40,16 +35,55 @@ document.addEventListener('DOMContentLoaded', function() {
     console.log("Cargando componentes...");
 
     // A. MENÚ HAMBURGUESA
-    const menuToggle = document.getElementById('menuHamburguesa');
-    const navegacion = document.getElementById('navegacionPrincipal');
+    const menuToggle = document.getElementById('menuHamburguesa') || document.querySelector('.menu-hamburguesa');
+    const navegacion = document.getElementById('navegacionPrincipal') || document.querySelector('.navegacion');
+
     if (menuToggle && navegacion) {
-        menuToggle.addEventListener('click', () => {
+        menuToggle.addEventListener('click', (e) => {
+            e.stopPropagation();
             navegacion.classList.toggle('activo');
             menuToggle.classList.toggle('activo');
         });
+
+        document.addEventListener('click', (e) => {
+            if (!navegacion.contains(e.target) && !menuToggle.contains(e.target)) {
+                navegacion.classList.remove('activo');
+                menuToggle.classList.remove('activo');
+            }
+        });
     }
 
-    // B. CARGAR LISTAS DE REPRODUCCIÓN (Página sermones.html)
+    // B. ACORDEÓN (DECLARACIÓN DE FE)
+    const acordeonTitulos = document.querySelectorAll('.acordeon-titulo');
+    acordeonTitulos.forEach(titulo => {
+        titulo.addEventListener('click', function() {
+            const itemActual = this.closest('.acordeon-item');
+            if (!itemActual) return;
+
+            const contenidoActual = itemActual.querySelector('.acordeon-contenido');
+            if (!contenidoActual) return;
+            
+            const estaActivo = itemActual.classList.contains('activo');
+
+            document.querySelectorAll('.acordeon-item.activo').forEach(otroItem => {
+                if (otroItem !== itemActual) {
+                    const otroContenido = otroItem.querySelector('.acordeon-contenido');
+                    otroItem.classList.remove('activo');
+                    if (otroContenido) otroContenido.style.maxHeight = '0';
+                }
+            });
+
+            if (!estaActivo) {
+                itemActual.classList.add('activo');
+                contenidoActual.style.maxHeight = contenidoActual.scrollHeight + "px";
+            } else {
+                itemActual.classList.remove('activo');
+                contenidoActual.style.maxHeight = "0";
+            }
+        });
+    });
+
+    // C. CARGAR LISTAS DE REPRODUCCIÓN (Página sermones.html)
     const contenedorPlaylists = document.getElementById('contenedorPlaylists');
     if (contenedorPlaylists) {
         contenedorPlaylists.innerHTML = playlists.map(serie => `
@@ -77,7 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         `).join('');
     }
 
-    // C. CARGAR TODOS LOS SERMONES (Página sermones.html)
+    // D. CARGAR TODOS LOS SERMONES (Página sermones.html)
     const contenedorSermones = document.getElementById('contenedorSermones');
     if (contenedorSermones) {
         contenedorSermones.innerHTML = sermones.map(sermon => `
@@ -97,12 +131,10 @@ document.addEventListener('DOMContentLoaded', function() {
         `).join('');
     }
 
-    // D. CARGAR SÓLO LOS ÚLTIMOS 3 SERMONES (Página principal index.html)
+    // E. CARGAR SÓLO LOS ÚLTIMOS 3 SERMONES (Página principal index.html)
     const contenedorUltimos = document.getElementById('contenedorUltimosSermones');
     if (contenedorUltimos) {
-        // .slice(0, 3) toma únicamente los primeros 3 elementos del arreglo
         const ultimosSermones = sermones.slice(0, 3);
-
         contenedorUltimos.innerHTML = ultimosSermones.map(sermon => `
             <article class="sermon-tarjeta">
                 <p class="sermon-fecha">${sermon.fecha}</p>
