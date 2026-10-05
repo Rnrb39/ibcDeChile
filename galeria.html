@@ -10,9 +10,6 @@
     <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:wght@300;400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     
-    <!-- Librerías de Juicer.io para el feed automático -->
-    <script src="https://assets.juicer.io/embed.js" type="text/javascript"></script>
-    <link href="https://assets.juicer.io/embed.css" media="all" rel="stylesheet" type="text/css" />
 </head>
 <body>
 
@@ -29,7 +26,7 @@
                 <span></span><span></span><span></span>
             </button>
             <nav class="navegacion" id="navegacionPrincipal">
-                <a href="quienes-somos.html">¿Quiénes Somos?</a>
+                <a href="quienes-somos.html">¿Quiénes somos?</a>
                 <a href="nuestra-fe.html">Nuestra fe</a>
                 <a href="sermones.html">Sermones</a>
                 <a href="galeria.html">Galería</a>
@@ -45,9 +42,8 @@
         </div>
 
         <section class="contenedor seccion-galeria">
-            <div class="galeria-grid" id="galeria-grid">
-                <!-- Contenedor del Feed de Juicer -->
-                <ul class="juicer-feed" data-feed-id="ibcdechile"></ul>
+            <div class="galeria-grid" id="galeria-grid" style="text-align: center;">
+                <p style="color: #555;">Cargando fotografías...</p>
             </div>
             <div style="text-align:center; margin-top:2em;">
                 <a href="https://www.facebook.com/IBCdeChile/photos" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver más en Facebook</a>
@@ -63,7 +59,7 @@
 
     <footer class="footer-principal">
         <div class="contenedor">
-            <p>Primera Iglesia Bíblica Cristiana de Chile | Yungay #940, Curicó, Chile.</p>
+            <p>Primera Iglesia Bíblica Cristiana de Chile | Yungay 940, Curicó, Chile.</p>
             <p>&copy; 2026. Soli Deo Gloria.</p>
         </div>
     </footer>
@@ -80,14 +76,14 @@
         const lbImg = document.getElementById('lightbox-img');
 
         try {
+            // Carga las fotografías obtenidas desde Facebook
             const r = await fetch('data/fotos.json', { cache: 'no-store' });
             if (!r.ok) throw new Error('sin datos');
             const data = await r.json();
             const fotos = data.fotos || [];
             if (!fotos.length) throw new Error('vacío');
 
-            // Si en el futuro data/fotos.json vuelve a recibir datos desde la API de Facebook,
-            // sobreescribirá el contenedor limpiando el feed de Juicer automáticamente.
+            
             grid.innerHTML = '';
             fotos.forEach(f => {
                 const img = document.createElement('img');
@@ -100,10 +96,37 @@
                 });
                 grid.appendChild(img);
             });
-        } catch (e) {
-            // Mientras la API o fotos.json fallen, se mantendrá visible el widget de Juicer cargado en el HTML.
-            console.log('Mostrando feed alternativo de Juicer...');
-        }
+       } catch (e) {
+    grid.innerHTML = `
+        <div style="
+            max-width: 520px;
+            margin: 20px auto;
+            padding: 30px 25px;
+            background: #f8f9fa;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            text-align: center;
+        ">
+            <h3 style="margin-bottom: 12px; color: #333;">
+                Fotografías de nuestra iglesia
+            </h3>
+
+            <p style="color: #666; line-height: 1.5; margin-bottom: 22px;">
+                En este momento no pudimos cargar las fotografías directamente.
+                Puedes ver nuestras últimas actividades en Facebook.
+            </p>
+
+            <a
+                href="https://www.facebook.com/IBCdeChile/photos"
+                target="_blank"
+                rel="noopener noreferrer"
+                class="btn-principal"
+            >
+                Ver fotografías en Facebook
+            </a>
+        </div>
+    `;
+}
 
         const cerrar = () => lb.classList.remove('abierto');
         if (lb) {
@@ -112,6 +135,7 @@
         }
     })();
     </script>
+    
     <a href="index.html" class="boton-flotante">
         Volver a Inicio
     </a>

@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:wght@300;400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="main.css">
     <meta charset="UTF-8"> 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,11 +11,37 @@
 </head>
 <body>
     
-    <header class="header-principal"></header>
+    
+
+<header class="header-principal">
+    <div class="contenedor">
+        <a href="index.html" class="identidad-header" title="Volver a la página de inicio">
+            <img src="img/logo.jpeg" alt="Logo de la Iglesia" class="logo-img">
+            <div class="header-texto">
+                <p class="titulo-iglesia">Primera Iglesia Bíblica Cristiana de Chile</p>
+                <p class="subtitulo-identidad">Bautista Reformada</p>
+            </div>
+        </a>
+
+        <button class="menu-hamburguesa" aria-label="Abrir menú" id="menuHamburguesa">
+            <span></span>
+            <span></span>
+            <span></span>
+        </button>
+
+        <nav class="navegacion" id="navegacionPrincipal">
+            <a href="quienes-somos.html">¿Quiénes somos?</a>
+            <a href="nuestra-fe.html">Nuestra fe</a>
+            <a href="sermones.html">Sermones</a>
+            <a href="galeria.html">Galería</a>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+    </div>
+</header>
 
     <div class="page-header">
         <div class="contenedor">
-            <h1>Recursos y Predicaciones</h1>
+            <h1>Recursos y predicaciones</h1>
             <p>Centrados en la Palabra de Dios para la edificación de Su Iglesia.</p>
         </div>
     </div>
@@ -21,7 +50,7 @@
         <!-- SECCIÓN 1: SERIES Y LISTAS DE REPRODUCCIÓN -->
         <section class="seccion-playlists" style="padding: 3em 0; background-color: rgba(0,0,0,0.02);">
             <div class="contenedor">
-                <h2 style="margin-bottom: 0.3em;">Series de Predicación (Playlists)</h2>
+                <h2 style="margin-bottom: 0.3em;">Series de predicación (listas de reproducción)</h2>
                 <p style="margin-bottom: 2em; color: #555;">Estudios expositivos completos libro por libro o por temas.</p>
                 
                 <!-- Aquí JavaScript cargará las listas de reproducción -->
@@ -34,7 +63,7 @@
         <!-- SECCIÓN 2: SERMONES INDIVIDUALES -->
         <section class="seccion-sermones" style="padding: 3em 0;">
             <div class="contenedor">
-                <h2 style="margin-bottom: 0.3em;">Sermones Recientes</h2>
+                <h2 style="margin-bottom: 0.3em;">Sermones recientes</h2>
                 <p style="margin-bottom: 2em; color: #555;">Mensajes individuales transmitidos en nuestros cultos dominicales.</p>
 
                 <!-- Aquí JavaScript cargará los sermones individuales -->
@@ -45,7 +74,7 @@
 
     <footer class="footer-principal">
         <div class="contenedor">
-            <p>Primera Iglesia Bíblica Cristiana de Chile | Yungay #940, Curicó, Chile.</p>
+            <p>Primera Iglesia Bíblica Cristiana de Chile | Yungay 940, Curicó, Chile.</p>
             <p>&copy; 2026. Soli Deo Gloria.</p>
         </div>
     </footer>

@@ -908,3 +908,25 @@ html, body {
     width: 100%;
     height: 100%;
 }
+
+/* Corrección de escala y zoom para el video de Facebook */
+.fb-video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px; /* Ancho máximo para que en PC no se vea gigante */
+    margin: 0 auto;   /* Centra el reproductor en la pantalla */
+    padding-bottom: 56.25%; /* Mantiene la proporción panorámica 16:9 exactos */
+    height: 0;
+    overflow: hidden;
+    border-radius: 8px; /* Bordes suavemente redondeados */
+    background-color: #000; /* Fondo negro para evitar saltos de pantalla */
+}
+
+.fb-video-container iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100% !important;
+    height: 100% !important;
+    border: 0;
+}
