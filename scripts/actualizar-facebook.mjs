@@ -4,7 +4,7 @@ import { writeFile, mkdir } from 'node:fs/promises';
 const TOKEN = process.env.FB_PAGE_TOKEN;
 const PAGE = process.env.FB_PAGE_ID;
 // Revisa la versión vigente en https://developers.facebook.com/docs/graph-api/changelog
-const VERSION = 'v23.0';
+const VERSION = 'v26.0';
 
 if (!TOKEN || !PAGE) {
   console.error('Faltan los secrets FB_PAGE_TOKEN y/o FB_PAGE_ID');
