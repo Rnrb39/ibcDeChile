@@ -107,9 +107,55 @@
                         💡 <strong>Nota:</strong> Haz clic en el video dos veces para reproducirlo y activa el audio en el ícono de volumen 🔊 en la parte central.
                     </p>
                 </div>
-                <div class="fb-video-container" id="video-fb" style="width: 100%; max-width: 800px; margin: 0 auto; text-align: center;">
-                    <p id="video-cargando" style="color: #555;">Cargando la última predicación...</p>
-                </div>
+               <div id="video-fb" style="width: 100%; max-width: 520px; margin: 0 auto; text-align: center;">
+    <div style="
+        background: #f8f9fa;
+        border: 1px solid #e2e8f0;
+        border-radius: 12px;
+        padding: 30px 25px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    ">
+        <div style="
+            width: 110px;
+            height: 110px;
+            margin: 0 auto 20px;
+            border-radius: 50%;
+            background: #e9ecef;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 46px;
+        ">
+            ▶
+        </div>
+
+        <h3 style="
+            margin: 0 0 10px;
+            color: #333;
+            font-size: 22px;
+        ">
+            Última Predicación
+        </h3>
+
+        <p style="
+            color: #666;
+            margin: 0 auto 22px;
+            line-height: 1.5;
+        ">
+            Revive nuestra predicación más reciente directamente en Facebook.
+        </p>
+
+        <a
+            id="video-facebook-link"
+            href="#"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="btn-principal"
+        >
+            ▶ Ver última predicación en Facebook
+        </a>
+    </div>
+</div>
                 
 
                 <div style="text-align: center; margin-top: 2.5em;">
@@ -135,9 +181,9 @@
     <script src="script.js"></script>
         <script>
 document.addEventListener('DOMContentLoaded', async () => {
-    const contenedor = document.getElementById('video-fb');
+    const enlace = document.getElementById('video-facebook-link');
 
-    if (!contenedor) return;
+    if (!enlace) return;
 
     try {
         const respuesta = await fetch('data/videos.json', {
@@ -154,35 +200,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             throw new Error('No hay video disponible');
         }
 
-        const urlFacebook = encodeURIComponent(datos.url);
-
-        contenedor.innerHTML = `
-            <iframe
-                src="https://www.facebook.com/plugins/video.php?href=${urlFacebook}&show_text=false&width=800"
-                width="100%"
-                height="700"
-                style="border:none;overflow:hidden"
-                scrolling="no"
-                frameborder="0"
-                allowfullscreen="true"
-                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
-            </iframe>
-        `;
+        enlace.href = datos.url;
 
     } catch (error) {
         console.error('Error al cargar el video:', error);
 
-        contenedor.innerHTML = `
-            <p style="color:#555; margin-bottom:15px;">
-                No fue posible cargar la última predicación directamente.
-            </p>
-            <a href="https://www.facebook.com/IBCdeChile/videos/"
-               target="_blank"
-               rel="noopener noreferrer"
-               class="btn-principal">
-                Ver videos en Facebook
-            </a>
-        `;
+        enlace.href = 'https://www.facebook.com/IBCdeChile/videos/';
+        enlace.textContent = 'Ver videos en Facebook';
     }
 });
 </script>
