@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Galería - Iglesia Bíblica Cristiana - Chile</title>
+    <link rel="stylesheet" href="main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:wght@300;400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="header-principal">
+        <div class="contenedor">
+            <a href="index.html" class="identidad-header" title="Volver a la página de inicio">
+                <img src="img/logo.jpeg" alt="Logo de la Iglesia" class="logo-img">
+                <div class="header-texto">
+                    <p class="titulo-iglesia">Primera Iglesia Bíblica Cristiana de Chile</p>
+                    <p class="subtitulo-identidad">Bautista Reformada</p>
+                </div>
+            </a>
+            <button class="menu-hamburguesa" aria-label="Abrir menú" id="menuHamburguesa">
+                <span></span><span></span><span></span>
+            </button>
+            <nav class="navegacion" id="navegacionPrincipal">
+                <a href="quienes-somos.html">¿Quiénes Somos?</a>
+                <a href="nuestra-fe.html">Nuestra fe</a>
+                <a href="sermones.html">Sermones</a>
+                <a href="galeria.html">Galería</a>
+                <a href="contacto.html">Contacto</a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="page-header">
+            <h1>Galería de Actividades</h1>
+            <p>Momentos de la vida de nuestra iglesia</p>
+        </div>
+
+        <section class="contenedor seccion-galeria">
+            <div class="galeria-grid" id="galeria-grid">
+                <p class="galeria-mensaje">Cargando fotos...</p>
+            </div>
+            <div style="text-align:center; margin-top:2em;">
+                <a href="https://www.facebook.com/IBCdeChile/photos" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver más en Facebook</a>
+            </div>
+        </section>
+    </main>
+
+    <!-- Visor ampliado -->
+    <div class="lightbox" id="lightbox" aria-hidden="true">
+        <button class="lightbox-cerrar" id="lightbox-cerrar" aria-label="Cerrar">&times;</button>
+        <img id="lightbox-img" alt="">
+    </div>
+
+    <footer class="footer-principal">
+        <div class="contenedor">
+            <p>Primera Iglesia Bíblica Cristiana de Chile | Yungay #940, Curicó, Chile.</p>
+            <p>&copy; 2026. Soli Deo Gloria.</p>
+        </div>
+    </footer>
+
+    <a href="https://wa.me/+56985212609" target="_blank" class="whatsapp-flotante">
+        <i class="fab fa-whatsapp"></i>
+    </a>
+
+    <script src="script.js"></script>
+    <script>
+    (async () => {
+        const grid = document.getElementById('galeria-grid');
+        const lb = document.getElementById('lightbox');
+        const lbImg = document.getElementById('lightbox-img');
+
+        try {
+            const r = await fetch('data/fotos.json', { cache: 'no-store' });
+            if (!r.ok) throw new Error('sin datos');
+            const data = await r.json();
+            const fotos = data.fotos || [];
+            if (!fotos.length) throw new Error('vacío');
+
+            grid.innerHTML = '';
+            fotos.forEach(f => {
+                const img = document.createElement('img');
+                img.src = f.thumb || f.src;
+                img.alt = f.texto || 'Foto de actividad de la iglesia';
+                img.loading = 'lazy';
+                img.addEventListener('click', () => {
+                    lbImg.src = f.src;
+                    lb.classList.add('abierto');
+                });
+                grid.appendChild(img);
+            });
+        } catch (e) {
+            grid.innerHTML = '<p class="galeria-mensaje">Las fotos aparecerán aquí muy pronto.</p>';
+        }
+
+        const cerrar = () => lb.classList.remove('abierto');
+        lb.addEventListener('click', e => { if (e.target !== lbImg) cerrar(); });
+        document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrar(); });
+    })();
+    </script>
+    <a href="index.html" class="boton-flotante">
+                Volver a Inicio
+    </a>
+</body>
+</html>

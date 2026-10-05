@@ -813,3 +813,81 @@ html, body {
     width: 100% !important;
     max-width: 100% !important;
 }
+
+/* -------------------------------------- */
+/* 15. GALERÍA DE FOTOS Y VIDEO EN VIVO   */
+/* (pegar al final de main.css)           */
+/* -------------------------------------- */
+.seccion-galeria {
+    padding: 2em 0;
+}
+
+.galeria-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+}
+
+.galeria-grid img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    border-radius: 6px;
+    cursor: pointer;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    background-color: var(--color-secondary);
+}
+
+.galeria-grid img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.2);
+}
+
+.galeria-mensaje {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: #555;
+    padding: 2em 0;
+}
+
+/* Visor ampliado */
+.lightbox {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.9);
+    z-index: 100000;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+}
+
+.lightbox.abierto {
+    display: flex;
+}
+
+.lightbox img {
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: 4px;
+}
+
+.lightbox-cerrar {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    background: transparent;
+    border: none;
+    color: #fff;
+    font-size: 2.5em;
+    cursor: pointer;
+    line-height: 1;
+}
+
+@media (max-width: 768px) {
+    .galeria-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 8px;
+    }
+}

@@ -1,0 +1,35 @@
+name: Actualizar contenido de Facebook
+
+on:
+  schedule:
+    # Domingos, cada 10 min entre 13:00 y 17:59 UTC (cubre el culto de las 10:45 hora de Chile, invierno y verano)
+    - cron: '*/10 13-17 * * 0'
+    # Todos los días, una vez, para fotos nuevas
+    - cron: '0 12 * * *'
+  workflow_dispatch:   # permite ejecutarlo a mano desde la pestaña Actions
+
+permissions:
+  contents: write
+
+jobs:
+  actualizar:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Consultar Facebook
+        run: node scripts/actualizar-facebook.mjs
+        env:
+          FB_PAGE_TOKEN: ${{ secrets.FB_PAGE_TOKEN }}
+          FB_PAGE_ID: ${{ secrets.FB_PAGE_ID }}
+
+      - name: Guardar cambios si los hay
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add data
+          git diff --staged --quiet || (git commit -m "Actualiza datos de Facebook" && git push)

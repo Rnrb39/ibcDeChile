@@ -35,6 +35,7 @@
                 <a href="nuestra-fe.html">Nuestra fe</a>
                 <a href="sermones.html">Sermones</a>
                 <a href="contacto.html">Contacto</a>
+                <a href="galeria.html">Galería</a>
             </nav>
         </div>
     </header>
@@ -92,18 +93,35 @@
                 </div>
             </div>
         </section>
-        <section class="seccion-sermones" id="sermones-recientes">
-            <div class="contenedor">
-                <h2 class="titulo-seccion">Sermones Recientes</h2>
-                
-                <!-- ESTE ID RECIBIRÁ AUTOMÁTICAMENTE LOS ÚLTIMOS 3 SERMONES DE JS -->
-                <div id="contenedorUltimosSermones" class="sermones-lista"></div>
+            <section class="seccion-sermones" id="sermones-recientes">
+                    <div class="contenedor">
+                        <h2 class="titulo-seccion" id="titulo-video">Última Predicación</h2>
+                        <p style="text-align: center; color: #555; margin-bottom: 2em;">
+                            Sigue nuestra transmisión en directo todos los domingos a las 10:45 hrs. o revive la prédica más reciente.
+                        </p>
 
-                <div style="text-align: center; margin-top: 3em;">
-                    <a href="sermones.html" class="btn-principal">Ver Todos los Sermones</a>
-                </div>
-            </div>
-        </section>
+                        <!-- El iframe de abajo es el respaldo: se usa si todavía no existe data/videos.json -->
+                        <div class="fb-video-container" id="video-fb">
+                            <iframe
+                                src="https://www.facebook.com/plugins/video.php?href=https%3A%2F%2Fwww.facebook.com%2FIBCdeChile%2Fvideos%2F2529227700933596%2F&show_text=false&width=734"
+                                title="Última predicación"
+                                style="border:none;overflow:hidden"
+                                scrolling="no"
+                                frameborder="0"
+                                allowfullscreen="true"
+                                allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share">
+                            </iframe>
+                        </div>
+
+                        <div style="text-align: center; margin-top: 2.5em;">
+                            <a href="https://www.facebook.com/IBCdeChile/videos/" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver Historial en Facebook</a>
+                        </div>
+                    </div>
+             </section>
+
+
+
+
 
 <!-- Recuerda asegurarte de que index.html también tenga enlazado el script al final -->
 <script src="script.js"></script>
@@ -126,6 +144,22 @@
 
        <script src="script.js"></script>
 
- 
+     <script>
+            (async () => {
+                try {
+                    const r = await fetch('data/videos.json', { cache: 'no-store' });
+                    if (!r.ok) return;
+                    const v = await r.json();
+                    if (!v.url) return;
+
+                    const iframe = document.querySelector('#video-fb iframe');
+                    iframe.src = 'https://www.facebook.com/plugins/video.php?href='
+                        + encodeURIComponent(v.url) + '&show_text=false&width=734';
+
+                    document.getElementById('titulo-video').textContent =
+                        v.envivo ? '🔴 Transmisión en Vivo' : 'Última Predicación';
+                } catch (e) { /* si falla, queda el video de respaldo */ }
+            })();
+     </script>
 </body>
 </html>
