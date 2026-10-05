@@ -26,7 +26,7 @@
                 <span></span><span></span><span></span>
             </button>
             <nav class="navegacion" id="navegacionPrincipal">
-                <a href="quienes-somos.html">¿Quiénes Somos?</a>
+                <a href="quienes-somos.html">¿Quiénes somos?</a>
                 <a href="nuestra-fe.html">Nuestra fe</a>
                 <a href="sermones.html">Sermones</a>
                 <a href="galeria.html">Galería</a>
@@ -59,7 +59,7 @@
 
     <footer class="footer-principal">
         <div class="contenedor">
-            <p>Primera Iglesia Bíblica Cristiana de Chile | Yungay #940, Curicó, Chile.</p>
+            <p>Primera Iglesia Bíblica Cristiana de Chile | Yungay 940, Curicó, Chile.</p>
             <p>&copy; 2026. Soli Deo Gloria.</p>
         </div>
     </footer>
@@ -76,14 +76,14 @@
         const lbImg = document.getElementById('lightbox-img');
 
         try {
-            // Intenta buscar el archivo local con fotos personalizadas en el futuro
+            // Carga las fotografías obtenidas desde Facebook
             const r = await fetch('data/fotos.json', { cache: 'no-store' });
             if (!r.ok) throw new Error('sin datos');
             const data = await r.json();
             const fotos = data.fotos || [];
             if (!fotos.length) throw new Error('vacío');
 
-            // Si el archivo JSON local existe, reemplaza el iframe por la grilla personalizada de fotos
+            
             grid.innerHTML = '';
             fotos.forEach(f => {
                 const img = document.createElement('img');
