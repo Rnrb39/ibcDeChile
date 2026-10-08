@@ -4,46 +4,52 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Galería - Iglesia Bíblica Cristiana - Chile</title>
+    <meta name="description" content="Fotografías de las actividades y la vida de nuestra iglesia en Curicó, actualizadas desde Facebook.">
+    <link rel="canonical" href="https://ibcdechile.org/galeria.html">
+    <meta property="og:type" content="website">
+    <meta property="og:locale" content="es_CL">
+    <meta property="og:title" content="Galería - Iglesia Bíblica Cristiana - Chile">
+    <meta property="og:description" content="Fotografías de las actividades y la vida de nuestra iglesia en Curicó, actualizadas desde Facebook.">
+    <meta property="og:url" content="https://ibcdechile.org/galeria.html">
+    <meta property="og:image" content="https://ibcdechile.org/img/fachada-iglesia.png">
+
     <link rel="stylesheet" href="main.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400..700;1,400..700&family=Merriweather:wght@300;400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Lora:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Merriweather:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
+    <a class="saltar-contenido" href="#contenido">Saltar al contenido</a>
 
     <header class="header-principal">
-        <div class="contenedor">
-            <a href="index.html" class="identidad-header" title="Volver a la página de inicio">
-                <img src="img/logo.jpeg" alt="Logo de la Iglesia" class="logo-img">
-                <div class="header-texto">
-                    <p class="titulo-iglesia">Primera Iglesia Bíblica Cristiana de Chile</p>
-                    <p class="subtitulo-identidad">Bautista Reformada</p>
-                </div>
-            </a>
-            <button class="menu-hamburguesa" aria-label="Abrir menú" id="menuHamburguesa">
-                <span></span><span></span><span></span>
-            </button>
-            <nav class="navegacion" id="navegacionPrincipal">
-                <a href="quienes-somos.html">¿Quiénes somos?</a>
-                <a href="nuestra-fe.html">Nuestra fe</a>
-                <a href="sermones.html">Sermones</a>
-                <a href="galeria.html">Galería</a>
-                <a href="contacto.html">Contacto</a>
-            </nav>
-        </div>
-    </header>
+    <div class="contenedor">
+        <a href="index.html" class="identidad-header" title="Volver a la página de inicio">
+            <img src="img/logo.jpeg" alt="" class="logo-img" width="66" height="50">
+            <div class="header-texto"><p class="titulo-iglesia">Primera Iglesia Bíblica Cristiana de Chile</p><p class="subtitulo-identidad">Bautista Reformada</p></div>
+        </a>
+        <button class="menu-hamburguesa" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="navegacionPrincipal" id="menuHamburguesa"><span></span><span></span><span></span></button>
+        <nav class="navegacion" id="navegacionPrincipal" aria-label="Navegación principal">
+            <a href="quienes-somos.html">¿Quiénes somos?</a>
+            <a href="nuestra-fe.html">Nuestra fe</a>
+            <a href="sermones.html">Sermones</a>
+            <a href="galeria.html" aria-current="page">Galería</a>
+            <a href="contacto.html">Contacto</a>
+        </nav>
+    </div>
+</header>
 
-    <main>
+    <main id="contenido" tabindex="-1">
         <div class="page-header">
             <h1>Galería de Actividades</h1>
             <p>Momentos de la vida de nuestra iglesia</p>
         </div>
 
         <section class="contenedor seccion-galeria">
+            <noscript><p>Para ver la galería aquí, active JavaScript. También puede consultar las fotografías en Facebook mediante el enlace de abajo.</p></noscript>
             <div class="galeria-grid" id="galeria-grid" style="text-align: center;">
-                <p style="color: #555;">Cargando fotografías...</p>
+                <p class="galeria-mensaje" role="status">Cargando fotografías...</p>
             </div>
             <div style="text-align:center; margin-top:2em;">
                 <a href="https://www.facebook.com/IBCdeChile/photos" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver más en Facebook</a>
@@ -52,92 +58,23 @@
     </main>
 
     <!-- Visor ampliado -->
-    <div class="lightbox" id="lightbox" aria-hidden="true">
-        <button class="lightbox-cerrar" id="lightbox-cerrar" aria-label="Cerrar">&times;</button>
+    <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Fotografía ampliada" hidden>
+        <button class="lightbox-cerrar" id="lightbox-cerrar" type="button" aria-label="Cerrar fotografía">&times;</button>
         <img id="lightbox-img" alt="">
     </div>
 
     <footer class="footer-principal">
-        <div class="contenedor">
-            <p>Primera Iglesia Bíblica Cristiana de Chile | Yungay 940, Curicó, Chile.</p>
-            <p>&copy; 2026. Soli Deo Gloria.</p>
-        </div>
-    </footer>
+    <div class="contenedor footer-contenido">
+        <div><p class="footer-nombre">Primera Iglesia Bíblica Cristiana de Chile</p><p>Bautista Reformada · Yungay 940, Curicó, Chile.</p></div>
+        <nav aria-label="Enlaces del pie de página"><a href="index.html">Inicio</a><a href="contacto.html">Horarios y contacto</a><a href="sermones.html">Predicaciones</a></nav>
+        <p class="footer-cierre">&copy; 2026. Soli Deo Gloria.</p>
+    </div>
+</footer>
 
-    <a href="https://wa.me/+56985212609" target="_blank" class="whatsapp-flotante">
-        <i class="fab fa-whatsapp"></i>
+    <a href="https://wa.me/56985212609" target="_blank" rel="noopener noreferrer" class="whatsapp-flotante" aria-label="Contactar por WhatsApp (abre una nueva pestaña)" title="Contactar por WhatsApp">
+        <i class="fab fa-whatsapp" aria-hidden="true"></i>
     </a>
 
     <script src="script.js"></script>
-    <script>
-    (async () => {
-        const grid = document.getElementById('galeria-grid');
-        const lb = document.getElementById('lightbox');
-        const lbImg = document.getElementById('lightbox-img');
-
-        try {
-            // Carga las fotografías obtenidas desde Facebook
-            const r = await fetch('data/fotos.json', { cache: 'no-store' });
-            if (!r.ok) throw new Error('sin datos');
-            const data = await r.json();
-            const fotos = data.fotos || [];
-            if (!fotos.length) throw new Error('vacío');
-
-            
-            grid.innerHTML = '';
-            fotos.forEach(f => {
-                const img = document.createElement('img');
-                img.src = f.thumb || f.src;
-                img.alt = f.texto || 'Foto de actividad de la iglesia';
-                img.loading = 'lazy';
-                img.addEventListener('click', () => {
-                    lbImg.src = f.src;
-                    lb.classList.add('abierto');
-                });
-                grid.appendChild(img);
-            });
-       } catch (e) {
-    grid.innerHTML = `
-        <div style="
-            max-width: 520px;
-            margin: 20px auto;
-            padding: 30px 25px;
-            background: #f8f9fa;
-            border: 1px solid #e2e8f0;
-            border-radius: 12px;
-            text-align: center;
-        ">
-            <h3 style="margin-bottom: 12px; color: #333;">
-                Fotografías de nuestra iglesia
-            </h3>
-
-            <p style="color: #666; line-height: 1.5; margin-bottom: 22px;">
-                En este momento no pudimos cargar las fotografías directamente.
-                Puedes ver nuestras últimas actividades en Facebook.
-            </p>
-
-            <a
-                href="https://www.facebook.com/IBCdeChile/photos"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="btn-principal"
-            >
-                Ver fotografías en Facebook
-            </a>
-        </div>
-    `;
-}
-
-        const cerrar = () => lb.classList.remove('abierto');
-        if (lb) {
-            lb.addEventListener('click', e => { if (e.target !== lbImg) cerrar(); });
-            document.addEventListener('keydown', e => { if (e.key === 'Escape') cerrar(); });
-        }
-    })();
-    </script>
-    
-    <a href="index.html" class="boton-flotante">
-        Volver a Inicio
-    </a>
 </body>
 </html>

@@ -28,127 +28,165 @@ const sermones = [
     }
 ];
 
-// ==========================================
-// 3. RENDERIZADO DINÁMICO
-// ==========================================
-document.addEventListener('DOMContentLoaded', function() {
-    console.log("Cargando componentes...");
+const FACEBOOK_VIDEOS = 'https://www.facebook.com/IBCdeChile/videos/';
+const FACEBOOK_PHOTOS = 'https://www.facebook.com/IBCdeChile/photos';
+const escapar = (texto) => String(texto).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 
-    // A. MENÚ HAMBURGUESA
-    const menuToggle = document.getElementById('menuHamburguesa') || document.querySelector('.menu-hamburguesa');
-    const navegacion = document.getElementById('navegacionPrincipal') || document.querySelector('.navegacion');
-
-    if (menuToggle && navegacion) {
-        menuToggle.addEventListener('click', (e) => {
-            e.stopPropagation();
-            navegacion.classList.toggle('activo');
-            menuToggle.classList.toggle('activo');
-        });
-
-        document.addEventListener('click', (e) => {
-            if (!navegacion.contains(e.target) && !menuToggle.contains(e.target)) {
-                navegacion.classList.remove('activo');
-                menuToggle.classList.remove('activo');
-            }
-        });
+async function cargarVideo() {
+    const enlace = document.getElementById('video-facebook-link');
+    if (!enlace) return;
+    const estado = document.getElementById('video-estado');
+    const titulo = document.getElementById('video-titulo');
+    const descripcion = document.getElementById('video-descripcion');
+    try {
+        const respuesta = await fetch('data/videos.json', { cache: 'no-store' });
+        if (!respuesta.ok) throw new Error('No se pudo cargar el video');
+        const datos = await respuesta.json();
+        const url = new URL(datos.url);
+        if (url.protocol !== 'https:' || !['facebook.com', 'www.facebook.com', 'm.facebook.com'].includes(url.hostname)) throw new Error('Enlace no válido');
+        enlace.href = url.href;
+        const enVivo = datos.envivo === true;
+        estado.textContent = enVivo ? 'Transmisión en vivo' : 'Última predicación';
+        titulo.textContent = enVivo ? 'Acompáñenos en la transmisión' : 'Escucha la última predicación';
+        descripcion.textContent = enVivo ? 'Estamos transmitiendo nuestro culto. Puede acompañarnos desde Facebook.' : 'Accede a la grabación de nuestro culto desde Facebook.';
+        enlace.replaceChildren(document.createTextNode(enVivo ? 'Ver transmisión en Facebook ↗' : 'Ver predicación en Facebook ↗'));
+        const encabezado = document.getElementById('titulo-video');
+        if (encabezado) encabezado.textContent = enVivo ? 'Transmisión en vivo' : 'Última predicación';
+    } catch {
+        enlace.href = FACEBOOK_VIDEOS;
+        enlace.textContent = 'Ver videos en Facebook ↗';
+        estado.textContent = 'Predicaciones en Facebook';
+        titulo.textContent = 'Escucha nuestras predicaciones';
+        descripcion.textContent = 'Puede consultar nuestras transmisiones directamente en Facebook.';
     }
+}
 
-    // B. ACORDEÓN (DECLARACIÓN DE FE)
-    const acordeonTitulos = document.querySelectorAll('.acordeon-titulo');
-    acordeonTitulos.forEach(titulo => {
-        titulo.addEventListener('click', function() {
-            const itemActual = this.closest('.acordeon-item');
-            if (!itemActual) return;
-
-            const contenidoActual = itemActual.querySelector('.acordeon-contenido');
-            if (!contenidoActual) return;
-            
-            const estaActivo = itemActual.classList.contains('activo');
-
-            document.querySelectorAll('.acordeon-item.activo').forEach(otroItem => {
-                if (otroItem !== itemActual) {
-                    const otroContenido = otroItem.querySelector('.acordeon-contenido');
-                    otroItem.classList.remove('activo');
-                    if (otroContenido) otroContenido.style.maxHeight = '0';
-                }
-            });
-
-            if (!estaActivo) {
-                itemActual.classList.add('activo');
-                contenidoActual.style.maxHeight = contenidoActual.scrollHeight + "px";
-            } else {
-                itemActual.classList.remove('activo');
-                contenidoActual.style.maxHeight = "0";
-            }
-        });
+async function cargarGaleria() {
+    const grid = document.getElementById('galeria-grid');
+    const visor = document.getElementById('lightbox');
+    if (!grid || !visor) return;
+    const fotoAmpliada = document.getElementById('lightbox-img');
+    const cerrarBoton = document.getElementById('lightbox-cerrar');
+    let origen = null;
+    const fondo = [...document.body.children].filter(elemento => elemento !== visor && elemento.tagName !== 'SCRIPT');
+    const cerrar = () => {
+        if (visor.hidden) return;
+        visor.hidden = true;
+        document.body.classList.remove('visor-abierto');
+        fondo.forEach(elemento => { elemento.inert = false; });
+        fotoAmpliada.removeAttribute('src');
+        origen?.focus();
+    };
+    const abrir = (foto, boton, alt) => {
+        origen = boton;
+        fotoAmpliada.src = foto.src;
+        fotoAmpliada.alt = alt;
+        visor.hidden = false;
+        document.body.classList.add('visor-abierto');
+        fondo.forEach(elemento => { elemento.inert = true; });
+        cerrarBoton.focus();
+    };
+    cerrarBoton.addEventListener('click', cerrar);
+    visor.addEventListener('click', e => { if (e.target === visor) cerrar(); });
+    document.addEventListener('keydown', e => {
+        if (visor.hidden) return;
+        if (e.key === 'Escape') cerrar();
+        if (e.key === 'Tab') { e.preventDefault(); cerrarBoton.focus(); }
     });
+    try {
+        const respuesta = await fetch('data/fotos.json', { cache: 'no-store' });
+        if (!respuesta.ok) throw new Error('Sin datos');
+        const datos = await respuesta.json();
+        const fotos = Array.isArray(datos.fotos) ? datos.fotos : [];
+        if (!fotos.length) throw new Error('Sin fotografías');
+        grid.replaceChildren();
+        fotos.forEach((foto, i) => {
+            const boton = document.createElement('button');
+            boton.type = 'button';
+            boton.className = 'galeria-foto';
+            const alt = foto.texto || `Actividad de la iglesia, fotografía ${i + 1}`;
+            boton.setAttribute('aria-label', `Ampliar fotografía ${i + 1}: ${alt}`);
+            const imagen = document.createElement('img');
+            imagen.src = foto.thumb || foto.src;
+            imagen.alt = alt;
+            imagen.loading = i < 4 ? 'eager' : 'lazy';
+            imagen.decoding = 'async';
+            imagen.width = 400;
+            imagen.height = 400;
+            imagen.addEventListener('error', () => {
+                boton.replaceChildren(document.createTextNode('Fotografía no disponible'));
+                boton.disabled = true;
+            });
+            boton.appendChild(imagen);
+            boton.addEventListener('click', () => abrir(foto, boton, alt));
+            grid.appendChild(boton);
+        });
+    } catch {
+        grid.innerHTML = `<div class="galeria-mensaje galeria-error" role="status"><h2>Fotografías de nuestra iglesia</h2><p>En este momento no pudimos cargar las fotografías. Puede ver nuestras actividades en Facebook.</p><a href="${FACEBOOK_PHOTOS}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver fotografías en Facebook</a></div>`;
+    }
+}
 
-    // C. CARGAR LISTAS DE REPRODUCCIÓN (Página sermones.html)
+document.addEventListener('DOMContentLoaded', () => {
+    const botonMenu = document.getElementById('menuHamburguesa');
+    const navegacion = document.getElementById('navegacionPrincipal');
+    if (botonMenu && navegacion) {
+        const establecerMenu = abierto => {
+            navegacion.classList.toggle('activo', abierto);
+            botonMenu.classList.toggle('activo', abierto);
+            botonMenu.setAttribute('aria-expanded', String(abierto));
+            botonMenu.setAttribute('aria-label', abierto ? 'Cerrar menú' : 'Abrir menú');
+        };
+        botonMenu.addEventListener('click', () => establecerMenu(botonMenu.getAttribute('aria-expanded') !== 'true'));
+        navegacion.addEventListener('click', e => { if (e.target.closest('a')) establecerMenu(false); });
+        document.addEventListener('click', e => {
+            if (!navegacion.contains(e.target) && !botonMenu.contains(e.target)) establecerMenu(false);
+        });
+        document.addEventListener('keydown', e => {
+            if (e.key === 'Escape' && botonMenu.getAttribute('aria-expanded') === 'true') {
+                establecerMenu(false);
+                botonMenu.focus();
+            }
+        });
+        const escritorio = matchMedia('(min-width: 901px)');
+        escritorio.addEventListener('change', () => establecerMenu(false));
+    }
+    const titulos = [...document.querySelectorAll('.acordeon-titulo')];
+    const establecerCapitulo = (boton, abierto) => {
+        boton.setAttribute('aria-expanded', String(abierto));
+        document.getElementById(boton.getAttribute('aria-controls')).hidden = !abierto;
+    };
+   titulos.forEach(titulo => titulo.addEventListener('click', () => {
+        const posicionAnterior = titulo.getBoundingClientRect().top;
+        const abrir = titulo.getAttribute('aria-expanded') !== 'true';
+
+        titulos.forEach(otro => establecerCapitulo(otro, false));
+        establecerCapitulo(titulo, abrir);
+
+        const posicionNueva = titulo.getBoundingClientRect().top;
+
+        window.scrollBy({
+            top: posicionNueva - posicionAnterior,
+            behavior: 'instant'
+        });
+    }));
     const contenedorPlaylists = document.getElementById('contenedorPlaylists');
-    if (contenedorPlaylists) {
-        contenedorPlaylists.innerHTML = playlists.map(serie => `
-            <article class="sermon-tarjeta" style="border-top: 4px solid var(--color-primary, #1B2A4A);">
-                <span style="background:#1B2A4A; color:#fff; padding:3px 8px; border-radius:3px; font-size:0.8em; font-weight:bold; display:inline-block; margin-bottom:8px;">
-                    SERIE COMPLETA (${serie.cantidadMensajes})
-                </span>
-                <h3 class="titulo-sermon-tarjeta">${serie.titulo}</h3>
-                <p class="sermon-referencia" style="margin-bottom: 12px;">${serie.descripcion}</p>
-                
-                <div class="video-responsive" style="margin: 10px 0;">
-                    <iframe 
-                        src="https://www.youtube-nocookie.com/embed/videoseries?list=${serie.playlistId}" 
-                        title="${serie.titulo}" 
-                        frameborder="0" 
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
-                        allowfullscreen>
-                    </iframe>
-                </div>
-
-                <a href="https://www.youtube.com/playlist?list=${serie.playlistId}" target="_blank" rel="noopener" class="btn-principal" style="display:block; text-align:center; margin-top:10px;">
-                    Ver Serie en YouTube
-                </a>
-            </article>
-        `).join('');
-    }
-
-    // D. CARGAR TODOS LOS SERMONES (Página sermones.html)
+    if (contenedorPlaylists) contenedorPlaylists.innerHTML = playlists.map(serie => `
+        <article class="sermon-tarjeta">
+            <p class="sermon-fecha">SERIE COMPLETA · ${escapar(serie.cantidadMensajes)}</p>
+            <h3 class="titulo-sermon-tarjeta">${escapar(serie.titulo)}</h3>
+            <p class="sermon-referencia">${escapar(serie.descripcion)}</p>
+            <div class="video-responsive"><iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(serie.playlistId)}" title="${escapar(serie.titulo)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            <a href="https://www.youtube.com/playlist?list=${encodeURIComponent(serie.playlistId)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver serie en YouTube ↗</a>
+        </article>`).join('');
     const contenedorSermones = document.getElementById('contenedorSermones');
-    if (contenedorSermones) {
-        contenedorSermones.innerHTML = sermones.map(sermon => `
-            <article class="sermon-tarjeta">
-                <p class="sermon-fecha">${sermon.fecha}</p>
-                <h3 class="titulo-sermon-tarjeta">${sermon.titulo}</h3>
-                <p class="sermon-referencia">${sermon.pasaje}</p>
-                
-                <a href="https://www.youtube.com/watch?v=${sermon.youtubeId}" target="_blank" rel="noopener">
-                    <img src="https://img.youtube.com/vi/${sermon.youtubeId}/mqdefault.jpg" alt="${sermon.titulo}" style="width:100%; border-radius:4px; margin:10px 0;">
-                </a>
-
-                <a href="https://www.youtube.com/watch?v=${sermon.youtubeId}" target="_blank" rel="noopener" class="btn-principal btn-reproducir">
-                    Ver Sermón
-                </a>
-            </article>
-        `).join('');
-    }
-
-    // E. CARGAR SÓLO LOS ÚLTIMOS 3 SERMONES (Página principal index.html)
-    const contenedorUltimos = document.getElementById('contenedorUltimosSermones');
-    if (contenedorUltimos) {
-        const ultimosSermones = sermones.slice(0, 3);
-        contenedorUltimos.innerHTML = ultimosSermones.map(sermon => `
-            <article class="sermon-tarjeta">
-                <p class="sermon-fecha">${sermon.fecha}</p>
-                <h3 class="titulo-sermon-tarjeta">${sermon.titulo}</h3>
-                <p class="sermon-referencia">${sermon.pasaje}</p>
-                
-                <a href="https://www.youtube.com/watch?v=${sermon.youtubeId}" target="_blank" rel="noopener">
-                    <img src="https://img.youtube.com/vi/${sermon.youtubeId}/mqdefault.jpg" alt="${sermon.titulo}" style="width:100%; border-radius:4px; margin:10px 0;">
-                </a>
-
-                <a href="https://www.youtube.com/watch?v=${sermon.youtubeId}" target="_blank" rel="noopener" class="btn-principal btn-reproducir">
-                    Ver Sermón
-                </a>
-            </article>
-        `).join('');
-    }
+    if (contenedorSermones) contenedorSermones.innerHTML = sermones.map(sermon => `
+        <article class="sermon-tarjeta">
+            <p class="sermon-fecha">${escapar(sermon.fecha)}</p>
+            <h3 class="titulo-sermon-tarjeta">${escapar(sermon.titulo)}</h3>
+            <p class="sermon-referencia">${escapar(sermon.pasaje)}</p>
+            <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/${encodeURIComponent(sermon.youtubeId)}/mqdefault.jpg" alt="Ver ${escapar(sermon.titulo)}" loading="lazy" width="320" height="180" style="width:100%; height:auto; margin:10px 0 20px;"></a>
+            <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver sermón ↗</a>
+        </article>`).join('');
+    cargarVideo();
+    cargarGaleria();
 });
