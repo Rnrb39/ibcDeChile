@@ -15,6 +15,13 @@ const playlists = [
 // ==========================================
 const sermones = [
     {
+        titulo: "Problemas en medio de la Iglesia",
+        pasaje: "Colosenses 1:1–2",
+        serie: "Colosenses",
+        numeroMensaje: 1,
+        videoUrl: "https://videos.ibcdechile.org/colosenses-01.mp4"
+    },
+    {
         titulo: "De la desesperanza a la Esperanza",
         pasaje: "Rut 1:15-18",
         fecha: "02 de Marzo, 2025",
@@ -181,11 +188,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const contenedorSermones = document.getElementById('contenedorSermones');
     if (contenedorSermones) contenedorSermones.innerHTML = sermones.map(sermon => `
         <article class="sermon-tarjeta">
-            <p class="sermon-fecha">${escapar(sermon.fecha)}</p>
+            ${sermon.fecha ? `<p class="sermon-fecha">${escapar(sermon.fecha)}</p>` : ''}
+            ${sermon.serie && sermon.numeroMensaje != null ? `<p class="sermon-serie">Serie ${escapar(sermon.serie)} · Mensaje ${escapar(sermon.numeroMensaje)}</p>` : ''}
             <h3 class="titulo-sermon-tarjeta">${escapar(sermon.titulo)}</h3>
             <p class="sermon-referencia">${escapar(sermon.pasaje)}</p>
-            <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/${encodeURIComponent(sermon.youtubeId)}/mqdefault.jpg" alt="Ver ${escapar(sermon.titulo)}" loading="lazy" width="320" height="180" style="width:100%; height:auto; margin:10px 0 20px;"></a>
-            <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver sermón ↗</a>
+            ${sermon.videoUrl ? `
+                <div class="video-responsive sermon-video"><video controls playsinline preload="none" aria-label="${escapar(sermon.titulo)}"><source src="${escapar(sermon.videoUrl)}" type="video/mp4">Su navegador no admite la reproducción de video. Use el enlace Abrir video.</video></div>
+                <a href="${escapar(sermon.videoUrl)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Abrir video <span aria-hidden="true">↗</span></a>
+            ` : sermon.youtubeId ? `
+                <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/${encodeURIComponent(sermon.youtubeId)}/mqdefault.jpg" alt="Ver ${escapar(sermon.titulo)}" loading="lazy" width="320" height="180" style="width:100%; height:auto; margin:10px 0 20px;"></a>
+                <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver sermón ↗</a>
+            ` : ''}
         </article>`).join('');
     cargarVideo();
     cargarGaleria();

@@ -115,11 +115,13 @@ p { margin: 0 0 1rem; }
 .seccion-playlists { padding: 56px 0 !important; background: transparent !important; }
 .sermones-lista { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 320px), 1fr)); gap: 24px; }
 .sermon-tarjeta { background: #fff; border: 1px solid var(--color-border); border-top: 3px solid var(--color-accent); padding: 28px; }
-.sermon-fecha { font-size: .8rem; color: var(--color-secondary); }
+.sermon-fecha, .sermon-serie { font-size: .8rem; color: var(--color-secondary); }
 .titulo-sermon-tarjeta { font-size: 1.3rem; }
 .sermon-referencia { color: var(--color-muted); }
 .video-responsive { width: 100%; aspect-ratio: 16 / 9; margin: 22px 0; background: #e9ecf2; }
 .video-responsive iframe { width: 100%; height: 100%; border: 0; }
+.sermon-video { background: #000; }
+.sermon-video video { display: block; width: 100%; height: 100%; object-fit: contain; }
 .documento-largo { max-width: 850px; margin: auto; }
 .acordeon-item { margin-bottom: 12px; border: 1px solid var(--color-border); }
 .acordeon-encabezado { margin: 0; font-size: 1rem; }
