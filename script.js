@@ -11,16 +11,36 @@ const playlists = [
 ];
 
 // ==========================================
-// 2. BASE DE DATOS DE SERMONES INDIVIDUALES
+// 2. MENSAJES DE COLOSENSES Y SERMONES INDIVIDUALES
 // ==========================================
-const sermones = [
+const mensajesColosenses = [
     {
         titulo: "Problemas en medio de la Iglesia",
         pasaje: "Colosenses 1:1–2",
         serie: "Colosenses",
         numeroMensaje: 1,
+        predicador: "Pastor Sergio Arias Cáceres",
+        fecha: "2026-08-02",
+        fechaEstimada: true,
         videoUrl: "https://videos.ibcdechile.org/colosenses-01.mp4"
     },
+    { numeroMensaje: 2, titulo: "¿Sabes a dónde vas? ¿Sabes cuál es tu esperanza?", pasaje: "Colosenses 1:3–8", fecha: "2026-08-09", fechaEstimada: true },
+    { numeroMensaje: 3, titulo: "La solución para el error", pasaje: "Colosenses 1:9–10", fecha: "2026-08-16", fechaEstimada: true },
+    { numeroMensaje: 4, titulo: "La victoria de la fe", pasaje: "Colosenses 1:11–14", fecha: "2026-08-23", fechaEstimada: true },
+    { numeroMensaje: 5, titulo: "La supremacía del Señor", pasaje: "Colosenses 1:15–17", fecha: "2026-08-30", fechaEstimada: true },
+    { numeroMensaje: 6, titulo: "Cristo, cabeza de todo", pasaje: "Colosenses 1:18–20", fecha: "2026-09-06" },
+    { numeroMensaje: 7, titulo: "¿Somos amigos o enemigos de Dios?", pasaje: "Colosenses 1:20–23", fecha: "2026-09-13" },
+    { numeroMensaje: 8, titulo: "La preocupación por la iglesia, deber de todos", pasaje: "Colosenses 1:24–29", fecha: "2026-09-20" },
+    { numeroMensaje: 9, titulo: "La lucha por la iglesia", pasaje: "Colosenses 2:1–5", fecha: "2026-09-27" },
+    { numeroMensaje: 10, titulo: "Soportando la presión", pasaje: "Colosenses 2:6–7", fecha: "2026-10-04" }
+].map(mensaje => ({
+    serie: "Colosenses",
+    predicador: "Pastor Sergio Arias Cáceres",
+    videoUrl: `https://videos.ibcdechile.org/colosenses-${String(mensaje.numeroMensaje).padStart(2, '0')}.mp4`,
+    ...mensaje
+}));
+
+const sermones = [
     {
         titulo: "De la desesperanza a la Esperanza",
         pasaje: "Rut 1:15-18",
@@ -38,6 +58,46 @@ const sermones = [
 const FACEBOOK_VIDEOS = 'https://www.facebook.com/IBCdeChile/videos/';
 const FACEBOOK_PHOTOS = 'https://www.facebook.com/IBCdeChile/photos';
 const escapar = (texto) => String(texto).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+// Las fechas son días de calendario: no convertirlas a una zona horaria.
+function fechaEnEspanol(fecha) {
+    const [ano, mes, dia] = fecha.split('-').map(Number);
+    const meses = ['enero', 'febrero', 'marzo', 'abril', 'mayo', 'junio', 'julio', 'agosto', 'septiembre', 'octubre', 'noviembre', 'diciembre'];
+    return `${dia} de ${meses[mes - 1]} de ${ano}`;
+}
+
+function cargarColosenses() {
+    const contenedor = document.getElementById('contenedorColosenses');
+    if (!contenedor) return;
+    contenedor.innerHTML = `
+        <p class="sermon-serie">Serie expositiva · 10 mensajes</p>
+        <h3 class="titulo-sermon-tarjeta">Colosenses</h3>
+        <label class="selector-mensaje-label" for="mensajeColosenses">Seleccionar mensaje</label>
+        <select class="selector-mensaje" id="mensajeColosenses" aria-controls="detalleColosenses videoColosenses">
+            ${mensajesColosenses.map(mensaje => `<option value="${mensaje.numeroMensaje}">${mensaje.numeroMensaje}. ${escapar(mensaje.titulo)}</option>`).join('')}
+        </select>
+        <div id="detalleColosenses" class="detalle-mensaje" aria-live="polite" aria-atomic="true"></div>
+        <div class="video-responsive sermon-video"><video id="videoColosenses" controls playsinline preload="none"><source type="video/mp4">Su navegador no admite la reproducción de video. Use el enlace Abrir video.</video></div>
+        <a id="enlaceColosenses" target="_blank" rel="noopener noreferrer" class="btn-principal">Abrir video <span aria-hidden="true">↗</span></a>`;
+    const selector = document.getElementById('mensajeColosenses');
+    const video = document.getElementById('videoColosenses');
+    const mostrarMensaje = () => {
+        const mensaje = mensajesColosenses.find(item => item.numeroMensaje === Number(selector.value));
+        video.pause();
+        video.querySelector('source').src = mensaje.videoUrl;
+        video.setAttribute('aria-label', `Mensaje ${mensaje.numeroMensaje}: ${mensaje.titulo}`);
+        video.load();
+        document.getElementById('detalleColosenses').innerHTML = `
+            <p class="sermon-serie">Serie Colosenses · Mensaje ${mensaje.numeroMensaje}</p>
+            <h4>${escapar(mensaje.titulo)}</h4>
+            <p class="sermon-referencia">${escapar(mensaje.pasaje)}</p>
+            <p class="sermon-predicador">${escapar(mensaje.predicador)}</p>
+            <p class="sermon-fecha"><time datetime="${mensaje.fecha}">${fechaEnEspanol(mensaje.fecha)}</time>${mensaje.fechaEstimada ? ' · Fecha estimada' : ''}</p>`;
+        document.getElementById('enlaceColosenses').href = mensaje.videoUrl;
+    };
+    selector.addEventListener('change', mostrarMensaje);
+    mostrarMensaje();
+}
 
 async function cargarVideo() {
     const enlace = document.getElementById('video-facebook-link');
@@ -185,6 +245,7 @@ document.addEventListener('DOMContentLoaded', () => {
             <div class="video-responsive"><iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(serie.playlistId)}" title="${escapar(serie.titulo)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
             <a href="https://www.youtube.com/playlist?list=${encodeURIComponent(serie.playlistId)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver serie en YouTube ↗</a>
         </article>`).join('');
+    cargarColosenses();
     const contenedorSermones = document.getElementById('contenedorSermones');
     if (contenedorSermones) contenedorSermones.innerHTML = sermones.map(sermon => `
         <article class="sermon-tarjeta">
