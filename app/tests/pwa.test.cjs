@@ -25,7 +25,7 @@ function workerHarness({offline = false, hang = false, quota = false, status = 2
     self: {registration:{scope}, addEventListener:(name, fn) => events[name] = fn, skipWaiting:async()=>{observed.skipped++;}},
     caches: {
       open: async name => {observed.cacheName=name;return cache;},
-      keys: async () => ['ibc-pwa-/app/-v2','ibc-pwa-/app/-v3','public-site-cache','ibc-pwa-/other-app/-v1'],
+      keys: async () => ['ibc-pwa-/app/-v4','ibc-pwa-/app/-v5','public-site-cache','ibc-pwa-/other-app/-v1'],
       delete: async name => observed.deleted.push(name)
     },
     fetch: async (request, options) => {
@@ -73,7 +73,7 @@ test('installation revalidates shell; cleanup deletes only this app old cache', 
   }
   assert.ok(harness.observed.installed.some(request=>request.url===scope+'pwa.js'));
   await harness.lifecycle('activate');
-  assert.deepEqual(harness.observed.deleted,['ibc-pwa-/app/-v2']);
+  assert.deepEqual(harness.observed.deleted,['ibc-pwa-/app/-v4']);
 });
 
 test('worker never intercepts R2, other pages, range requests or non-GET', () => {

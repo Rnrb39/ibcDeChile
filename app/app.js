@@ -33,7 +33,7 @@ function selectSermon(item, moveFocus = false) {
   }
   const isSermon = item.category === 'predicaciones';
   document.getElementById('player-heading').textContent = isSermon
-    ? (item.id === latestId && confirmedDate(item) ? 'Último sermón' : 'Sermón seleccionado')
+    ? (item.id === latestId && confirmedDate(item) ? 'Último sermón' : 'Ver predicación')
     : schoolCategories[item.category];
   document.getElementById('sermon-series').textContent = [item.series, item.number ? `Mensaje ${item.number}` : ''].filter(Boolean).join(' · ');
   document.getElementById('sermon-title').textContent = item.title;
@@ -52,7 +52,7 @@ function selectSermon(item, moveFocus = false) {
     document.getElementById('sermons-section').open = false;
     document.getElementById('older-sermons').open = false;
     document.getElementById('player-heading').focus();
-    document.getElementById('player-heading').scrollIntoView({ block: 'start' });
+    document.getElementById('sermon-content').scrollIntoView({ block: 'start' });
   }
 }
 

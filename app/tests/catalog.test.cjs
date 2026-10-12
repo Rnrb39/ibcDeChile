@@ -74,7 +74,7 @@ test('real catalog shows five sermons and five collapsed older sermons', async (
 test('five or fewer sermons need no older toggle; unknown dates remain playable', async () => {
   const {ids,player} = await interfaceWith(catalog.sermons.slice(0,3));
   assert.equal(ids['older-sermons'].hidden,true);
-  assert.equal(ids['player-heading'].textContent,'Sermón seleccionado');
+  assert.equal(ids['player-heading'].textContent,'Ver predicación');
   const choice=ids['sermon-list'].children[0].children[0];
   assert.match(choice.children[1].textContent,/Fecha por confirmar/);
   choice.click(); ids['play-button'].click();
