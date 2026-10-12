@@ -1,0 +1,79 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#183d35">
+  <meta name="description" content="Predicaciones de IBC de Chile. Escucha y mira los mensajes de nuestra iglesia en un solo lugar.">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="IBC de Chile">
+  <title>IBC de Chile · Predicaciones</title>
+  <link rel="manifest" href="manifest.webmanifest" type="application/manifest+json">
+  <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
+  <link rel="icon" href="icons/icon-192.png" type="image/png">
+  <link rel="stylesheet" href="app.css">
+  <script src="catalog-utils.js" defer></script>
+  <script src="app.js" defer></script>
+  <script src="pwa.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#contenido">Ir al contenido</a>
+  <header class="brand">
+    <img src="icons/icon-192.png" width="56" height="56" alt="">
+    <div><p class="brand-name">IBC de Chile</p><p class="brand-subtitle">Juntos en la Palabra</p></div>
+    <span class="preview-label">Versión de prueba</span>
+  </header>
+  <main id="contenido" tabindex="-1">
+    <section class="sermon" aria-labelledby="player-heading">
+      <div class="section-top"><p class="eyebrow">PARA ESCUCHAR Y COMPARTIR</p><h1 id="player-heading" tabindex="-1">Último sermón</h1></div>
+      <p id="catalog-status" class="status" role="status">Cargando las predicaciones…</p>
+      <div id="sermon-content" hidden>
+        <div class="video-frame"><video id="player" controls playsinline preload="metadata" aria-labelledby="sermon-title">Tu navegador no permite reproducir este video.</video></div>
+        <div class="sermon-body">
+          <p id="sermon-series" class="eyebrow"></p>
+          <h2 id="sermon-title"></h2>
+          <p id="sermon-passage" class="passage"></p>
+          <p id="sermon-meta" class="metadata"></p>
+          <button id="play-button" class="primary-button" type="button">▶ Reproducir sermón</button>
+          <p id="playback-status" class="status" role="status"></p>
+          <button id="retry-video" class="secondary-button" type="button" hidden>Volver a cargar el video</button>
+          <p id="latest-note" class="hint">El mensaje más reciente disponible en este catálogo.</p>
+          <details id="transcript" hidden><summary>Leer el mensaje</summary><div id="transcript-text" class="transcript"></div></details>
+        </div>
+      </div>
+      <button id="retry-catalog" class="secondary-button" type="button" hidden>Volver a cargar las predicaciones</button>
+      <noscript><p>Activa JavaScript para ver el catálogo y reproducir las predicaciones.</p></noscript>
+    </section>
+
+    <nav class="sections" aria-label="Más enseñanzas">
+      <details id="sermons-section" class="section-card">
+        <summary><span class="section-icon" aria-hidden="true">▷</span><span>Predicaciones y series</span><span class="chevron" aria-hidden="true">+</span></summary>
+        <div class="section-content">
+          <h2>Colosenses</h2>
+          <p class="hint">Elige un mensaje para verlo en el reproductor de arriba.</p>
+          <ol id="sermon-list" class="sermon-list"></ol>
+          <details id="older-sermons" class="older-recordings" hidden>
+            <summary>Ver sermones anteriores</summary>
+            <ol id="older-sermon-list" class="sermon-list"></ol>
+          </details>
+        </div>
+      </details>
+      <details class="section-card">
+        <summary><span class="section-icon" aria-hidden="true">▤</span><span>Escuela dominical</span><span class="chevron" aria-hidden="true">+</span></summary>
+        <div class="section-content school-options">
+          <details class="school-option"><summary>Catecismo y confesión</summary><div id="catecismo-confesion-recordings"><p>Próximamente estarán disponibles las grabaciones</p></div></details>
+          <details class="school-option"><summary>Taller bíblico</summary><div id="taller-biblico-recordings"><p>Próximamente estarán disponibles las grabaciones</p></div></details>
+        </div>
+      </details>
+    </nav>
+    <p id="connection-status" class="connection-status" role="status" hidden>Sin conexión. Puedes consultar los mensajes guardados, pero necesitas Internet para reproducir los videos.</p>
+    <aside id="update-notice" class="update-notice" aria-label="Actualización disponible" hidden>
+      <p role="status">Hay una nueva versión disponible. Puedes actualizar cuando termines de ver el video.</p>
+      <button id="update-app" class="secondary-button" type="button">Actualizar aplicación</button>
+      <p class="hint">Al actualizar se recargará la aplicación.</p>
+    </aside>
+    <details class="install-help"><summary>Cómo guardar esta aplicación en tu teléfono</summary><p><strong>Android:</strong> abre el menú de Chrome y elige «Instalar aplicación» o «Agregar a pantalla principal».</p><p><strong>iPhone:</strong> abre esta página en Safari, toca Compartir y luego «Agregar a inicio».</p><p>Necesitas conexión a Internet para ver los videos.</p></details>
+  </main>
+  <footer>Primera Iglesia Bíblica Cristiana de Chile<br><span>Una iglesia centrada en Jesucristo.</span></footer>
+</body>
+</html>
