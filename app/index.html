@@ -13,6 +13,7 @@
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="stylesheet" href="app.css">
   <script src="catalog-utils.js" defer></script>
+  <script src="playback-progress.js" defer></script>
   <script src="app.js" defer></script>
   <script src="pwa.js" defer></script>
 </head>
@@ -26,15 +27,27 @@
     <section class="sermon" aria-labelledby="player-heading">
       <div class="section-top"><p class="eyebrow">PARA ESCUCHAR Y COMPARTIR</p><h1 id="player-heading" class="visually-hidden" tabindex="-1">Último sermón</h1></div>
       <p id="catalog-status" class="status" role="status">Cargando las predicaciones…</p>
+      <aside id="resume-panel" class="resume-panel" aria-labelledby="resume-heading" hidden>
+        <h2 id="resume-heading">Continuar escuchando</h2>
+        <p id="resume-title"></p>
+        <button id="resume-play" class="primary-button" type="button" aria-controls="player">Continuar</button>
+        <button id="restart-play" class="secondary-button" type="button" aria-controls="player">Escuchar desde el principio</button>
+      </aside>
       <div id="sermon-content" hidden>
         <div class="video-frame"><video id="player" controls playsinline preload="metadata" aria-labelledby="sermon-title">Tu navegador no permite reproducir este video.</video></div>
         <div class="sermon-body">
           <p id="sermon-series" class="eyebrow"></p>
-          <h2 id="sermon-title"></h2>
+          <h2 id="sermon-title" tabindex="-1"></h2>
           <p id="sermon-passage" class="passage"></p>
           <p id="sermon-meta" class="metadata"></p>
           <button id="play-button" class="primary-button" type="button">▶ Reproducir sermón</button>
+          <div class="seek-controls" role="group" aria-label="Moverse por la predicación">
+            <button id="seek-back" class="secondary-button" type="button" aria-controls="player" disabled>Retroceder 15 segundos</button>
+            <button id="seek-forward" class="secondary-button" type="button" aria-controls="player" disabled>Avanzar 15 segundos</button>
+          </div>
+          <p id="seek-status" class="status" role="status"></p>
           <p id="playback-status" class="status" role="status"></p>
+          <p id="progress-status" class="hint" role="status"></p>
           <button id="retry-video" class="secondary-button" type="button" hidden>Volver a cargar el video</button>
           <p id="latest-note" class="hint">El mensaje más reciente disponible en este catálogo.</p>
           <details id="transcript" hidden><summary>Leer el mensaje</summary><div id="transcript-text" class="transcript"></div></details>

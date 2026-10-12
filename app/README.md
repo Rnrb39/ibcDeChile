@@ -83,4 +83,41 @@ La primera versión fue probada satisfactoriamente en Android por el usuario. Pa
 
 Repetir en el teléfono: abrir los cinco sermones recientes y desplegar/contraer los anteriores; elegir uno con «Fecha por confirmar» y reproducir/pausar; abrir ambas categorías de Escuela dominical y comprobar el mensaje vacío; probar orientación vertical/horizontal, pantalla completa y botones sin desplazamiento horizontal. Si se conserva una versión anterior, cerrar las pestañas y la aplicación instalada y volver a abrir con conexión para activar el nuevo service worker (caché v2).
 
-Estado: solo trabajo local, pendiente de revisión. Sin commits, push ni despliegues para esta versión.
+## Segunda etapa, fase 1: controles y continuidad de escucha
+
+La primera versión está publicada. Esta fase permanece únicamente local, en `codex/pwa-fase1-continuidad`, pendiente de revisión y sin commit, push, Pull Request ni despliegue.
+
+- Se conservan el catálogo existente, las categorías y el reproductor HTML5. No se conecta todavía el catálogo dinámico ni se añaden API experimentales para llamadas.
+- Botones grandes «Retroceder 15 segundos» y «Avanzar 15 segundos», disponibles cuando el video tiene metadatos válidos. Se limitan al inicio/final sin iniciar ni pausar la reproducción. En pantallas pequeñas se apilan.
+- `playback-progress.js` guarda una sola reproducción en `localStorage`, con la clave `ibc-pwa:last-playback:v1`: ID, posición en segundos, duración, versión del video y fecha UTC. No hay cuentas, cookies nuevas ni envío de este progreso a un servidor.
+- El catálogo actual no declara `videoVersion`; se utiliza `url:<URL existente>` como identidad de versión. Una revisión explícita futura tendrá prioridad. Cambiar la URL invalida el progreso; también se comprueba un cambio de duración superior a dos segundos. Reemplazar el archivo por otro con la misma URL y duración no puede detectarse con los metadatos actuales; al coordinar el catálogo público se deberá proporcionar una revisión real del video.
+- Desde 30 segundos de avance y antes de los últimos 30 segundos, se muestran el título y los botones «Continuar desde MM:SS» y «Escuchar desde el principio». No se reproduce automáticamente al abrir o volver a cargar la aplicación.
+- Se guarda cada diez segundos mientras se reproduce, mediante eventos del reproductor y un temporizador, además de pausa, cambios de predicación, `pagehide` y ocultación de la página. **La ocultación solo guarda; nunca pausa**, para conservar el comportamiento de pantalla apagada ya comprobado en el Samsung.
+- Al cambiar de video se guarda primero el contenido saliente. Seleccionar un mensaje sin reproducirlo no reemplaza la última escucha. Las restauraciones pendientes se cancelan al cambiar de selección.
+- `ended` o llegar a los últimos 30 segundos elimina la continuidad del mensaje terminado. Los registros caducan a los 90 días y se limpian si tienen datos inválidos, no corresponden a un registro del catálogo o cambió la versión del video.
+- Si el almacenamiento falla, se muestra un aviso y los videos siguen funcionando. La continuidad tras cerrar la aplicación no se puede asegurar cuando el navegador bloquea o elimina sus datos.
+- Al seleccionar un mensaje, el foco pasa al título visible. Se conservan las etiquetas del reproductor y los controles nativos.
+- La caché de interfaz pasa a v6 y añade el nuevo módulo; no guarda videos ni borra el progreso de `localStorage`. El aviso de actualización conserva su comportamiento voluntario.
+- Las capturas `tests/preview-*.png` se conservan localmente y están excluidas mediante `tests/.gitignore`.
+
+### Pruebas de esta fase
+
+Ejecutar desde la raíz del repositorio:
+
+```text
+node --test app/tests/catalog.test.cjs app/tests/pwa.test.cjs app/tests/progress.test.cjs app/tests/categories-progress.test.cjs
+```
+
+Las pruebas nuevas verifican los límites de 30 segundos, caducidad de 90 días, datos corruptos, errores de lectura/escritura/borrado, versiones, cambios de mensaje, posiciones fuera de rango, restauración tras abrir de nuevo, finalización, eventos en segundo plano sin pausa y conservación del punto ante errores de reproducción.
+
+`categories-progress.test.cjs` verifica continuidad, inicio desde cero y ±15 segundos en Predicaciones, Catecismo y confesión y Taller bíblico; incluye los seis cambios entre categorías, las grabaciones anteriores de Escuela Dominical y fallos de almacenamiento. Los datos de Escuela Dominical son ficticios y solo viven en esta prueba. El reproductor se simula: no se descargan videos ni se modifica el catálogo público. Seleccionar otra grabación no reproduce por sí solo; los botones explícitos de reproducción conservan su comportamiento actual.
+
+### Prueba local desde Samsung
+
+1. Mantener Apache de XAMPP activo y conectar PC y teléfono a la misma red Wi-Fi. Abrir en el navegador del Samsung `http://IP-DEL-PC/ibcDeChile/app/`, usando la IPv4 del PC obtenida con `ipconfig`. El `localhost` del teléfono no apunta al PC.
+2. Reproducir un mensaje; probar ±15 segundos y avanzar más de 30 segundos. Pausar y comprobar ambos botones de continuidad y el título correcto.
+3. Cerrar la pestaña y volver a abrir exactamente la misma URL. Debe aparecer el punto guardado y no sonar nada. Probar «Continuar» y después «Escuchar desde el principio».
+4. Cambiar de mensaje y comprobar que se guarda la última reproducción, sin confundir IDs. Acercarse a los últimos 30 segundos y comprobar que no se ofrece continuar desde el final.
+5. Reproducir, bloquear la pantalla y escuchar unos minutos. Al regresar, pausar y comprobar el punto. También revisar la interfaz en vertical/horizontal y con TalkBack.
+
+La URL local por IP usa HTTP: permite probar controles y almacenamiento, pero no instala/actualiza el service worker como la URL pública HTTPS. Es otro origen, por lo que su progreso no se comparte con la PWA pública instalada. La actualización de la versión instalada y las pruebas físicas en iPhone requerirán una prueba HTTPS posterior, con autorización de publicación. Esta fase no modifica la versión pública.
