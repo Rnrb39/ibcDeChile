@@ -2,43 +2,15 @@ const test = require('node:test');
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
-const vm = require('node:vm');
+const { interfaceWith } = require('./helpers/interface.cjs');
 const model = require('../catalog-utils.js');
 const catalog = JSON.parse(fs.readFileSync(path.join(__dirname, '../catalog.json'), 'utf8'));
-const html = fs.readFileSync(path.join(__dirname, '../index.html'), 'utf8');
-const script = fs.readFileSync(path.join(__dirname, '../app.js'), 'utf8');
 
 // Fixtures reuse a verified URL, never add records to the real catalog, and never fetch video.
 function recording(id, category, date, extra = {}) {
   return { id, category, title: `Prueba ${id}`, date, videoUrl: catalog.sermons[0].videoUrl, ...extra };
 }
 
-async function interfaceWith(records) {
-  const nodes = [];
-  class Element {
-    constructor(tag) { this.tag = tag; this.children = []; this.dataset = {}; this.attrs = {}; this.events = {}; this.hidden = false; this.open = false; this.textContent = ''; nodes.push(this); }
-    append(...children) { this.children.push(...children); }
-    replaceChildren(...children) { this.children = children; }
-    setAttribute(key, value) { this.attrs[key] = value; }
-    removeAttribute(key) { delete this.attrs[key]; }
-    addEventListener(type, fn) { (this.events[type] ||= []).push(fn); }
-    click() { for (const fn of this.events.click || []) fn(); }
-    querySelectorAll(tag) { return this.children.filter(child => child.tag === tag); }
-    focus() { document.activeElement = this; }
-    scrollIntoView() {}
-  }
-  const ids = Object.fromEntries([...html.matchAll(/<([\w-]+)[^>]*\bid="([^"]+)"/g)].map(match => [match[2], new Element(match[1])]));
-  const document = { getElementById: id => ids[id], createElement: tag => new Element(tag), querySelectorAll: () => nodes.filter(node => node.className === 'sermon-choice') };
-  const player = ids.player;
-  player.paused = true;
-  player.pause = () => { player.paused = true; for (const fn of player.events.pause || []) fn(); };
-  player.play = async () => { player.paused = false; for (const fn of player.events.play || []) fn(); };
-  player.load = () => {};
-  const context = vm.createContext({ IBCCatalog: model, document, navigator: { onLine: true }, window: { addEventListener() {} }, fetch: async () => ({ ok: true, json: async () => ({ version: 1, sermons: records }) }) });
-  vm.runInContext(script, context);
-  await new Promise(setImmediate);
-  return { ids, player, document };
-}
 
 test('unknown, estimated and impossible dates are never displayed as confirmed', () => {
   for (const item of [{date:null}, {}, {date:'2099-01-01',dateEstimated:true}, {date:'2026-02-30'}, {date:'malformed'}]) {
@@ -108,6 +80,6 @@ for(const category of ['catecismo-confesion','taller-biblico']) {
     older.children[1].children[0].children[0].click();
     assert.equal(ids['sermon-title'].textContent,'Prueba old');
     assert.equal(player.paused,false);
-    assert.equal(document.activeElement,ids['player-heading']);
+    assert.equal(document.activeElement,ids['sermon-title']);
   });
 }

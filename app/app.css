@@ -476,3 +476,35 @@ footer span {
   margin-top:1rem;
   padding:1rem;
 }
+
+.resume-panel {
+  margin:0 1rem 1rem;
+  padding:1rem;
+  border:2px solid var(--green);
+  border-radius:12px;
+  background:var(--green-light);
+}
+.resume-panel h2 {
+  font-size:1.2rem;
+}
+#resume-title {
+  margin:.5rem 0 1rem;
+  overflow-wrap:anywhere;
+}
+.seek-controls {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.6rem;
+  margin-top:.6rem;
+}
+.seek-controls button {
+  margin:0;
+}
+.hint:empty {
+  display:none;
+}
+@media(max-width:420px) {
+  .seek-controls {
+    grid-template-columns:1fr;
+  }
+}
