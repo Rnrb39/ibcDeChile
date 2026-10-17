@@ -4,7 +4,7 @@ const player = document.getElementById('player');
 const playButton = document.getElementById('play-button');
 const playbackStatus = document.getElementById('playback-status');
 const catalogStatus = document.getElementById('catalog-status');
-const retryVideo = document.getElementById('retry-video');
+const retryAudio = document.getElementById('retry-audio');
 const retryCatalog = document.getElementById('retry-catalog');
 const seekBack = document.getElementById('seek-back');
 const seekForward = document.getElementById('seek-forward');
@@ -24,7 +24,7 @@ let pendingResume = null;
 let savedChoice = null;
 let lastSavedAt = 0;
 const schoolCategories = { 'catecismo-confesion': 'Catecismo y confesión', 'taller-biblico': 'Taller bíblico' };
-const { formatDate, confirmedDate, validRecording, orderRecordings } = IBCCatalog;
+const { formatDate, confirmedDate, orderRecordings, hasAudio } = IBCAudioCatalog;
 
 function playLabel() { return currentCategory === 'predicaciones' ? '▶ Reproducir sermón' : '▶ Reproducir'; }
 
@@ -43,7 +43,7 @@ function showSavedProgress() {
 }
 
 function activeMedia() {
-  return currentItem && (!player.currentSrc || player.currentSrc === currentItem.videoUrl);
+  return currentItem && hasAudio(currentItem) && player.currentSrc === currentItem.audioUrl;
 }
 
 function saveProgress() {
@@ -69,24 +69,24 @@ function seekBy(offset) {
     saveProgress();
     showSavedProgress();
   } catch {
-    document.getElementById('seek-status').textContent = 'Todavía no se puede cambiar la posición. Vuelve a intentarlo cuando cargue el video.';
+    document.getElementById('seek-status').textContent = 'Todavía no se puede cambiar la posición. Vuelve a intentarlo cuando cargue el audio.';
   }
 }
 
 function applyPendingResume() {
   if (!pendingResume || !activeMedia() || player.readyState < 1 || !Number.isFinite(player.duration)) return;
   const choice = pendingResume;
-  if (choice.item.id !== currentId || IBCPlaybackProgress.videoVersion(currentItem) !== choice.record.videoVersion) {
+  if (choice.item.id !== currentId || IBCPlaybackProgress.audioVersion(currentItem) !== choice.record.mediaVersion) {
     pendingResume = null;
     return;
   }
-  // A duration change also invalidates an old checkpoint when an R2 URL was reused.
+  // Audio duration is checked only after an explicit playback action loads metadata.
   if (Math.abs(player.duration - choice.record.duration) > 2 || IBCPlaybackProgress.finished(choice.record.position, player.duration)) {
     pendingResume = null;
     hasPlayed = false;
     player.pause();
     progress.clearFor(currentItem);
-    playbackStatus.textContent = 'El punto guardado ya no corresponde a este video. Puedes escucharlo desde el principio.';
+    playbackStatus.textContent = 'El punto guardado ya no corresponde a este audio. Puedes escucharlo desde el principio.';
     showSavedProgress();
     return;
   }
@@ -114,23 +114,20 @@ function selectSermon(item, moveFocus = false) {
   playButton.textContent = playLabel();
   currentId = item.id;
   playbackStatus.textContent = '';
-  retryVideo.hidden = true;
+  retryAudio.hidden = true;
+  document.getElementById('audio-controls').hidden = true;
   document.getElementById('seek-status').textContent = '';
   seekBack.disabled = true;
   seekForward.disabled = true;
-  player.querySelectorAll('track').forEach(track => track.remove());
-  // Future captions require a verified WebVTT URL and CORS on both media and captions.
-  if (item.captionsUrl) player.crossOrigin = 'anonymous';
-  else player.removeAttribute('crossorigin');
-  player.src = item.videoUrl;
-  if (item.captionsUrl) {
-    const track = document.createElement('track');
-    Object.assign(track, { kind: 'captions', srclang: 'es', label: 'Español', src: item.captionsUrl, default: true });
-    player.append(track);
+  // Detach an already-loaded source when switching, but never attach a new one here.
+  // With no src/source on startup there can be no automatic multimedia request.
+  if (player.getAttribute('src')) {
+    player.removeAttribute('src');
+    player.load();
   }
   const isSermon = item.category === 'predicaciones';
   document.getElementById('player-heading').textContent = isSermon
-    ? (item.id === latestId && confirmedDate(item) ? 'Último sermón' : 'Ver predicación')
+    ? (item.id === latestId && confirmedDate(item) ? 'Último mensaje con audio' : 'Escuchar predicación')
     : schoolCategories[item.category];
   document.getElementById('sermon-series').textContent = [item.series, item.number ? `Mensaje ${item.number}` : ''].filter(Boolean).join(' · ');
   document.getElementById('sermon-title').textContent = item.title;
@@ -144,7 +141,6 @@ function selectSermon(item, moveFocus = false) {
   document.querySelectorAll('.sermon-choice').forEach(button => {
     button.setAttribute('aria-current', String(button.dataset.id === currentId));
   });
-  player.load();
   changingMessage = false;
   showSavedProgress();
   if (moveFocus) {
@@ -171,7 +167,7 @@ function recordingChoice(item, startPlayback = false) {
   button.append(title, meta);
   button.addEventListener('click', () => {
     selectSermon(item, true);
-    if (startPlayback) startVideo();
+    if (startPlayback) startAudio();
   });
   li.append(button);
   return li;
@@ -202,7 +198,7 @@ function renderSchoolCategory(category, items) {
   play.textContent = 'Reproducir';
   play.setAttribute('aria-label', `Reproducir: ${latest.title}`);
   play.setAttribute('aria-controls', 'sermon-content');
-  play.addEventListener('click', () => { selectSermon(latest, true); startVideo(); });
+  play.addEventListener('click', () => { selectSermon(latest, true); startAudio(); });
   container.append(label, title, meta, play);
   if (items.length > 1) {
     const older = document.createElement('details');
@@ -224,11 +220,16 @@ async function loadCatalog() {
     const response = await fetch('catalog.json', { cache: 'no-cache' });
     if (!response.ok) throw new Error('Catalog unavailable');
     const catalog = await response.json();
-    if (catalog.version !== 1 || !Array.isArray(catalog.sermons)) throw new Error('Invalid catalog');
-    recordings = catalog.sermons.filter(validRecording);
-    const items = orderRecordings(recordings.filter(item => item.category === 'predicaciones'));
-    if (!items.length) throw new Error('Empty catalog');
-    latestId = items[0].id;
+    // Only this application's verified public catalog is used, including on the LAN.
+    // Old ignored local configuration cannot override an R2 audio or its revision.
+    recordings = IBCAudioCatalog.prepare(catalog);
+    const available = recordings.filter(hasAudio);
+    if (!available.length) throw new Error('No playable audio');
+    const items = orderRecordings(available.filter(item => item.category === 'predicaciones'));
+    latestId = items[0]?.id || null;
+    document.getElementById('audio-availability').textContent = available.length
+      ? `${available.length} audio${available.length===1 ? '' : 's'} disponible${available.length===1 ? '' : 's'} para escuchar.`
+      : 'No hay audios disponibles en este momento.';
     const list = document.getElementById('sermon-list');
     list.replaceChildren();
     items.slice(0, 5).forEach(item => list.append(recordingChoice(item)));
@@ -239,28 +240,38 @@ async function loadCatalog() {
     olderSection.hidden = items.length <= 5;
     olderSection.open = false;
     for (const category of Object.keys(schoolCategories)) {
-      renderSchoolCategory(category, orderRecordings(recordings.filter(item => item.category === category)));
+      renderSchoolCategory(category, orderRecordings(available.filter(item => item.category === category)));
     }
-    document.getElementById('sermon-content').hidden = false;
+    const initial = items[0] || orderRecordings(available)[0];
+    document.getElementById('sermon-content').hidden = !initial;
     catalogStatus.textContent = '';
-    selectSermon(items[0]);
+    if (initial) selectSermon(initial);
+    else showSavedProgress();
   } catch {
     catalogStatus.textContent = 'No pudimos cargar las predicaciones. Revisa tu conexión y vuelve a intentarlo.';
     retryCatalog.hidden = false;
   }
 }
 
-async function startVideo() {
+async function startAudio() {
+  if (!hasAudio(currentItem)) return;
+  document.getElementById('audio-controls').hidden = false;
   playbackStatus.textContent = '';
-  try { await player.play(); }
+  try {
+    if (player.getAttribute('src') !== currentItem.audioUrl) {
+      player.src = currentItem.audioUrl;
+      player.load();
+    }
+    await player.play();
+  }
   catch {
-    playbackStatus.textContent = 'No se pudo iniciar el video. Revisa tu conexión o usa el botón de reproducción del reproductor.';
-    retryVideo.hidden = false;
+    playbackStatus.textContent = 'No se pudo iniciar el audio. Revisa tu conexión o usa el botón de reproducción del reproductor.';
+    retryAudio.hidden = false;
   }
 }
 playButton.addEventListener('click', () => {
   if (!player.paused) player.pause();
-  else startVideo();
+  else startAudio();
 });
 player.addEventListener('play', () => {
   hasPlayed = true;
@@ -280,15 +291,15 @@ player.addEventListener('ended', () => {
   }
   playButton.textContent = '▶ Volver a escuchar';
 });
-player.addEventListener('playing', () => { playbackStatus.textContent = ''; retryVideo.hidden = true; });
+player.addEventListener('playing', () => { playbackStatus.textContent = ''; retryAudio.hidden = true; });
 player.addEventListener('error', () => {
   const wasResuming = Boolean(pendingResume);
   pendingResume = null;
   if (!wasResuming) saveProgress();
   seekBack.disabled = true;
   seekForward.disabled = true;
-  playbackStatus.textContent = 'No pudimos cargar este video. Revisa tu conexión y vuelve a intentarlo.';
-  retryVideo.hidden = false;
+  playbackStatus.textContent = 'No pudimos cargar este audio. Revisa tu conexión al servidor del archivo y vuelve a intentarlo.';
+  retryAudio.hidden = false;
   showSavedProgress();
 });
 player.addEventListener('loadedmetadata', () => { updateSeekControls(); applyPendingResume(); });
@@ -315,14 +326,15 @@ function playSaved(fromBeginning) {
   }
   resumePanel.hidden = true;
   // Called only by an explicit button click, preserving the mobile user gesture.
-  startVideo();
+  startAudio();
 }
 resumePlay.addEventListener('click', () => playSaved(false));
 restartPlay.addEventListener('click', () => playSaved(true));
-retryVideo.addEventListener('click', () => {
-  player.load();
-  playbackStatus.textContent = 'Video recargado. Toca el botón de reproducción para intentarlo otra vez.';
-  retryVideo.hidden = true;
+retryAudio.addEventListener('click', () => {
+  // Retry is itself an explicit playback action; startup and selection never load audio.
+  player.removeAttribute('src');
+  startAudio();
+  retryAudio.hidden = true;
 });
 retryCatalog.addEventListener('click', loadCatalog);
 function updateConnection() { document.getElementById('connection-status').hidden = navigator.onLine; }

@@ -1,6 +1,6 @@
 'use strict';
 
-// Keep installation/update handling separate from video playback.
+// Keep installation/update handling separate from audio playback.
 if ('serviceWorker' in navigator && window.isSecureContext) {
   const notice = document.getElementById('update-notice');
   const updateButton = document.getElementById('update-app');

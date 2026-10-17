@@ -1,21 +1,19 @@
 'use strict';
 
 const IBCPlaybackProgress = (() => {
-  const KEY = 'ibc-pwa:last-playback:v1';
+  const KEY = 'ibc-pwa-audio-prototype:last-playback:v1';
   const MIN_PROGRESS = 30;
   const END_MARGIN = 30;
   const MAX_AGE = 90 * 24 * 60 * 60 * 1000;
 
-  function videoVersion(item) {
-    // The existing catalog has immutable-looking URLs but no explicit media revision.
-    // Prefer a future explicit revision; never invent a revision or an R2 object path.
-    const revision = item.videoVersion;
-    return typeof revision === 'string' && revision.trim() ? revision : `url:${item.videoUrl}`;
+  function audioVersion(item) {
+    const revision = item.audioVersion;
+    return typeof revision === 'string' && revision.trim() ? revision : null;
   }
 
   function valid(record, now) {
-    if (!record || record.schemaVersion !== 1 || typeof record.id !== 'string' || !record.id.trim() || record.id.length > 200 ||
-      typeof record.videoVersion !== 'string' || !record.videoVersion.trim() || record.videoVersion.length > 4096 ||
+    if (!record || record.schemaVersion !== 1 || record.mediaType !== 'audio' || typeof record.id !== 'string' || !record.id.trim() || record.id.length > 200 ||
+      typeof record.mediaVersion !== 'string' || !record.mediaVersion.trim() || record.mediaVersion.length > 4096 ||
       !Number.isFinite(record.position) || record.position < 0 ||
       !Number.isFinite(record.duration) || record.duration <= 0 || record.position > record.duration ||
       typeof record.updatedAt !== 'string') return false;
@@ -64,7 +62,7 @@ const IBCPlaybackProgress = (() => {
     function save(item, position, duration) {
       if (!Number.isFinite(position) || position < 0 || !Number.isFinite(duration) || duration <= 0 || position > duration) return false;
       if (finished(position, duration)) { clear(); return false; }
-      const record = { schemaVersion: 1, id: item.id, position, duration, videoVersion: videoVersion(item), updatedAt: new Date(now()).toISOString() };
+      const record = { schemaVersion: 1, mediaType: 'audio', id: item.id, position, duration, mediaVersion: audioVersion(item), updatedAt: new Date(now()).toISOString() };
       if (!valid(record, now())) return false;
       memory = record;
       try { getStorage().setItem(KEY, JSON.stringify(record)); } catch { failed = true; }
@@ -73,14 +71,14 @@ const IBCPlaybackProgress = (() => {
 
     function clearFor(item) {
       const record = load();
-      if (record?.id === item.id && record.videoVersion === videoVersion(item)) clear();
+      if (record?.id === item.id && record.mediaVersion === audioVersion(item)) clear();
     }
 
     function find(recordings) {
       const record = load();
       if (!record) return null;
       const item = recordings.find(item => item.id === record.id);
-      if (!item || videoVersion(item) !== record.videoVersion || finished(record.position, record.duration)) {
+      if (!item || !item.audioUrl || audioVersion(item) !== record.mediaVersion || finished(record.position, record.duration)) {
         clear();
         return null;
       }
@@ -95,6 +93,6 @@ const IBCPlaybackProgress = (() => {
     return Math.min(duration, Math.max(0, position + offset));
   }
 
-  return { KEY, MIN_PROGRESS, END_MARGIN, MAX_AGE, videoVersion, valid, finished, resumable, formatPosition, createStore, seekPosition };
+  return { KEY, MIN_PROGRESS, END_MARGIN, MAX_AGE, audioVersion, valid, finished, resumable, formatPosition, createStore, seekPosition };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = IBCPlaybackProgress;

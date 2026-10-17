@@ -73,12 +73,12 @@ test('installation revalidates shell; cleanup deletes only this app old cache', 
   }
   assert.ok(harness.observed.installed.some(request=>request.url===scope+'pwa.js'));
   await harness.lifecycle('activate');
-  assert.deepEqual(harness.observed.deleted,['ibc-pwa-/app/-v5']);
+  assert.deepEqual(harness.observed.deleted,['ibc-pwa-/app/-v5','ibc-pwa-/app/-v6']);
 });
 
 test('worker never intercepts R2, other pages, range requests or non-GET', () => {
   const harness=workerHarness();
-  for(const item of JSON.parse(read('catalog.json')).sermons) assert.equal(harness.request(item.videoUrl),undefined);
+  for(const item of JSON.parse(read('catalog.json')).sermons) assert.equal(harness.request(item.audioUrl),undefined);
   for(const url of [origin+'/',origin+'/index.html',origin+'/script.js',origin+'/data/videos.json',scope+'tests/preview-escuela.png']) assert.equal(harness.request(url),undefined);
   assert.equal(harness.request(scope+'index.html',{headers:{Range:'bytes=0-1023'}}),undefined);
   assert.equal(harness.request(scope+'catalog.json',{method:'POST'}),undefined);
