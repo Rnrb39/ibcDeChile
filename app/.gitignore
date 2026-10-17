@@ -1,0 +1,10 @@
+# Prototipo conservado localmente; no forma parte de la aplicación pública.
+/audio/
+
+# Multimedia local, capturas y archivos temporales.
+*.mp3
+*.mp4
+/tests/preview-*.png
+*.tmp
+*.log
+/.release-check-*/

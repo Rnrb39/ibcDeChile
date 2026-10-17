@@ -1,0 +1,16 @@
+.audio-frame {
+  padding:.6rem 1rem;
+  background:var(--green-light);
+}
+audio {
+  display:block;
+  width:100%;
+  min-height:56px;
+}
+audio:focus-visible {
+  outline:4px solid #a9630b;
+  outline-offset:3px;
+}
+.sermon-body {
+  overflow-wrap:anywhere;
+}

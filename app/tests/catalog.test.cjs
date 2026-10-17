@@ -3,12 +3,12 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const path = require('node:path');
 const { interfaceWith } = require('./helpers/interface.cjs');
-const model = require('../catalog-utils.js');
+const model = require('../audio-catalog.js');
 const catalog = JSON.parse(fs.readFileSync(path.join(__dirname, '../catalog.json'), 'utf8'));
 
 // Fixtures reuse a verified URL, never add records to the real catalog, and never fetch video.
 function recording(id, category, date, extra = {}) {
-  return { id, category, title: `Prueba ${id}`, date, videoUrl: catalog.sermons[0].videoUrl, ...extra };
+  return { id, category, title: `Prueba ${id}`, date, audioUrl: catalog.sermons[0].audioUrl, audioVersion: catalog.sermons[0].audioVersion, ...extra };
 }
 
 
@@ -25,16 +25,16 @@ test('estimated future date cannot outrank a confirmed recording', () => {
   const items = [recording('unknown','taller-biblico','2099-01-01',{dateEstimated:true}),recording('older','taller-biblico','2026-09-01'),recording('latest','taller-biblico','2026-10-01')];
   assert.deepEqual(model.orderRecordings(items).map(item=>item.id), ['latest','older','unknown']);
   assert.equal(model.validRecording(recording('no-date','taller-biblico',null)), true);
-  assert.equal(model.validRecording({...items[0],videoUrl:'javascript:alert(1)'}), false);
+  assert.equal(model.hasAudio(model.prepare({version:1,sermons:[{...items[0],audioUrl:'javascript:alert(1)'}]},[],'https://ibcdechile.org/app/')[0]), false);
 });
 
-test('real catalog shows five sermons and five collapsed older sermons', async () => {
+test('real catalog shows five sermons and six collapsed older sermons', async () => {
   const {ids} = await interfaceWith(catalog.sermons);
   assert.equal(ids['sermon-list'].children.length,5);
-  assert.equal(ids['older-sermon-list'].children.length,5);
+  assert.equal(ids['older-sermon-list'].children.length,6);
   assert.equal(ids['older-sermons'].hidden,false);
   assert.equal(ids['older-sermons'].open,false);
-  assert.equal(ids['sermon-title'].textContent,'Soportando la presión');
+  assert.equal(ids['sermon-title'].textContent,'Completos en Él');
   for(const category of ['catecismo-confesion','taller-biblico']) {
     const content=ids[`${category}-recordings`];
     assert.equal(content.children.length,1);
@@ -46,12 +46,12 @@ test('real catalog shows five sermons and five collapsed older sermons', async (
 test('five or fewer sermons need no older toggle; unknown dates remain playable', async () => {
   const {ids,player} = await interfaceWith(catalog.sermons.slice(0,3));
   assert.equal(ids['older-sermons'].hidden,true);
-  assert.equal(ids['player-heading'].textContent,'Ver predicación');
+  assert.equal(ids['player-heading'].textContent,'Escuchar predicación');
   const choice=ids['sermon-list'].children[0].children[0];
   assert.match(choice.children[1].textContent,/Fecha por confirmar/);
   choice.click(); ids['play-button'].click();
   assert.equal(player.paused,false);
-  assert.equal(player.src,catalog.sermons[2].videoUrl);
+  assert.equal(player.src,catalog.sermons[2].audioUrl);
 });
 
 for(const category of ['catecismo-confesion','taller-biblico']) {
@@ -64,7 +64,7 @@ for(const category of ['catecismo-confesion','taller-biblico']) {
     const play=content.children.find(node=>node.tag==='button');
     assert.equal(play.textContent,'Reproducir');
     play.click();
-    assert.equal(player.src,fixture.videoUrl);
+    assert.equal(player.src,fixture.audioUrl);
     assert.equal(player.paused,false);
     assert.equal(ids['latest-note'].hidden,true);
     assert.equal(ids['play-button'].textContent,'Ⅱ Pausar');

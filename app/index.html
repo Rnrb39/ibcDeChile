@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#183d35">
-  <meta name="description" content="Predicaciones de IBC de Chile. Escucha y mira los mensajes de nuestra iglesia en un solo lugar.">
+  <meta name="description" content="Escucha las predicaciones y enseñanzas de IBC de Chile.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="IBC de Chile">
   <title>IBC de Chile · Predicaciones</title>
@@ -12,7 +12,9 @@
   <link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
   <link rel="icon" href="icons/icon-192.png" type="image/png">
   <link rel="stylesheet" href="app.css">
+  <link rel="stylesheet" href="audio.css">
   <script src="catalog-utils.js" defer></script>
+  <script src="audio-catalog.js" defer></script>
   <script src="playback-progress.js" defer></script>
   <script src="app.js" defer></script>
   <script src="pwa.js" defer></script>
@@ -25,7 +27,7 @@
   </header>
   <main id="contenido" tabindex="-1">
     <section class="sermon" aria-labelledby="player-heading">
-      <div class="section-top"><p class="eyebrow">PARA ESCUCHAR Y COMPARTIR</p><h1 id="player-heading" class="visually-hidden" tabindex="-1">Último sermón</h1></div>
+      <div class="section-top"><p class="eyebrow">PARA ESCUCHAR Y COMPARTIR</p><h1 id="player-heading" class="visually-hidden" tabindex="-1">Escuchar predicación</h1><p id="audio-availability" class="hint" role="status"></p></div>
       <p id="catalog-status" class="status" role="status">Cargando las predicaciones…</p>
       <aside id="resume-panel" class="resume-panel" aria-labelledby="resume-heading" hidden>
         <h2 id="resume-heading">Continuar escuchando</h2>
@@ -34,7 +36,7 @@
         <button id="restart-play" class="secondary-button" type="button" aria-controls="player">Escuchar desde el principio</button>
       </aside>
       <div id="sermon-content" hidden>
-        <div class="video-frame"><video id="player" controls playsinline preload="metadata" aria-labelledby="sermon-title">Tu navegador no permite reproducir este video.</video></div>
+        <div id="audio-controls" class="audio-frame" hidden><audio id="player" controls preload="none" aria-labelledby="sermon-title">Tu navegador no permite reproducir este audio.</audio></div>
         <div class="sermon-body">
           <p id="sermon-series" class="eyebrow"></p>
           <h2 id="sermon-title" tabindex="-1"></h2>
@@ -48,8 +50,8 @@
           <p id="seek-status" class="status" role="status"></p>
           <p id="playback-status" class="status" role="status"></p>
           <p id="progress-status" class="hint" role="status"></p>
-          <button id="retry-video" class="secondary-button" type="button" hidden>Volver a cargar el video</button>
-          <p id="latest-note" class="hint">El mensaje más reciente disponible en este catálogo.</p>
+          <button id="retry-audio" class="secondary-button" type="button" hidden>Volver a intentar el audio</button>
+          <p id="latest-note" class="hint">El mensaje más reciente con audio disponible.</p>
           <details id="transcript" hidden><summary>Leer el mensaje</summary><div id="transcript-text" class="transcript"></div></details>
         </div>
       </div>
@@ -62,7 +64,7 @@
         <summary><span class="section-icon" aria-hidden="true">▷</span><span>Predicaciones y series</span><span class="chevron" aria-hidden="true">+</span></summary>
         <div class="section-content">
           <h2>Colosenses</h2>
-          <p class="hint">Elige un mensaje para verlo en el reproductor de arriba.</p>
+          <p class="hint">Elige un mensaje para escucharlo en el reproductor de arriba.</p>
           <ol id="sermon-list" class="sermon-list"></ol>
           <details id="older-sermons" class="older-recordings" hidden>
             <summary>Ver sermones anteriores</summary>
@@ -78,13 +80,13 @@
         </div>
       </details>
     </nav>
-    <p id="connection-status" class="connection-status" role="status" hidden>Sin conexión. Puedes consultar los mensajes guardados, pero necesitas Internet para reproducir los videos.</p>
+    <p id="connection-status" class="connection-status" role="status" hidden>Sin conexión. Puedes consultar el catálogo guardado. Para escuchar necesitas conexión al servidor del audio.</p>
     <aside id="update-notice" class="update-notice" aria-label="Actualización disponible" hidden>
-      <p role="status">Hay una nueva versión disponible. Puedes actualizar cuando termines de ver el video.</p>
+      <p role="status">Hay una nueva versión disponible. Puedes actualizar cuando termines de escuchar.</p>
       <button id="update-app" class="secondary-button" type="button">Actualizar aplicación</button>
       <p class="hint">Al actualizar se recargará la aplicación.</p>
     </aside>
-    <details class="install-help"><summary>Cómo guardar esta aplicación en tu teléfono</summary><p><strong>Android:</strong> abre el menú de Chrome y elige «Instalar aplicación» o «Agregar a pantalla principal».</p><p><strong>iPhone:</strong> abre esta página en Safari, toca Compartir y luego «Agregar a inicio».</p><p>Necesitas conexión a Internet para ver los videos.</p></details>
+    <details class="install-help"><summary>Instalar en mi teléfono</summary><p>En Android, abre el menú de Chrome y elige «Instalar aplicación» o «Añadir a pantalla de inicio».</p><p>En iPhone, abre esta página en Safari, toca Compartir y elige «Añadir a pantalla de inicio».</p><p>Para escuchar necesitas conexión a Internet. No se descargan los audios al abrir la aplicación.</p></details>
   </main>
   <footer>Primera Iglesia Bíblica Cristiana de Chile<br><span>Una iglesia centrada en Jesucristo.</span></footer>
 </body>

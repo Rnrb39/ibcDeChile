@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "source": "script.js: mensajesColosenses",
-  "verifiedOn": "2026-10-12",
+  "source": "Metadatos existentes y mensaje 11 confirmado por la iglesia. Once MP3 verificados individualmente: HEAD 200, Range 206, firma MP3 y reproducción HTML5 con duración válida.",
+  "verifiedOn": "2026-10-16",
   "sermons": [
     {
       "id": "colosenses-01",
@@ -13,9 +13,12 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": null,
       "dateEstimated": true,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-01.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-01.mp3",
+      "audioVersion": "r2-etag:4ff3a98e3d8fe14582ccc2a2c398e100",
+      "audioSizeBytes": 27774578,
+      "audioDurationSeconds": 3471.738345
     },
     {
       "id": "colosenses-02",
@@ -27,9 +30,12 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": null,
       "dateEstimated": true,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-02.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-02.mp3",
+      "audioVersion": "r2-etag:23f9986d616bc970fd896e508bd23af7",
+      "audioSizeBytes": 31899417,
+      "audioDurationSeconds": 3987.348005
     },
     {
       "id": "colosenses-03",
@@ -41,9 +47,12 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": null,
       "dateEstimated": true,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-03.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-03.mp3",
+      "audioVersion": "r2-etag:29db4f952b7054786066df58790857ac",
+      "audioSizeBytes": 28575806,
+      "audioDurationSeconds": 3571.903333
     },
     {
       "id": "colosenses-04",
@@ -55,9 +64,12 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": null,
       "dateEstimated": true,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-04.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-04.mp3",
+      "audioVersion": "r2-etag:974dd788e04e71742bccd0f1958d90e2",
+      "audioSizeBytes": 25619999,
+      "audioDurationSeconds": 3202.41
     },
     {
       "id": "colosenses-05",
@@ -69,9 +81,12 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": null,
       "dateEstimated": true,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-05.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-05.mp3",
+      "audioVersion": "r2-etag:16929233b5c3c197c366d411ee9e5001",
+      "audioSizeBytes": 21934852,
+      "audioDurationSeconds": 2741.78
     },
     {
       "id": "colosenses-06",
@@ -83,9 +98,12 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": "2026-09-06",
       "dateEstimated": false,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-06.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-06.mp3",
+      "audioVersion": "r2-etag:e090e1540be836b152fbf365cfd83464",
+      "audioSizeBytes": 21929837,
+      "audioDurationSeconds": 2741.14
     },
     {
       "id": "colosenses-07",
@@ -97,9 +115,12 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": "2026-09-13",
       "dateEstimated": false,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-07.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-07.mp3",
+      "audioVersion": "r2-etag:3154c220185b418f1966f75b6f61bf02",
+      "audioSizeBytes": 23667920,
+      "audioDurationSeconds": 2958.4
     },
     {
       "id": "colosenses-08",
@@ -111,9 +132,12 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": "2026-09-20",
       "dateEstimated": false,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-08.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-08.mp3",
+      "audioVersion": "r2-etag:e3d0af41fce3b06efd8c9d36bc094584",
+      "audioSizeBytes": 27498307,
+      "audioDurationSeconds": 3437.209683
     },
     {
       "id": "colosenses-09",
@@ -125,9 +149,12 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": "2026-09-27",
       "dateEstimated": false,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-09.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-09.mp3",
+      "audioVersion": "r2-etag:6f1da6ebc1b49f7aaf3c95e2b7fe0f24",
+      "audioSizeBytes": 24272080,
+      "audioDurationSeconds": 3033.922336
     },
     {
       "id": "colosenses-10",
@@ -139,9 +166,29 @@
       "speaker": "Pastor Sergio Arias Cáceres",
       "date": "2026-10-04",
       "dateEstimated": false,
-      "videoUrl": "https://videos.ibcdechile.org/colosenses-10.mp4",
       "captionsUrl": null,
-      "transcriptText": null
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-10.mp3",
+      "audioVersion": "r2-etag:db01856cc9149e4c69a979bc237aadf9",
+      "audioSizeBytes": 26011208,
+      "audioDurationSeconds": 3251.305986
+    },
+    {
+      "id": "colosenses-11",
+      "category": "predicaciones",
+      "series": "Colosenses",
+      "number": 11,
+      "title": "Completos en Él",
+      "passage": "Colosenses 2:8-10",
+      "speaker": "Pastor Sergio Arias Cáceres",
+      "date": "2026-10-11",
+      "dateEstimated": false,
+      "captionsUrl": null,
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-11.mp3",
+      "audioVersion": "r2-etag:1da17894d86a2fa3be33f11f0bfe0fb4",
+      "audioSizeBytes": 24904035,
+      "audioDurationSeconds": 3112.917347
     }
   ]
 }

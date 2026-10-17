@@ -1,3 +1,11 @@
+# Candidata de audio para el 18 de octubre de 2026
+
+La candidata principal está en `/app/`, con once MP3 de R2 y la misma identidad
+instalable. El prototipo `/app/audio/` se conserva solo localmente y queda excluido
+de Git y de la publicación. La aplicación y sus pruebas no dependen de él. Esta candidata permanece
+local y no se ha publicado. Las secciones siguientes documentan etapas anteriores
+de video; la guía vigente es [RELEASE-AUDIO.md](RELEASE-AUDIO.md).
+
 # PWA IBC de Chile — primera versión local
 
 Prototipo independiente del sitio público. No cambia el inicio, `script.js`, los JSON de Facebook ni su workflow. No escribe en R2, bases de datos o el panel administrativo.
