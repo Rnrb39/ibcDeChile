@@ -32,7 +32,8 @@ const mensajesColosenses = [
     { numeroMensaje: 7, titulo: "¿Somos amigos o enemigos de Dios?", pasaje: "Colosenses 1:20–23", fecha: "2026-09-13" },
     { numeroMensaje: 8, titulo: "La preocupación por la iglesia, deber de todos", pasaje: "Colosenses 1:24–29", fecha: "2026-09-20" },
     { numeroMensaje: 9, titulo: "La lucha por la iglesia", pasaje: "Colosenses 2:1–5", fecha: "2026-09-27" },
-    { numeroMensaje: 10, titulo: "Soportando la presión", pasaje: "Colosenses 2:6–7", fecha: "2026-10-04" }
+    { numeroMensaje: 10, titulo: "Soportando la presión", pasaje: "Colosenses 2:6–7", fecha: "2026-10-04" },
+    { numeroMensaje: 11, titulo: "Completos en Él", pasaje: "Colosenses 2:8-10", fecha: "2026-10-11", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-11.mp4" }
 ].map(mensaje => ({
     serie: "Colosenses",
     predicador: "Pastor Sergio Arias Cáceres",
@@ -70,7 +71,7 @@ function cargarColosenses() {
     const contenedor = document.getElementById('contenedorColosenses');
     if (!contenedor) return;
     contenedor.innerHTML = `
-        <p class="sermon-serie">Serie expositiva · 10 mensajes</p>
+        <p class="sermon-serie">Serie expositiva · ${mensajesColosenses.length} mensajes</p>
         <h3 class="titulo-sermon-tarjeta">Colosenses</h3>
         <label class="selector-mensaje-label" for="mensajeColosenses">Seleccionar mensaje</label>
         <select class="selector-mensaje" id="mensajeColosenses" aria-controls="detalleColosenses videoColosenses">
