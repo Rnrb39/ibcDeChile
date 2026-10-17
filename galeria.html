@@ -13,7 +13,7 @@
     <meta property="og:url" content="https://ibcdechile.org/galeria.html">
     <meta property="og:image" content="https://ibcdechile.org/img/fachada-iglesia.png">
 
-    <link rel="stylesheet" href="main.css">
+    <link rel="stylesheet" href="main.css?v=cls-20261017">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -47,10 +47,20 @@
         </div>
 
         <section class="contenedor seccion-galeria">
-            <noscript><p>Para ver la galería aquí, active JavaScript. También puede consultar las fotografías en Facebook mediante el enlace de abajo.</p></noscript>
+            <noscript><style>.galeria-grid, .galeria-estado, .galeria-paginacion { display: none; }</style><p>Para ver la galería aquí, active JavaScript. También puede consultar las fotografías en Facebook mediante el enlace de abajo.</p></noscript>
             <div class="galeria-grid" id="galeria-grid" style="text-align: center;">
-                <p class="galeria-mensaje" role="status">Cargando fotografías...</p>
+                <span class="galeria-reserva" aria-hidden="true"></span><span class="galeria-reserva" aria-hidden="true"></span>
+                <span class="galeria-reserva" aria-hidden="true"></span><span class="galeria-reserva" aria-hidden="true"></span>
+                <span class="galeria-reserva" aria-hidden="true"></span><span class="galeria-reserva" aria-hidden="true"></span>
+                <span class="galeria-reserva" aria-hidden="true"></span><span class="galeria-reserva" aria-hidden="true"></span>
+                <span class="galeria-reserva" aria-hidden="true"></span><span class="galeria-reserva" aria-hidden="true"></span>
+                <span class="galeria-reserva" aria-hidden="true"></span><span class="galeria-reserva" aria-hidden="true"></span>
             </div>
+            <p class="galeria-estado" id="galeria-estado" role="status">Cargando fotografías...</p>
+            <nav class="galeria-paginacion" aria-label="Páginas de fotografías">
+                <button type="button" id="galeria-anterior" class="btn-secundario" aria-controls="galeria-grid" disabled>Anterior</button>
+                <button type="button" id="galeria-siguiente" class="btn-secundario" aria-controls="galeria-grid" disabled>Siguiente</button>
+            </nav>
             <div style="text-align:center; margin-top:2em;">
                 <a href="https://www.facebook.com/IBCdeChile/photos" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver más en Facebook</a>
             </div>
@@ -75,7 +85,7 @@
         <i class="fab fa-whatsapp" aria-hidden="true"></i>
     </a>
 
-    <script src="script.js"></script>
+    <script src="script.js?v=cls-20261017"></script>
     <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43cd437110ff4149aebbf6b261a40702"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>

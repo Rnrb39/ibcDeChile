@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="stylesheet" href="main.css?v=colosenses-10">
+    <link rel="stylesheet" href="main.css?v=cls-20261017">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sermones y Series - Iglesia Bíblica Cristiana</title>
@@ -66,10 +66,30 @@
                 <h2 style="margin-bottom: 0.3em;">Series de predicación</h2>
                 <p style="margin-bottom: 2em; color: #555;">Estudios expositivos completos libro por libro o por temas.</p>
 
-                <!-- Aquí JavaScript cargará las listas de reproducción -->
+                <!-- Tarjetas generadas con node scripts/generar-sermones.mjs; JavaScript añade la selección. -->
                 <div class="series-grid">
-                    <article id="contenedorColosenses" class="sermon-tarjeta"></article>
-                    <div id="contenedorPlaylists" class="sermones-lista"></div>
+                    <article id="contenedorColosenses" class="sermon-tarjeta"><!-- INICIO COLOSENSES -->
+        <p class="sermon-serie">Serie expositiva · 11 mensajes</p>
+        <h3 class="titulo-sermon-tarjeta">Colosenses</h3>
+        <label class="selector-mensaje-label" for="mensajeColosenses">Seleccionar mensaje</label>
+        <select class="selector-mensaje" id="mensajeColosenses" aria-controls="detalleColosenses videoColosenses">
+            <option value="1">1. Problemas en medio de la Iglesia</option><option value="2">2. ¿Sabes a dónde vas? ¿Sabes cuál es tu esperanza?</option><option value="3">3. La solución para el error</option><option value="4">4. La victoria de la fe</option><option value="5">5. La supremacía del Señor</option><option value="6">6. Cristo, cabeza de todo</option><option value="7">7. ¿Somos amigos o enemigos de Dios?</option><option value="8">8. La preocupación por la iglesia, deber de todos</option><option value="9">9. La lucha por la iglesia</option><option value="10">10. Soportando la presión</option><option value="11">11. Completos en Él</option>
+        </select>
+        <div id="detalleColosenses" class="detalle-mensaje" aria-live="polite" aria-atomic="true"><p class="sermon-serie">Serie Colosenses · Mensaje 1</p>
+            <h4>Problemas en medio de la Iglesia</h4>
+            <p class="sermon-referencia">Colosenses 1:1–2</p>
+            <p class="sermon-predicador">Pastor Sergio Arias Cáceres</p>
+            <p class="sermon-fecha"><time datetime="2026-08-02">2 de agosto de 2026</time> · Fecha estimada</p></div>
+        <div class="video-responsive sermon-video"><video id="videoColosenses" controls playsinline preload="none" aria-label="Mensaje 1: Problemas en medio de la Iglesia"><source src="https://videos.ibcdechile.org/colosenses-01.mp4" type="video/mp4">Su navegador no admite la reproducción de video. Use el enlace Abrir video.</video></div>
+        <a id="enlaceColosenses" href="https://videos.ibcdechile.org/colosenses-01.mp4" target="_blank" rel="noopener noreferrer" class="btn-principal">Abrir video <span aria-hidden="true">↗</span></a><!-- FIN COLOSENSES --></article>
+                    <div id="contenedorPlaylists" class="sermones-lista"><!-- INICIO PLAYLISTS -->
+        <article class="sermon-tarjeta">
+            <p class="sermon-fecha">SERIE COMPLETA · 24 Sermones</p>
+            <h3 class="titulo-sermon-tarjeta">Serie Expositiva: Carta a los Efesios</h3>
+            <p class="sermon-referencia">Estudio completo a través de la carta a los Efesios.</p>
+            <div class="video-responsive"><iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=PL1NYVaAlZ1M8KJGvz5qd79WJPIy6fPnyN" title="Serie Expositiva: Carta a los Efesios" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            <a href="https://www.youtube.com/playlist?list=PL1NYVaAlZ1M8KJGvz5qd79WJPIy6fPnyN" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver serie en YouTube ↗</a>
+        </article><!-- FIN PLAYLISTS --></div>
                 </div>
             </div>
         </section>
@@ -82,8 +102,28 @@
                 <h2 style="margin-bottom: 0.3em;">Sermones destacados</h2>
                 <p style="margin-bottom: 2em; color: #555;">Mensajes individuales transmitidos en nuestros cultos dominicales.</p>
 
-                <!-- Aquí JavaScript cargará los sermones individuales -->
-                <div id="contenedorSermones" class="sermones-lista"></div>
+                <!-- Sermones visibles desde el HTML inicial, sin esperar JavaScript. -->
+                <div id="contenedorSermones" class="sermones-lista"><!-- INICIO SERMONES -->
+        <article class="sermon-tarjeta">
+            <p class="sermon-fecha">02 de Marzo, 2025</p>
+
+            <h3 class="titulo-sermon-tarjeta">De la desesperanza a la Esperanza</h3>
+            <p class="sermon-referencia">Rut 1:15-18</p>
+
+                <a href="https://www.youtube.com/watch?v=ns4xn3xRGps" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/ns4xn3xRGps/mqdefault.jpg" alt="Ver De la desesperanza a la Esperanza" loading="lazy" width="320" height="180" style="width:100%; height:auto; margin:10px 0 20px;"></a>
+                <a href="https://www.youtube.com/watch?v=ns4xn3xRGps" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver sermón ↗</a>
+
+        </article>
+        <article class="sermon-tarjeta">
+            <p class="sermon-fecha">26 de Enero, 2025</p>
+
+            <h3 class="titulo-sermon-tarjeta">Pronto se apartaron del camino en que anduvieron sus padres...</h3>
+            <p class="sermon-referencia">Jueces 2:17</p>
+
+                <a href="https://www.youtube.com/watch?v=qAwtOhJqdHc" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/qAwtOhJqdHc/mqdefault.jpg" alt="Ver Pronto se apartaron del camino en que anduvieron sus padres..." loading="lazy" width="320" height="180" style="width:100%; height:auto; margin:10px 0 20px;"></a>
+                <a href="https://www.youtube.com/watch?v=qAwtOhJqdHc" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver sermón ↗</a>
+
+        </article><!-- FIN SERMONES --></div>
             </div>
         </section>
     </main>
@@ -96,7 +136,7 @@
     </div>
 </footer>
 
-    <script src="script.js?v=colosenses-11"></script>
+    <script src="script.js?v=cls-20261017"></script>
     <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43cd437110ff4149aebbf6b261a40702"}'></script><!-- End Cloudflare Web Analytics -->
 </body>
 </html>
