@@ -1,6 +1,7 @@
 // ==========================================
 // 1. BASE DE DATOS DE LISTAS DE REPRODUCCIÓN (SERIES)
 // ==========================================
+// Tras editar los datos o las tarjetas: node scripts/generar-sermones.mjs
 const playlists = [
     {
         titulo: "Serie Expositiva: Carta a los Efesios",
@@ -67,19 +68,33 @@ function fechaEnEspanol(fecha) {
     return `${dia} de ${meses[mes - 1]} de ${ano}`;
 }
 
-function cargarColosenses() {
-    const contenedor = document.getElementById('contenedorColosenses');
-    if (!contenedor) return;
-    contenedor.innerHTML = `
+function htmlDetalleColosenses(mensaje) {
+    return `<p class="sermon-serie">Serie Colosenses · Mensaje ${mensaje.numeroMensaje}</p>
+            <h4>${escapar(mensaje.titulo)}</h4>
+            <p class="sermon-referencia">${escapar(mensaje.pasaje)}</p>
+            <p class="sermon-predicador">${escapar(mensaje.predicador)}</p>
+            <p class="sermon-fecha"><time datetime="${mensaje.fecha}">${fechaEnEspanol(mensaje.fecha)}</time>${mensaje.fechaEstimada ? ' · Fecha estimada' : ''}</p>`;
+}
+
+function htmlColosenses() {
+    const primero = mensajesColosenses[0];
+    return `
         <p class="sermon-serie">Serie expositiva · ${mensajesColosenses.length} mensajes</p>
         <h3 class="titulo-sermon-tarjeta">Colosenses</h3>
         <label class="selector-mensaje-label" for="mensajeColosenses">Seleccionar mensaje</label>
         <select class="selector-mensaje" id="mensajeColosenses" aria-controls="detalleColosenses videoColosenses">
             ${mensajesColosenses.map(mensaje => `<option value="${mensaje.numeroMensaje}">${mensaje.numeroMensaje}. ${escapar(mensaje.titulo)}</option>`).join('')}
         </select>
-        <div id="detalleColosenses" class="detalle-mensaje" aria-live="polite" aria-atomic="true"></div>
-        <div class="video-responsive sermon-video"><video id="videoColosenses" controls playsinline preload="none"><source type="video/mp4">Su navegador no admite la reproducción de video. Use el enlace Abrir video.</video></div>
-        <a id="enlaceColosenses" target="_blank" rel="noopener noreferrer" class="btn-principal">Abrir video <span aria-hidden="true">↗</span></a>`;
+        <div id="detalleColosenses" class="detalle-mensaje" aria-live="polite" aria-atomic="true">${htmlDetalleColosenses(primero)}</div>
+        <div class="video-responsive sermon-video"><video id="videoColosenses" controls playsinline preload="none" aria-label="Mensaje 1: ${escapar(primero.titulo)}"><source src="${escapar(primero.videoUrl)}" type="video/mp4">Su navegador no admite la reproducción de video. Use el enlace Abrir video.</video></div>
+        <a id="enlaceColosenses" href="${escapar(primero.videoUrl)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Abrir video <span aria-hidden="true">↗</span></a>`;
+}
+
+function cargarColosenses() {
+    const contenedor = document.getElementById('contenedorColosenses');
+    if (!contenedor) return;
+    // El HTML inicial ya reserva el tamaño real. JavaScript solo añade interacción.
+    if (!document.getElementById('mensajeColosenses')) contenedor.innerHTML = htmlColosenses();
     const selector = document.getElementById('mensajeColosenses');
     const video = document.getElementById('videoColosenses');
     const mostrarMensaje = () => {
@@ -88,16 +103,12 @@ function cargarColosenses() {
         video.querySelector('source').src = mensaje.videoUrl;
         video.setAttribute('aria-label', `Mensaje ${mensaje.numeroMensaje}: ${mensaje.titulo}`);
         video.load();
-        document.getElementById('detalleColosenses').innerHTML = `
-            <p class="sermon-serie">Serie Colosenses · Mensaje ${mensaje.numeroMensaje}</p>
-            <h4>${escapar(mensaje.titulo)}</h4>
-            <p class="sermon-referencia">${escapar(mensaje.pasaje)}</p>
-            <p class="sermon-predicador">${escapar(mensaje.predicador)}</p>
-            <p class="sermon-fecha"><time datetime="${mensaje.fecha}">${fechaEnEspanol(mensaje.fecha)}</time>${mensaje.fechaEstimada ? ' · Fecha estimada' : ''}</p>`;
+        document.getElementById('detalleColosenses').innerHTML = htmlDetalleColosenses(mensaje);
         document.getElementById('enlaceColosenses').href = mensaje.videoUrl;
     };
     selector.addEventListener('change', mostrarMensaje);
-    mostrarMensaje();
+    // Restaurar una selección del navegador sin alterar la carga inicial habitual.
+    if (selector.value !== '1') mostrarMensaje();
 }
 
 async function cargarVideo() {
@@ -167,31 +178,85 @@ async function cargarGaleria() {
         const datos = await respuesta.json();
         const fotos = Array.isArray(datos.fotos) ? datos.fotos : [];
         if (!fotos.length) throw new Error('Sin fotografías');
-        grid.replaceChildren();
-        fotos.forEach((foto, i) => {
-            const boton = document.createElement('button');
-            boton.type = 'button';
-            boton.className = 'galeria-foto';
-            const alt = foto.texto || `Actividad de la iglesia, fotografía ${i + 1}`;
-            boton.setAttribute('aria-label', `Ampliar fotografía ${i + 1}: ${alt}`);
-            const imagen = document.createElement('img');
-            imagen.src = foto.thumb || foto.src;
-            imagen.alt = alt;
-            imagen.loading = i < 4 ? 'eager' : 'lazy';
-            imagen.decoding = 'async';
-            imagen.width = 400;
-            imagen.height = 400;
-            imagen.addEventListener('error', () => {
-                boton.replaceChildren(document.createTextNode('Fotografía no disponible'));
-                boton.disabled = true;
-            });
-            boton.appendChild(imagen);
-            boton.addEventListener('click', () => abrir(foto, boton, alt));
-            grid.appendChild(boton);
-        });
+        const porPagina = 12;
+        let pagina = 0;
+        const anterior = document.getElementById('galeria-anterior');
+        const siguiente = document.getElementById('galeria-siguiente');
+        const estado = document.getElementById('galeria-estado');
+        const mostrarPagina = () => {
+            grid.replaceChildren();
+            const inicio = pagina * porPagina;
+            for (let posicion = 0; posicion < porPagina; posicion++) {
+                const i = inicio + posicion;
+                const foto = fotos[i];
+                if (!foto) {
+                    const reserva = document.createElement('span');
+                    reserva.className = 'galeria-reserva galeria-reserva-vacia';
+                    reserva.setAttribute('aria-hidden', 'true');
+                    grid.appendChild(reserva);
+                    continue;
+                }
+                const boton = document.createElement('button');
+                boton.type = 'button';
+                boton.className = 'galeria-foto';
+                const alt = foto.texto || `Actividad de la iglesia, fotografía ${i + 1}`;
+                boton.setAttribute('aria-label', `Ampliar fotografía ${i + 1}: ${alt}`);
+                const imagen = document.createElement('img');
+                imagen.src = foto.thumb || foto.src;
+                imagen.alt = alt;
+                imagen.loading = posicion < 4 ? 'eager' : 'lazy';
+                imagen.decoding = 'async';
+                imagen.width = 400;
+                imagen.height = 400;
+                imagen.addEventListener('error', () => {
+                    boton.replaceChildren(document.createTextNode('Fotografía no disponible'));
+                    boton.disabled = true;
+                });
+                boton.appendChild(imagen);
+                boton.addEventListener('click', () => abrir(foto, boton, alt));
+                grid.appendChild(boton);
+            }
+            estado.textContent = `Fotografías ${inicio + 1}–${Math.min(inicio + porPagina, fotos.length)} de ${fotos.length}`;
+            anterior.disabled = pagina === 0;
+            siguiente.disabled = inicio + porPagina >= fotos.length;
+        };
+        anterior.addEventListener('click', () => { pagina--; mostrarPagina(); if (anterior.disabled) siguiente.focus(); });
+        siguiente.addEventListener('click', () => { pagina++; mostrarPagina(); if (siguiente.disabled) anterior.focus(); });
+        mostrarPagina();
     } catch {
-        grid.innerHTML = `<div class="galeria-mensaje galeria-error" role="status"><h2>Fotografías de nuestra iglesia</h2><p>En este momento no pudimos cargar las fotografías. Puede ver nuestras actividades en Facebook.</p><a href="${FACEBOOK_PHOTOS}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver fotografías en Facebook</a></div>`;
+        // Conservar las doce celdas incluso si faltan datos: el pie no salta hacia arriba.
+        grid.querySelectorAll('.galeria-reserva').forEach(celda => celda.classList.add('galeria-reserva-vacia'));
+        grid.insertAdjacentHTML('beforeend', `<div class="galeria-mensaje galeria-error"><h2>Fotografías de nuestra iglesia</h2><p>En este momento no pudimos cargar las fotografías. Puede ver nuestras actividades en Facebook.</p><a href="${FACEBOOK_PHOTOS}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver fotografías en Facebook</a></div>`);
+        document.getElementById('galeria-estado').textContent = 'Fotografías no disponibles.';
     }
+}
+
+function htmlPlaylists() {
+    return playlists.map(serie => `
+        <article class="sermon-tarjeta">
+            <p class="sermon-fecha">SERIE COMPLETA · ${escapar(serie.cantidadMensajes)}</p>
+            <h3 class="titulo-sermon-tarjeta">${escapar(serie.titulo)}</h3>
+            <p class="sermon-referencia">${escapar(serie.descripcion)}</p>
+            <div class="video-responsive"><iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(serie.playlistId)}" title="${escapar(serie.titulo)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
+            <a href="https://www.youtube.com/playlist?list=${encodeURIComponent(serie.playlistId)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver serie en YouTube ↗</a>
+        </article>`).join('');
+}
+
+function htmlSermones() {
+    return sermones.map(sermon => `
+        <article class="sermon-tarjeta">
+            ${sermon.fecha ? `<p class="sermon-fecha">${escapar(sermon.fecha)}</p>` : ''}
+            ${sermon.serie && sermon.numeroMensaje != null ? `<p class="sermon-serie">Serie ${escapar(sermon.serie)} · Mensaje ${escapar(sermon.numeroMensaje)}</p>` : ''}
+            <h3 class="titulo-sermon-tarjeta">${escapar(sermon.titulo)}</h3>
+            <p class="sermon-referencia">${escapar(sermon.pasaje)}</p>
+            ${sermon.videoUrl ? `
+                <div class="video-responsive sermon-video"><video controls playsinline preload="none" aria-label="${escapar(sermon.titulo)}"><source src="${escapar(sermon.videoUrl)}" type="video/mp4">Su navegador no admite la reproducción de video. Use el enlace Abrir video.</video></div>
+                <a href="${escapar(sermon.videoUrl)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Abrir video <span aria-hidden="true">↗</span></a>
+            ` : sermon.youtubeId ? `
+                <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/${encodeURIComponent(sermon.youtubeId)}/mqdefault.jpg" alt="Ver ${escapar(sermon.titulo)}" loading="lazy" width="320" height="180" style="width:100%; height:auto; margin:10px 0 20px;"></a>
+                <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver sermón ↗</a>
+            ` : ''}
+        </article>`).join('');
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -238,30 +303,10 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }));
     const contenedorPlaylists = document.getElementById('contenedorPlaylists');
-    if (contenedorPlaylists) contenedorPlaylists.innerHTML = playlists.map(serie => `
-        <article class="sermon-tarjeta">
-            <p class="sermon-fecha">SERIE COMPLETA · ${escapar(serie.cantidadMensajes)}</p>
-            <h3 class="titulo-sermon-tarjeta">${escapar(serie.titulo)}</h3>
-            <p class="sermon-referencia">${escapar(serie.descripcion)}</p>
-            <div class="video-responsive"><iframe src="https://www.youtube-nocookie.com/embed/videoseries?list=${encodeURIComponent(serie.playlistId)}" title="${escapar(serie.titulo)}" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe></div>
-            <a href="https://www.youtube.com/playlist?list=${encodeURIComponent(serie.playlistId)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver serie en YouTube ↗</a>
-        </article>`).join('');
+    if (contenedorPlaylists && !contenedorPlaylists.children.length) contenedorPlaylists.innerHTML = htmlPlaylists();
     cargarColosenses();
     const contenedorSermones = document.getElementById('contenedorSermones');
-    if (contenedorSermones) contenedorSermones.innerHTML = sermones.map(sermon => `
-        <article class="sermon-tarjeta">
-            ${sermon.fecha ? `<p class="sermon-fecha">${escapar(sermon.fecha)}</p>` : ''}
-            ${sermon.serie && sermon.numeroMensaje != null ? `<p class="sermon-serie">Serie ${escapar(sermon.serie)} · Mensaje ${escapar(sermon.numeroMensaje)}</p>` : ''}
-            <h3 class="titulo-sermon-tarjeta">${escapar(sermon.titulo)}</h3>
-            <p class="sermon-referencia">${escapar(sermon.pasaje)}</p>
-            ${sermon.videoUrl ? `
-                <div class="video-responsive sermon-video"><video controls playsinline preload="none" aria-label="${escapar(sermon.titulo)}"><source src="${escapar(sermon.videoUrl)}" type="video/mp4">Su navegador no admite la reproducción de video. Use el enlace Abrir video.</video></div>
-                <a href="${escapar(sermon.videoUrl)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Abrir video <span aria-hidden="true">↗</span></a>
-            ` : sermon.youtubeId ? `
-                <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer"><img src="https://img.youtube.com/vi/${encodeURIComponent(sermon.youtubeId)}/mqdefault.jpg" alt="Ver ${escapar(sermon.titulo)}" loading="lazy" width="320" height="180" style="width:100%; height:auto; margin:10px 0 20px;"></a>
-                <a href="https://www.youtube.com/watch?v=${encodeURIComponent(sermon.youtubeId)}" target="_blank" rel="noopener noreferrer" class="btn-principal">Ver sermón ↗</a>
-            ` : ''}
-        </article>`).join('');
+    if (contenedorSermones && !contenedorSermones.children.length) contenedorSermones.innerHTML = htmlSermones();
     cargarVideo();
     cargarGaleria();
 });

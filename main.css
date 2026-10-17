@@ -118,8 +118,8 @@ p { margin: 0 0 1rem; }
 .sermon-fecha, .sermon-serie { font-size: .8rem; color: var(--color-secondary); }
 .titulo-sermon-tarjeta { font-size: 1.3rem; }
 .sermon-referencia { color: var(--color-muted); }
-.video-responsive { width: 100%; aspect-ratio: 16 / 9; margin: 22px 0; background: #e9ecf2; }
-.video-responsive iframe { width: 100%; height: 100%; border: 0; }
+.video-responsive { position: relative; width: 100%; aspect-ratio: 16 / 9; margin: 22px 0; background: #e9ecf2; }
+.video-responsive iframe, .video-responsive video { position: absolute; inset: 0; display: block; width: 100%; height: 100%; border: 0; }
 .sermon-video { background: #000; }
 .sermon-video video { display: block; width: 100%; height: 100%; object-fit: contain; }
 .series-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 400px), 1fr)); gap: 24px; align-items: start; }
@@ -143,7 +143,13 @@ p { margin: 0 0 1rem; }
 .documento-largo .seccion-subtitulo { font-size: 1.1rem; margin-top: 24px; }
 .documento-largo .seccion-subtitulo:first-child { margin-top: 0; }
 .seccion-galeria { padding-block: 42px; }
-.galeria-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.galeria-grid { position: relative; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; }
+.galeria-reserva { display: block; aspect-ratio: 1; background: #e9ecf2; border-radius: 3px; }
+.galeria-reserva-vacia { visibility: hidden; }
+.galeria-estado { min-height: 3.6em; margin: 20px 0 0; text-align: center; color: var(--color-muted); }
+.galeria-paginacion { display: flex; justify-content: center; gap: 16px; }
+.galeria-paginacion button:disabled { opacity: .5; cursor: default; }
+.galeria-grid > .galeria-error { position: absolute; inset: 0 0 auto; margin: 0; }
 .galeria-foto { display: block; width: 100%; padding: 0; border: 0; background: #e9ecf2; cursor: pointer; overflow: hidden; border-radius: 3px; aspect-ratio: 1; }
 .galeria-foto img { display: block; width: 100%; height: 100%; object-fit: cover; transition: transform .2s; }
 .galeria-foto:hover img { transform: scale(1.025); }
