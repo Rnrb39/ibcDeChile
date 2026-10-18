@@ -20,7 +20,8 @@ const published = vm.runInNewContext(publishedScript + '\n({ mensajesColosenses,
 });
 
 test('la candidata conserva íntegros los datos publicados y la lógica de menú y visor', () => {
-    for (const key of ['mensajesColosenses', 'sermones', 'playlists']) {
+    assert.equal(JSON.stringify(api.mensajesColosenses.slice(0, published.mensajesColosenses.length)), JSON.stringify(published.mensajesColosenses));
+    for (const key of ['sermones', 'playlists']) {
         assert.equal(JSON.stringify(api[key]), JSON.stringify(published[key]));
     }
     const current = script.replace(/\r\n/g, '\n');
@@ -44,8 +45,8 @@ test('el HTML inicial coincide con las tarjetas de la fuente de datos', () => {
     assert.equal((api.htmlSermones().match(/class="titulo-sermon-tarjeta"/g) || []).length, 2);
 });
 
-test('se conservan los 11 mensajes, sus URLs, predicador y fechas estimadas', () => {
-    assert.equal(api.mensajesColosenses.length, 11);
+test('se conservan los 11 mensajes y se incorpora el 12 con sus metadatos y video', () => {
+    assert.equal(api.mensajesColosenses.length, 12);
     api.mensajesColosenses.forEach((m, i) => {
         assert.equal(m.numeroMensaje, i + 1);
         assert.equal(m.videoUrl, `https://videos.ibcdechile.org/colosenses-${String(i + 1).padStart(2, '0')}.mp4`);
@@ -54,6 +55,9 @@ test('se conservan los 11 mensajes, sus URLs, predicador y fechas estimadas', ()
     });
     assert.equal(api.fechaEnEspanol('2026-08-02'), '2 de agosto de 2026');
     assert.equal(api.fechaEnEspanol('2026-10-11'), '11 de octubre de 2026');
+    assert.equal(api.fechaEnEspanol('2026-10-18'), '18 de octubre de 2026');
+    assert.equal(api.mensajesColosenses[11].titulo, 'El ayer y el hoy');
+    assert.equal(api.mensajesColosenses[11].pasaje, 'Colosenses 2:11–15');
 });
 
 test('el renderizado conserva controles, carga diferida y escape de texto', () => {
@@ -77,20 +81,19 @@ test('mejorar HTML existente no reinserta tarjetas ni inicia descargas', () => {
     const context = vm.createContext({ document: { addEventListener() {}, getElementById(id) { return nodes[id]; } } });
     vm.runInContext(script + '\ncargarColosenses();', context);
     assert.deepEqual(events, []);
-    nodes.mensajeColosenses.value = '11';
+    nodes.mensajeColosenses.value = '12';
     nodes.mensajeColosenses.change();
-    assert.deepEqual(events, ['pause', 'https://videos.ibcdechile.org/colosenses-11.mp4', 'load']);
-    assert.match(nodes.detalleColosenses.innerHTML, /Completos en Él/);
-    assert.equal(nodes.enlaceColosenses.href, 'https://videos.ibcdechile.org/colosenses-11.mp4');
+    assert.deepEqual(events, ['pause', 'https://videos.ibcdechile.org/colosenses-12.mp4', 'load']);
+    assert.match(nodes.detalleColosenses.innerHTML, /El ayer y el hoy/);
+    assert.equal(nodes.enlaceColosenses.href, 'https://videos.ibcdechile.org/colosenses-12.mp4');
 });
 
 test('galería reserva doce celdas antes de JavaScript y versiones actuales', () => {
     const gallery = readFileSync(new URL('galeria.html', root), 'utf8');
     assert.equal((gallery.match(/class="galeria-reserva"/g) || []).length, 12);
-    for (const page of [html, gallery]) {
-        assert.match(page, /main\.css\?v=cls-20261017/);
-        assert.match(page, /script\.js\?v=cls-20261017/);
-    }
+    for (const page of [html, gallery]) assert.match(page, /main\.css\?v=cls-20261017/);
+    assert.match(html, /script\.js\?v=sermon12-20261018/);
+    assert.match(gallery, /script\.js\?v=cls-20261017/);
 });
 
 async function galeriaDePrueba(fotos) {

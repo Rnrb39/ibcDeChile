@@ -28,13 +28,13 @@ test('estimated future date cannot outrank a confirmed recording', () => {
   assert.equal(model.hasAudio(model.prepare({version:1,sermons:[{...items[0],audioUrl:'javascript:alert(1)'}]},[],'https://ibcdechile.org/app/')[0]), false);
 });
 
-test('real catalog shows five sermons and six collapsed older sermons', async () => {
+test('real catalog shows five sermons and seven collapsed older sermons', async () => {
   const {ids} = await interfaceWith(catalog.sermons);
   assert.equal(ids['sermon-list'].children.length,5);
-  assert.equal(ids['older-sermon-list'].children.length,6);
+  assert.equal(ids['older-sermon-list'].children.length,7);
   assert.equal(ids['older-sermons'].hidden,false);
   assert.equal(ids['older-sermons'].open,false);
-  assert.equal(ids['sermon-title'].textContent,'Completos en Él');
+  assert.equal(ids['sermon-title'].textContent,'El ayer y el hoy');
   for(const category of ['catecismo-confesion','taller-biblico']) {
     const content=ids[`${category}-recordings`];
     assert.equal(content.children.length,1);

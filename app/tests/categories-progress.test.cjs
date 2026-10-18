@@ -18,7 +18,7 @@ const school = ['catecismo-confesion','taller-biblico'].flatMap((category,index)
 })));
 const records = [...catalog.sermons,...school];
 const items = Object.fromEntries(categories.map(category=>[category,
-  category==='predicaciones' ? catalog.sermons[10] : school.find(item=>item.category===category && item.number===2)
+  category==='predicaciones' ? catalog.sermons.at(-1) : school.find(item=>item.category===category && item.number===2)
 ]));
 
 function saved(storage) { const raw=storage.getItem(progress.KEY);return raw ? JSON.parse(raw) : null; }
@@ -148,6 +148,6 @@ for (const category of categories.filter(category=>category!=='predicaciones')) 
 }
 
 test('category fixtures never become public catalog entries', () => {
-  assert.equal(catalog.sermons.length,11);
+  assert.equal(catalog.sermons.length,12);
   assert.ok(catalog.sermons.every(item=>item.category==='predicaciones' && !item.id.startsWith('fixture-')));
 });

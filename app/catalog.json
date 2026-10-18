@@ -1,7 +1,7 @@
 {
   "version": 1,
-  "source": "Metadatos existentes y mensaje 11 confirmado por la iglesia. Once MP3 verificados individualmente: HEAD 200, Range 206, firma MP3 y reproducción HTML5 con duración válida.",
-  "verifiedOn": "2026-10-16",
+  "source": "Metadatos existentes y mensajes 11 y 12. Los doce MP3 se alojan en Cloudflare R2; el MP3 12 se verificó con HEAD 200, Range 206 y comparación de duración/tamaño con el archivo generado.",
+  "verifiedOn": "2026-10-18",
   "sermons": [
     {
       "id": "colosenses-01",
@@ -189,6 +189,23 @@
       "audioVersion": "r2-etag:1da17894d86a2fa3be33f11f0bfe0fb4",
       "audioSizeBytes": 24904035,
       "audioDurationSeconds": 3112.917347
+    },
+    {
+      "id": "colosenses-12",
+      "category": "predicaciones",
+      "series": "Colosenses",
+      "number": 12,
+      "title": "El ayer y el hoy",
+      "passage": "Colosenses 2:11–15",
+      "speaker": "Pastor Sergio Arias Cáceres",
+      "date": "2026-10-18",
+      "dateEstimated": false,
+      "captionsUrl": null,
+      "transcriptText": null,
+      "audioUrl": "https://videos.ibcdechile.org/audio/colosenses-12.mp3",
+      "audioVersion": "r2-etag:c79f7d0a5a9e7f9602573956d9726e6c",
+      "audioSizeBytes": 23791086,
+      "audioDurationSeconds": 2973.831837
     }
   ]
 }
