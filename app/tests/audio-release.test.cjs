@@ -13,9 +13,9 @@ const scope = 'https://ibcdechile.org/app/';
 const read = file => fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
 const choices = app => [...app.ids['sermon-list'].children, ...app.ids['older-sermon-list'].children].map(li => li.children[0]);
 
-test('eleven permanent IDs, original confirmed metadata and explicit R2 MP3 revisions', () => {
-  assert.equal(catalog.sermons.length,11);
-  assert.equal(new Set(catalog.sermons.map(item=>item.id)).size,11);
+test('twelve permanent IDs, original confirmed metadata and explicit R2 MP3 revisions', () => {
+  assert.equal(catalog.sermons.length,12);
+  assert.equal(new Set(catalog.sermons.map(item=>item.id)).size,12);
   for(const [index, item] of catalog.sermons.entries()) {
     const id = `colosenses-${String(index+1).padStart(2,'0')}`;
     assert.equal(item.id,id);
@@ -31,10 +31,12 @@ test('eleven permanent IDs, original confirmed metadata and explicit R2 MP3 revi
       assert.deepEqual(metadata,original);
     }
   }
-  const latest = catalog.sermons[10];
-  assert.equal(latest.title,'Completos en Él');
-  assert.equal(latest.passage,'Colosenses 2:8-10');
-  assert.equal(latest.date,'2026-10-11');
+  assert.equal(catalog.sermons[10].title,'Completos en Él');
+  assert.equal(catalog.sermons[10].date,'2026-10-11');
+  const latest = catalog.sermons[11];
+  assert.equal(latest.title,'El ayer y el hoy');
+  assert.equal(latest.passage,'Colosenses 2:11–15');
+  assert.equal(latest.date,'2026-10-18');
   assert.equal(latest.dateEstimated,false);
   assert.equal(latest.speaker,'Pastor Sergio Arias Cáceres');
 });
@@ -43,9 +45,9 @@ test('eleven permanent IDs, original confirmed metadata and explicit R2 MP3 revi
   test('opening and every sermon selection never request media or local configuration',async()=>{
     const app=await interfaceWith(catalog.sermons,{now:NOW});
     assert.deepEqual(app.fetches,['catalog.json']);
-    assert.equal(app.ids['sermon-title'].textContent,'Completos en Él');
+    assert.equal(app.ids['sermon-title'].textContent,'El ayer y el hoy');
     assert.equal(app.ids['sermon-list'].children.length,5);
-    assert.equal(app.ids['older-sermon-list'].children.length,6);
+    assert.equal(app.ids['older-sermon-list'].children.length,7);
     for(const button of choices(app)) {
       button.click();
       assert.equal(app.player.src,'');
@@ -97,7 +99,7 @@ for(const failure of [{catalogError:true},{catalogStatus:404},{catalogStatus:503
     for(const key of Object.keys(failure))delete options[key];
     app.ids['retry-catalog'].click();await new Promise(setImmediate);
     assert.equal(app.ids['retry-catalog'].hidden,true);
-    assert.equal(app.ids['sermon-title'].textContent,'Completos en Él');
+    assert.equal(app.ids['sermon-title'].textContent,'El ayer y el hoy');
     assert.equal(app.mediaAssignments.length,0);
   });
 }
@@ -181,9 +183,9 @@ test('video-to-audio upgrade precaches a complete new shell before deleting only
     fetch:async()=>{throw Error('offline after upgrade');}
   });
   let pending;events.install({waitUntil:task=>pending=task});await pending;
-  assert.equal(cacheName,'ibc-pwa-/app/-v7-audio');
+  assert.equal(cacheName,'ibc-pwa-/app/-v8-sermon12');
   assert.match(stored.get(scope),/<audio\b/);assert.doesNotMatch(stored.get(scope),/<video\b/);
-  assert.equal(JSON.parse(stored.get(scope+'catalog.json')).sermons.length,11);
+  assert.equal(JSON.parse(stored.get(scope+'catalog.json')).sermons.length,12);
   assert.ok(stored.has(scope+'audio-catalog.js') && stored.has(scope+'audio.css'));
   events.activate({waitUntil:task=>pending=task});await pending;
   assert.deepEqual(deleted,['ibc-pwa-/app/-v6','ibc-pwa-/app/-v5']);

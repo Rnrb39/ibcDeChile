@@ -4,8 +4,8 @@ const catalog = require('../catalog.json');
 const model = require('../playback-progress.js');
 const { interfaceWith, memoryStorage } = require('./helpers/interface.cjs');
 const NOW = Date.parse('2026-10-12T12:00:00Z');
-const latest = catalog.sermons[10];
-const older = catalog.sermons[9];
+const latest = catalog.sermons.at(-1);
+const older = catalog.sermons.at(-2);
 const record = (item=latest, overrides={}) => ({schemaVersion:1,mediaType:'audio',id:item.id,position:45,duration:300,mediaVersion:model.audioVersion(item),updatedAt:new Date(NOW).toISOString(),...overrides});
 const seed = value => memoryStorage({[model.KEY]:JSON.stringify(value)});
 

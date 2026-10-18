@@ -34,7 +34,8 @@ const mensajesColosenses = [
     { numeroMensaje: 8, titulo: "La preocupación por la iglesia, deber de todos", pasaje: "Colosenses 1:24–29", fecha: "2026-09-20" },
     { numeroMensaje: 9, titulo: "La lucha por la iglesia", pasaje: "Colosenses 2:1–5", fecha: "2026-09-27" },
     { numeroMensaje: 10, titulo: "Soportando la presión", pasaje: "Colosenses 2:6–7", fecha: "2026-10-04" },
-    { numeroMensaje: 11, titulo: "Completos en Él", pasaje: "Colosenses 2:8-10", fecha: "2026-10-11", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-11.mp4" }
+    { numeroMensaje: 11, titulo: "Completos en Él", pasaje: "Colosenses 2:8-10", fecha: "2026-10-11", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-11.mp4" },
+    { numeroMensaje: 12, titulo: "El ayer y el hoy", pasaje: "Colosenses 2:11–15", fecha: "2026-10-18", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-12.mp4" }
 ].map(mensaje => ({
     serie: "Colosenses",
     predicador: "Pastor Sergio Arias Cáceres",
