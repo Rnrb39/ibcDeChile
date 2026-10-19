@@ -16,6 +16,7 @@
   <script src="catalog-utils.js" defer></script>
   <script src="audio-catalog.js" defer></script>
   <script src="playback-progress.js" defer></script>
+  <script src="../catalogo-config.js" defer></script><script src="../catalogo-publico.js" defer></script>
   <script src="app.js" defer></script>
   <script src="pwa.js" defer></script>
 </head>
@@ -43,6 +44,7 @@
           <p id="sermon-passage" class="passage"></p>
           <p id="sermon-meta" class="metadata"></p>
           <button id="play-button" class="primary-button" type="button">▶ Reproducir sermón</button>
+          <button id="watch-video" class="secondary-button" type="button" hidden>Ver video MP4</button><video id="video-player" controls playsinline preload="none" hidden style="width:100%"></video>
           <div class="seek-controls" role="group" aria-label="Moverse por la predicación">
             <button id="seek-back" class="secondary-button" type="button" aria-controls="player" disabled>Retroceder 15 segundos</button>
             <button id="seek-forward" class="secondary-button" type="button" aria-controls="player" disabled>Avanzar 15 segundos</button>
@@ -63,7 +65,7 @@
       <details id="sermons-section" class="section-card">
         <summary><span class="section-icon" aria-hidden="true">▷</span><span>Predicaciones y series</span><span class="chevron" aria-hidden="true">+</span></summary>
         <div class="section-content">
-          <h2>Colosenses</h2>
+          <h2>Predicaciones y series</h2>
           <p class="hint">Elige un mensaje para escucharlo en el reproductor de arriba.</p>
           <ol id="sermon-list" class="sermon-list"></ol>
           <details id="older-sermons" class="older-recordings" hidden>

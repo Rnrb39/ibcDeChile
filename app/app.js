@@ -18,6 +18,9 @@ let latestId = null;
 let currentCategory = 'predicaciones';
 let currentItem = null;
 let recordings = [];
+let catalogLoading=false;
+let publicClient;
+try{publicClient=IBCPublicCatalog.create({storage:window.localStorage});}catch{publicClient=IBCPublicCatalog.create();}
 let hasPlayed = false;
 let changingMessage = false;
 let pendingResume = null;
@@ -109,6 +112,8 @@ function selectSermon(item, moveFocus = false) {
   pendingResume = null;
   hasPlayed = false;
   currentItem = item;
+  const video=document.getElementById('video-player');video.pause();video.removeAttribute('src');video.load();video.hidden=true;document.getElementById('watch-video').hidden=!item.videoUrl;playButton.disabled=!hasAudio(item);
+  if(!hasAudio(item))playButton.textContent='Audio MP3 aún no disponible';
   lastSavedAt = Date.now();
   currentCategory = item.category;
   playButton.textContent = playLabel();
@@ -214,21 +219,24 @@ function renderSchoolCategory(category, items) {
 }
 
 async function loadCatalog() {
+  if(catalogLoading)return;catalogLoading=true;
   retryCatalog.hidden = true;
   catalogStatus.textContent = 'Cargando las predicaciones…';
   try {
-    const response = await fetch('catalog.json', { cache: 'no-cache' });
-    if (!response.ok) throw new Error('Catalog unavailable');
-    const catalog = await response.json();
+    let catalog={version:1,sermons:[]};
+    try{const response=await fetch('catalog.json',{cache:'no-cache'});if(response.ok)catalog=await response.json();}catch{}
+    if(catalog.version!==1||!Array.isArray(catalog.sermons))catalog={version:1,sermons:[]};
+    let catalogWarning='';
+    if(globalThis.IBCPublicCatalogConfig?.enabled){try{const result=await publicClient.load();catalog=IBCPublicCatalog.merge(catalog,result.catalog);if(result.stale)catalogWarning='Mostramos el último catálogo disponible.';}catch{catalogWarning='El catálogo nuevo no está disponible. Conservamos las grabaciones históricas.';}}
     // Only this application's verified public catalog is used, including on the LAN.
     // Old ignored local configuration cannot override an R2 audio or its revision.
     recordings = IBCAudioCatalog.prepare(catalog);
-    const available = recordings.filter(hasAudio);
+    const available = recordings.filter(item=>hasAudio(item)||item.videoUrl);
     if (!available.length) throw new Error('No playable audio');
     const items = orderRecordings(available.filter(item => item.category === 'predicaciones'));
     latestId = items[0]?.id || null;
     document.getElementById('audio-availability').textContent = available.length
-      ? `${available.length} audio${available.length===1 ? '' : 's'} disponible${available.length===1 ? '' : 's'} para escuchar.`
+      ? `${available.length} grabaciones disponibles en audio o video.`
       : 'No hay audios disponibles en este momento.';
     const list = document.getElementById('sermon-list');
     list.replaceChildren();
@@ -244,13 +252,13 @@ async function loadCatalog() {
     }
     const initial = items[0] || orderRecordings(available)[0];
     document.getElementById('sermon-content').hidden = !initial;
-    catalogStatus.textContent = '';
-    if (initial) selectSermon(initial);
+    catalogStatus.textContent = catalogWarning;
+    if (initial && !currentItem) selectSermon(initial);
     else showSavedProgress();
   } catch {
     catalogStatus.textContent = 'No pudimos cargar las predicaciones. Revisa tu conexión y vuelve a intentarlo.';
     retryCatalog.hidden = false;
-  }
+  }finally{catalogLoading=false;}
 }
 
 async function startAudio() {
