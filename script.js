@@ -108,6 +108,13 @@ function cargarColosenses() {
         document.getElementById('enlaceColosenses').href = mensaje.videoUrl;
     };
     selector.addEventListener('change', mostrarMensaje);
+    // Respaldo histórico para la biblioteca web; no son IDs ni registros de IBC Admin.
+    globalThis.IBCLegacyColosenses = {
+        items: mensajesColosenses.map(m => ({ category: 'predicaciones', series: m.serie,
+            number: m.numeroMensaje, title: m.titulo, passage: m.pasaje, speaker: m.predicador,
+            date: m.fecha, dateEstimated: !!m.fechaEstimada, videoUrl: m.videoUrl })),
+        detach: () => selector.removeEventListener('change', mostrarMensaje)
+    };
     // Restaurar una selección del navegador sin alterar la carga inicial habitual.
     if (selector.value !== '1') mostrarMensaje();
 }

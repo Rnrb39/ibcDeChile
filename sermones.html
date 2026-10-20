@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <link rel="stylesheet" href="main.css?v=cls-20261017">
+    <link rel="stylesheet" href="main.css?v=biblioteca-20261019">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sermones y Series - Iglesia Bíblica Cristiana</title>
@@ -67,7 +67,8 @@
                 <p style="margin-bottom: 2em; color: #555;">Estudios expositivos completos libro por libro o por temas.</p>
 
                 <!-- Tarjetas generadas con node scripts/generar-sermones.mjs; JavaScript añade la selección. -->
-                <div class="series-grid">
+                <p id="estadoBiblioteca" class="seccion-intro" role="status"></p>
+                <div class="series-grid" id="seriesPredicacion">
                     <article id="contenedorColosenses" class="sermon-tarjeta"><!-- INICIO COLOSENSES -->
         <p class="sermon-serie">Serie expositiva · 12 mensajes</p>
         <h3 class="titulo-sermon-tarjeta">Colosenses</h3>
@@ -94,6 +95,20 @@
             </div>
         </section>
 
+        <section class="seccion-sermones" id="escuela-dominical" aria-labelledby="tituloEscuela">
+            <div class="contenedor">
+                <h2 id="tituloEscuela">Escuela Dominical</h2>
+                <p class="seccion-intro" id="notaTeologia">Consulta las grabaciones disponibles en <a href="#publicaciones-recientes">Publicaciones recientes</a>.</p>
+                <div data-ibc-category-section="taller-biblico" hidden>
+                <h3>Taller bíblico</h3>
+                <div class="series-grid" data-ibc-series-category="taller-biblico"></div>
+                </div>
+                <div data-ibc-category-section="catecismo-confesion" hidden>
+                <h3>Catecismo y confesión</h3>
+                <div class="series-grid" data-ibc-series-category="catecismo-confesion"></div>
+                </div>
+            </div>
+        </section>
         <hr style="border: 0; border-top: 1px solid #e0e0e0; margin: 0;">
 
         <!-- SECCIÓN 2: SERMONES INDIVIDUALES -->
@@ -126,7 +141,7 @@
         </article><!-- FIN SERMONES --></div>
             </div>
         </section>
-    <section class="contenedor" aria-label="Nuevas publicaciones IBC"><h2>Publicaciones recientes</h2><div data-ibc-catalog></div></section>
+    <section class="contenedor" id="publicaciones-recientes" aria-label="Nuevas publicaciones IBC"><h2>Publicaciones recientes</h2><div data-ibc-catalog></div></section>
 </main>
 
     <footer class="footer-principal">
@@ -137,8 +152,8 @@
     </div>
 </footer>
 
-    <script src="script.js?v=sermon12-20261018"></script>
+    <script src="script.js?v=biblioteca-20261019"></script>
     <!-- Cloudflare Web Analytics --><script type='module' src='https://static.cloudflareinsights.com/beacon.min.js' data-cf-beacon='{"token": "43cd437110ff4149aebbf6b261a40702"}'></script><!-- End Cloudflare Web Analytics -->
-<script src="catalogo-config.js" defer></script><script src="catalogo-publico.js" defer></script><script src="catalogo-web.js" defer></script>
+<script src="catalogo-config.js" defer></script><script src="catalogo-publico.js" defer></script><script src="biblioteca-series.js?v=biblioteca-20261019" defer></script><script src="catalogo-web.js?v=biblioteca-20261019b" defer></script>
 </body>
 </html>
