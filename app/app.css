@@ -33,7 +33,7 @@ button {
 }
 
 button:disabled {
-  cursor:wait;
+  cursor:default;
   opacity:.7
 }
 
@@ -440,12 +440,6 @@ footer span {
   }
 }
 
-@media(prefers-reduced-motion:no-preference) {
-  button {
-    transition:background-color .15s ease
-  }
-}
-
 .older-recordings {
   margin-top:1rem;
 }
@@ -502,6 +496,19 @@ footer span {
 }
 .hint:empty {
   display:none;
+}
+.message-navigation {
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:.6rem;
+}
+.message-navigation button {margin:.5rem 0;min-width:0;}
+#series-navigation {border-top:1px solid var(--line);margin-top:1rem;padding-top:1rem;}
+#message-picker>summary {padding:.8rem;border:2px solid var(--green);border-radius:12px;font-weight:700;cursor:pointer;}
+button,summary,.brand div {overflow-wrap:anywhere;min-width:0;}
+.sermon-list li {min-width:0;}
+@media(max-width:520px) {
+  .message-navigation {grid-template-columns:1fr;}
 }
 @media(max-width:420px) {
   .seek-controls {

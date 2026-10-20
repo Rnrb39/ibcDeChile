@@ -33,6 +33,11 @@ const IBCCatalog = (() => {
 
   function orderRecordings(items) {
     return [...items].sort((a, b) => {
+      if(a.category==='catecismo-confesion' && b.category===a.category) {
+        const aq=Number.isSafeInteger(a.catechismQuestion)?a.catechismQuestion:null;
+        const bq=Number.isSafeInteger(b.catechismQuestion)?b.catechismQuestion:null;
+        if(aq!==null || bq!==null)return aq===null?1:bq===null?-1:bq-aq;
+      }
       const aDate = confirmedDate(a);
       const bDate = confirmedDate(b);
       if (aDate && bDate) return bDate.localeCompare(aDate) || (b.number || 0) - (a.number || 0);

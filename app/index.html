@@ -15,6 +15,7 @@
   <link rel="stylesheet" href="audio.css">
   <script src="catalog-utils.js" defer></script>
   <script src="audio-catalog.js" defer></script>
+  <script src="library.js" defer></script>
   <script src="playback-progress.js" defer></script>
   <script src="../catalogo-config.js" defer></script><script src="../catalogo-publico.js" defer></script>
   <script src="app.js" defer></script>
@@ -44,16 +45,38 @@
           <p id="sermon-passage" class="passage"></p>
           <p id="sermon-meta" class="metadata"></p>
           <button id="play-button" class="primary-button" type="button">▶ Reproducir sermón</button>
-          <button id="watch-video" class="secondary-button" type="button" hidden>Ver video MP4</button><video id="video-player" controls playsinline preload="none" hidden style="width:100%"></video>
           <div class="seek-controls" role="group" aria-label="Moverse por la predicación">
             <button id="seek-back" class="secondary-button" type="button" aria-controls="player" disabled>Retroceder 15 segundos</button>
             <button id="seek-forward" class="secondary-button" type="button" aria-controls="player" disabled>Avanzar 15 segundos</button>
           </div>
           <p id="seek-status" class="status" role="status"></p>
+          <p id="player-state" class="status" role="status"></p>
           <p id="playback-status" class="status" role="status"></p>
           <p id="progress-status" class="hint" role="status"></p>
           <button id="retry-audio" class="secondary-button" type="button" hidden>Volver a intentar el audio</button>
           <p id="latest-note" class="hint">El mensaje más reciente con audio disponible.</p>
+          <section id="series-navigation" aria-labelledby="selected-series" hidden>
+            <h3 id="selected-series" class="recording-title"></h3>
+            <div class="message-navigation" role="group" aria-label="Cambiar de mensaje">
+              <button id="previous-message" class="secondary-button" type="button">Anterior</button>
+              <button id="next-message" class="secondary-button" type="button">Siguiente</button>
+            </div>
+            <button id="first-message" class="secondary-button" type="button">Escuchar desde el primer mensaje</button>
+            <button id="last-message" class="secondary-button" type="button">Ir al último mensaje</button>
+            <details id="message-picker">
+              <summary>Elegir otro mensaje</summary>
+              <p id="message-range" class="hint" role="status" tabindex="-1"></p>
+              <ol id="sermon-list" class="sermon-list"></ol>
+              <div class="message-navigation" role="group" aria-label="Grupos de mensajes">
+                <button id="previous-group" class="secondary-button" type="button">Grupo anterior</button>
+                <button id="next-group" class="secondary-button" type="button">Grupo siguiente</button>
+              </div>
+              <div class="message-navigation">
+                <button id="first-group" class="secondary-button" type="button">Primer grupo</button>
+                <button id="last-group" class="secondary-button" type="button">Último grupo</button>
+              </div>
+            </details>
+          </section>
           <details id="transcript" hidden><summary>Leer el mensaje</summary><div id="transcript-text" class="transcript"></div></details>
         </div>
       </div>
@@ -66,12 +89,8 @@
         <summary><span class="section-icon" aria-hidden="true">▷</span><span>Predicaciones y series</span><span class="chevron" aria-hidden="true">+</span></summary>
         <div class="section-content">
           <h2>Predicaciones y series</h2>
-          <p class="hint">Elige un mensaje para escucharlo en el reproductor de arriba.</p>
-          <ol id="sermon-list" class="sermon-list"></ol>
-          <details id="older-sermons" class="older-recordings" hidden>
-            <summary>Ver sermones anteriores</summary>
-            <ol id="older-sermon-list" class="sermon-list"></ol>
-          </details>
+          <p class="hint">Elige una serie. Podrás recorrer sus mensajes sin salir de esta pantalla.</p>
+          <div id="series-list" class="sermon-list"></div>
         </div>
       </details>
       <details class="section-card">

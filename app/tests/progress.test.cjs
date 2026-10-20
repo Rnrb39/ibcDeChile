@@ -92,7 +92,7 @@ test('continue restores only the chosen audio after metadata and restart removes
 test('changing message saves the outgoing ID; selecting an unplayed one cannot overwrite it', async () => {
   const app=await interfaceWith(catalog.sermons,{now:NOW});
   app.ids['play-button'].click();app.player.metadata(300);app.player.currentTime=75;
-  app.ids['sermon-list'].children[1].children[0].click();
+  app.ids['previous-message'].click();
   const stored=JSON.parse(app.storage.getItem(model.KEY));
   assert.equal(stored.id,latest.id);assert.equal(stored.position,75);
   app.player.metadata(300);app.tick(10000);app.pagehide();
@@ -144,7 +144,7 @@ test('a changed actual duration invalidates resume and waits for a new user acti
 
 test('late metadata from another selection cannot apply an old resume', async () => {
   const app=await interfaceWith(catalog.sermons,{now:NOW,storage:seed(record())});
-  app.ids['resume-play'].click();app.ids['sermon-list'].children[1].children[0].click();
+  app.ids['resume-play'].click();app.ids['previous-message'].click();
   app.player.metadata(300);
   assert.equal(app.player.src,'');assert.equal(app.player.currentTime,0);
   assert.equal(app.player.paused,true);

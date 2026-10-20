@@ -28,12 +28,11 @@ test('estimated future date cannot outrank a confirmed recording', () => {
   assert.equal(model.hasAudio(model.prepare({version:1,sermons:[{...items[0],audioUrl:'javascript:alert(1)'}]},[],'https://ibcdechile.org/app/')[0]), false);
 });
 
-test('real catalog shows five sermons and seven collapsed older sermons', async () => {
+test('real catalog shows series access and a bounded message group', async () => {
   const {ids} = await interfaceWith(catalog.sermons);
-  assert.equal(ids['sermon-list'].children.length,5);
-  assert.equal(ids['older-sermon-list'].children.length,7);
-  assert.equal(ids['older-sermons'].hidden,false);
-  assert.equal(ids['older-sermons'].open,false);
+  assert.equal(ids['series-list'].children.length,1);
+  assert.ok(ids['sermon-list'].children.length<=10);
+  assert.equal(ids['message-picker'].open,false);
   assert.equal(ids['sermon-title'].textContent,'El ayer y el hoy');
   for(const category of ['catecismo-confesion','taller-biblico']) {
     const content=ids[`${category}-recordings`];
@@ -45,13 +44,13 @@ test('real catalog shows five sermons and seven collapsed older sermons', async 
 
 test('five or fewer sermons need no older toggle; unknown dates remain playable', async () => {
   const {ids,player} = await interfaceWith(catalog.sermons.slice(0,3));
-  assert.equal(ids['older-sermons'].hidden,true);
+  assert.equal(ids['next-group'].disabled,true);
   assert.equal(ids['player-heading'].textContent,'Escuchar predicación');
   const choice=ids['sermon-list'].children[0].children[0];
   assert.match(choice.children[1].textContent,/Fecha por confirmar/);
   choice.click(); ids['play-button'].click();
   assert.equal(player.paused,false);
-  assert.equal(player.src,catalog.sermons[2].audioUrl);
+  assert.equal(player.src,catalog.sermons[0].audioUrl);
 });
 
 for(const category of ['catecismo-confesion','taller-biblico']) {
@@ -79,7 +78,8 @@ for(const category of ['catecismo-confesion','taller-biblico']) {
     assert.equal(older.children[0].textContent,'Ver grabaciones anteriores');
     older.children[1].children[0].children[0].click();
     assert.equal(ids['sermon-title'].textContent,'Prueba old');
-    assert.equal(player.paused,false);
+    assert.equal(player.paused,true);
+    ids['play-button'].click();assert.equal(player.paused,false);
     assert.equal(document.activeElement,ids['sermon-title']);
   });
 }
