@@ -80,11 +80,11 @@
                 } else cards.get(group.key).update(group);
             }
             for (const [key, card] of cards) if (!active.has(key)) { card.remove(); cards.delete(key); }
-            document.querySelectorAll('[data-ibc-empty-category]').forEach(message => {
-                message.hidden = groups.some(group => group.category === message.dataset.ibcEmptyCategory);
+            document.querySelectorAll('[data-ibc-category-section]').forEach(section => {
+                section.hidden = !groups.some(group => group.category === section.dataset.ibcCategorySection);
             });
             const theology = document.getElementById('notaTeologia');
-            if (theology) theology.hidden = groups.some(group => group.category === 'taller-biblico' && group.title === 'Teología Reformada');
+            if (theology) theology.hidden = groups.some(group => group.category !== 'predicaciones');
             if (status) status.textContent = stale ? 'Mostramos el último catálogo disponible. El archivo histórico sigue disponible.' : '';
             globalThis.IBCBibliotecaPending = pending;
         }

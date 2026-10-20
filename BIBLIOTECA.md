@@ -20,4 +20,6 @@ Ejecutar `node --test tests/public-site.test.mjs tests/biblioteca-series.test.cj
 
 El Pull Request requiere revisión y autorización antes de fusionar. No desplegar desde esta rama.
 
+Escuela Dominical muestra únicamente categorías que ya contienen series publicadas. Las categorías vacías no agregan títulos ni avisos; si todavía no hay ninguna serie escolar clasificada, queda un único enlace a Publicaciones recientes. Verificado en navegador local con categorías pobladas y después del retiro del catálogo de prueba.
+
 Validación de esta implementación: 14 pruebas automatizadas aprobadas; sintaxis, sincronización y diff sin errores. En navegador local se comprobaron escritorio de 1280 px, móviles de 320 y 390 px sin desbordamiento, reproducción real de Colosenses 12 y del MP3 publicado, teclado, menú, Facebook, WhatsApp y recientes en inicio. Un catálogo de prueba aislado verificó nuevas series, mensaje 13, anteriores y retiros; la caída simulada del catálogo conservó los doce históricos seleccionables. El endpoint restringe CORS al dominio público: la vista local usó un proxy de lectura de su respuesta real, sin cambiar CORS ni configuración de producción. No se modificaron código compartido del catálogo ni archivos de la PWA.
