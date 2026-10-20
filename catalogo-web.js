@@ -42,7 +42,7 @@
             items.forEach((item, index) => {
                 const article = node('article', '', 'sermon-tarjeta');
                 const meta = [library.categories[item.category], item.series,
-                    Number.isInteger(item.number) && item.number > 0 ? `${item.category === 'predicaciones' ? 'Mensaje' : 'Clase'} ${item.number}` : '',
+                    library.numberLabel(item), library.questionLabel(item),
                     item.speaker, library.dateLabel(item), item.passage].filter(Boolean).join(' · ');
                 article.append(node('h3', item.title), node('p', meta));
                 const video = node('a', 'Ver video MP4', 'btn-principal');

@@ -49,7 +49,7 @@ class Element {
     querySelectorAll(selector) { const tags = selector.split(',').map(s=>s.trim()); return this.children.flatMap(n=>[...(tags.includes(n.tag) ? [n] : []), ...n.querySelectorAll(selector)]); }
     querySelector(s) { return this.querySelectorAll(s)[0] || null; }
     pause() { this.paused = true; this.pauses++; }
-    load() { this.loads++; }
+    load() { this.loads++; this.readyState = 0; this.currentTime = 0; this.duration = NaN; }
     remove() { this.parent.children = this.parent.children.filter(n=>n!==this); }
 }
 test('selector pausa, cambia video y MP3 sin autoplay, y no recarga al refrescar sin cambios', () => {
@@ -71,4 +71,42 @@ test('selector pausa, cambia video y MP3 sin autoplay, y no recarga al refrescar
     controller.update({...group,items:[{...one,videoVersion:'v2'}]});
     assert.equal(video.dataset.revision,'v2'); assert.ok(video.loads>loads);
     controller.remove(); assert.equal(document.children.length,0);
+});
+
+test('colección sin sesiones: preguntas 84, 80 y 75; desconocidas y empates por ID, sin usar fechas', () => {
+    const study = (id,date,extra={})=>record({id:'admin-'+id,publicId:id,category:'catecismo-confesion',series:'Estudio del Catecismo y la Confesión Bautista',number:null,date,videoUrl:'video-'+id,...extra});
+    const a=study('10','2026-12-31',{title:'Pregunta 999 · capítulo 26'}),b=study('2',null),c=study('3','2026-10-04',{catechismQuestion:75}),d=study('4','2026-01-01',{catechismQuestion:84});
+    const e=study('5','2026-11-01',{catechismQuestion:80}),f=study('6','2026-12-31',{catechismQuestion:84});
+    const result=lib.organize([], [a,e,d,b,f,c]);
+    assert.deepEqual(result.groups[0].items.map(i=>i.publicId),['4','6','5','3','2','10']);
+    assert.deepEqual(result.pending,[]);
+    assert.equal(lib.classified({...a,category:'taller-biblico'}),false);
+    assert.equal(lib.classified({...a,category:'predicaciones'}),false);
+    for(const number of [0,-1,1.5,undefined])assert.equal(lib.classified({...a,number}),false);
+    assert.equal(lib.optionLabel({...a,title:'Pregunta doctrinal confirmada'}),'Pregunta doctrinal confirmada');
+    assert.equal(lib.numberLabel(a),'');
+    assert.equal(lib.numberLabel(d),'');
+    assert.equal(lib.optionLabel(d),'Pregunta 84 · '+d.title);
+    assert.equal(lib.questionLabel(a),'');
+    assert.equal(lib.sameRecording(a,{...a,videoUrl:'otra-grabacion'}),false);
+});
+
+test('referencias y partes explícitas se conservan como texto; salto sin autoplay y cancelable', () => {
+    assert.deepEqual(lib.chapters('Pregunta 84\n06:44 — Referencia de prueba\n06:44 — Duplicada\n1:06:44 - Otra parte\n00:99 — Inválida\nPárrafo 15'),[
+        {seconds:404,label:'06:44 — Referencia de prueba'},{seconds:4004,label:'1:06:44 - Otra parte'}
+    ]);
+    const document = new Element('document'); document.createElement=tag=>new Element(tag);document.createDocumentFragment=()=>new Element('fragment');
+    const ui=vm.runInNewContext(readFileSync(require.resolve('../biblioteca-series.js'),'utf8')+'\nIBCBiblioteca;',{document});
+    const card=new Element('article');document.append(card);
+    const item=record({category:'catecismo-confesion',number:null,title:'Referencia de prueba',description:'Texto <script>sin HTML</script>\n06:44 — Referencia de prueba'});
+    const other={...item,id:'admin-101',videoUrl:'otro-video'};
+    ui.seriesCard(card,{title:'Colección de prueba',category:item.category,items:[item,other]});
+    assert.equal(card.querySelector('option').textContent,item.title);
+    assert.equal(card.querySelector('details').children[1].textContent,item.description);
+    assert.ok(!card.querySelectorAll('p').some(p=>/Clase null|Mensaje null/.test(p.textContent)));
+    const video=card.querySelector('video'),button=card.querySelector('button');button.events.click();
+    assert.equal(video.paused,true);assert.equal(video.preload,'metadata');
+    video.readyState=1;video.duration=1000;video.events.loadedmetadata();assert.equal(video.currentTime,404);
+    video.readyState=0;button.events.click();const select=card.querySelector('select');select.value=other.id;select.events.change();
+    video.readyState=1;video.duration=1000;video.events.loadedmetadata();assert.equal(video.currentTime,0);assert.equal(video.preload,'none');
 });
