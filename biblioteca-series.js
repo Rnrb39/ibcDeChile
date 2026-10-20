@@ -111,7 +111,7 @@ const IBCBiblioteca = (() => {
         const audio = create('audio'); audio.controls = true; audio.preload = 'none';
         audioArea.append(audioLabel, audio); card.append(audioArea);
         video.addEventListener('play', () => pauseOthers(video)); audio.addEventListener('play', () => pauseOthers(audio));
-        let items = [], selected = hydrated ? group.items.find(i => String(i.number) === selector.value || itemKey(i) === selector.value) || group.items[0] : null, signature = '', pendingSeek = null;
+        let items = [], selected = hydrated ? group.items.find(i => String(i.number) === selector.value || itemKey(i) === selector.value) || group.items[0] : null, signature = '', pendingSeek = null, rendered = false;
         const seek = () => {
             if (pendingSeek === null || video.readyState < 1) return;
             if (Number.isFinite(video.duration) && pendingSeek < video.duration) video.currentTime = pendingSeek;
@@ -162,7 +162,7 @@ const IBCBiblioteca = (() => {
                 }
                 fragment.append(nav);
             }
-            detail.replaceChildren(fragment); selected = item;
+            detail.replaceChildren(fragment); selected = item; rendered = true;
         };
         selector.addEventListener('change', () => { const item = items.find(i => itemKey(i) === selector.value); if (item) show(item, true); });
         const update = next => {
@@ -178,7 +178,7 @@ const IBCBiblioteca = (() => {
                 signature = options;
             }
             selector.value = itemKey(item);
-            if (!previous || JSON.stringify(previous) !== JSON.stringify(item)) show(item, false);
+            if (!rendered || !previous || JSON.stringify(previous) !== JSON.stringify(item)) show(item, false);
         };
         update(group);
         return { update, remove() { video.pause(); audio.pause(); card.remove(); } };

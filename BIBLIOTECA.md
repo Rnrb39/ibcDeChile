@@ -47,32 +47,43 @@ Resultado de esta ampliación: 8 pruebas específicas y 4 regresiones selecciona
 
 Ajuste por pregunta: contrato v1 ampliado con `pregunta_catecismo` opcional; el lector tolera DTO antiguos que omiten el campo y rechaza valores inválidos. Se conserva el HTML histórico. Validación específica: 84/80/75 con fechas contradictorias, empates y preguntas desconocidas; campo separado de sesiones y referencias; PWA compatible. La migración de Admin se ensayó sobre una publicación local existente y conservó exactamente su catálogo y medios. Orden de instalación: lector público, web/PWA, respaldo y migración aditiva, Admin, revisión editorial/aprobación. No se aplica nada a producción desde este PR.
 
-## Corrección local: audio de Colosenses 12
+## Audio de los doce Colosenses históricos — PR #16
 
-Diagnóstico del 20-10-2026, después del despliegue del PR #15: la D1 de producción
-identificada y el catálogo público (HTTP 200, revisión 2) contienen únicamente el
-contenido ID 1 de Teología Reformada, con MP4/MP3 verificados y asociados. No hay
-un registro actual de Colosenses 12 ni una asociación de su audio en esa D1.
-No se deduce de esto cómo se publicó anteriormente ni se reconstruyen registros.
+Los doce mensajes permanecen administrados desde el código de la web. Sus URLs
+MP3 y versiones se copian explícitamente de las entradas correspondientes de
+`app/catalog.json`; no se construyen enlaces por patrón ni se modifica la PWA.
+Se cotejaron número, serie, título, pasaje y predicador de los doce registros.
+Se conservan fechas (incluidas las estimadas), numeración y MP4 de la web.
 
-La PWA publicada sí registra `colosenses-12` y su MP3 existente. La consulta HEAD
-confirmó HTTP 200, `audio/mpeg`, 23791086 bytes y ETag
-`c79f7d0a5a9e7f9602573956d9726e6c`, coincidentes con `app/catalog.json`.
-El respaldo de la web conservaba el MP4 pero omitía ese audio, y la exportación
-`IBCLegacyColosenses` tampoco transportaba campos de audio: esa es la causa
-demostrada. No es un audio perdido por caché o por la proyección del catálogo.
+Verificación de solo lectura del 20-10-2026: los doce MP3 responden HEAD 200,
+`audio/mpeg`, con tamaños y ETags idénticos a los declarados en el manifiesto.
+No hubo enlaces fallidos ni discrepancias; no se descargaron archivos completos.
+El mensaje 12 mantiene su URL y versión previamente comprobadas.
 
-`script.js` reutiliza exclusivamente la URL/versión ya publicadas de ese MP3 y las
-transmite al reproductor existente. No se crean enlaces para los demás mensajes,
-IDs administrativos ni nuevas publicaciones. Un DTO aprobado coincidente sigue
-reemplazando al respaldo; no se mezcla su audio con el histórico, ni se resucita
-un audio que un DTO aprobado haya retirado. `sermones.html` renueva la versión de
-`script.js` para evitar caché antigua. La PWA y sus datos permanecen intactos.
+El diagnóstico inicial encontró únicamente Teología Reformada en el catálogo
+administrativo vigente (revisión 2). Colosenses se mostraba desde el respaldo,
+que omitía el MP3 ya disponible en la PWA. No se reconstruyen registros de Admin:
+la corrección transmite los campos de audio del respaldo al reproductor existente.
+Un registro administrativo equivalente mantiene la prioridad, incluso si retira
+su audio; nunca se resucita un audio retirado desde el respaldo.
 
-Pruebas: 8 de biblioteca (incluida la regresión 12→11→12, refresco y precedencia
-del catálogo) y 5 regresiones de datos/HTML/menú/Facebook/galería aprobadas.
-Sintaxis, HTML sincronizado y diff correctos. Navegador local con copia de lectura
-del catálogo real: reproducción efectiva del MP3, pausa/ocultación al pasar al 11,
-retorno al 12 sin autoplay, 320/390 px sin desbordamiento y sin errores JS.
-Ninguna escritura en D1/R2 ni cambios administrativos. Pendiente de autorización
-para fusionar/publicar únicamente esta corrección web mediante GitHub Pages.
+La tarjeta reutilizada del HTML inicial necesita enlazar sus medios una primera
+vez, aunque el mensaje seleccionado ya coincida con sus metadatos. Se corrigió
+esa inicialización en `biblioteca-series.js` para que el mensaje 1 muestre audio
+al abrir, sin recargar el MP4. También conserva una selección restaurada del
+navegador. Los siguientes refrescos idénticos no interrumpen la reproducción.
+Cambiar de mensaje pausa el audio anterior, selecciona el nuevo y no lo reproduce
+automáticamente; se mantienen controles y `preload="none"`.
+
+`sermones.html` renueva las versiones de `script.js` y `biblioteca-series.js`.
+Pruebas focalizadas: correspondencia de los 12 audios con el manifiesto,
+selección representativa 1/6/11/12, inicialización HTML en 1 o selección restaurada,
+refresco y precedencia del catálogo. Regresión de metadatos históricos, HTML y
+versiones; sintaxis, sincronización y diff sin errores. Navegador local: audio
+visible al abrir, reproducción real de 1 y 6, retorno 12→1 sin autoplay y sin
+errores JavaScript registrados. La reproducción del 12 ya se comprobó en la
+primera corrección del mismo PR.
+
+Sin cambios en IBC Admin, D1, R2, Workers, PWA ni automatizaciones. PR #16 actualizado
+para revisión: requiere autorización antes de fusionarlo/publicarlo por GitHub
+Pages. No hace falta migración, despliegue de Workers ni edición administrativa.
