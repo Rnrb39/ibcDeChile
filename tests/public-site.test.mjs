@@ -20,7 +20,8 @@ const published = vm.runInNewContext(publishedScript + '\n({ mensajesColosenses,
 });
 
 test('la candidata conserva íntegros los datos publicados y la lógica de menú y visor', () => {
-    assert.equal(JSON.stringify(api.mensajesColosenses.slice(0, published.mensajesColosenses.length)), JSON.stringify(published.mensajesColosenses));
+    const metadata = items => items.map(({audioUrl, audioVersion, ...item}) => item);
+    assert.equal(JSON.stringify(metadata(api.mensajesColosenses.slice(0, published.mensajesColosenses.length))), JSON.stringify(metadata(published.mensajesColosenses)));
     for (const key of ['sermones', 'playlists']) {
         assert.equal(JSON.stringify(api[key]), JSON.stringify(published[key]));
     }
@@ -93,7 +94,7 @@ test('galería reserva doce celdas antes de JavaScript y versiones actuales', ()
     assert.equal((gallery.match(/class="galeria-reserva"/g) || []).length, 12);
     assert.match(gallery, /main\.css\?v=cls-20261017/);
     assert.match(html, /main\.css\?v=preguntas-20261020/);
-    assert.match(html, /script\.js\?v=biblioteca-20261019/);
+    assert.match(html, /script\.js\?v=audio-colosenses-20261020/);
     assert.match(gallery, /script\.js\?v=cls-20261017/);
 });
 

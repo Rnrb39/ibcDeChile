@@ -14,6 +14,7 @@ const playlists = [
 // ==========================================
 // 2. MENSAJES DE COLOSENSES Y SERMONES INDIVIDUALES
 // ==========================================
+// MP3 y versiones copiados de app/catalog.json y verificados; no se construyen URLs de audio.
 const mensajesColosenses = [
     {
         titulo: "Problemas en medio de la Iglesia",
@@ -23,19 +24,21 @@ const mensajesColosenses = [
         predicador: "Pastor Sergio Arias Cáceres",
         fecha: "2026-08-02",
         fechaEstimada: true,
-        videoUrl: "https://videos.ibcdechile.org/colosenses-01.mp4"
+        videoUrl: "https://videos.ibcdechile.org/colosenses-01.mp4",
+        audioUrl: "https://videos.ibcdechile.org/audio/colosenses-01.mp3",
+        audioVersion: "r2-etag:4ff3a98e3d8fe14582ccc2a2c398e100"
     },
-    { numeroMensaje: 2, titulo: "¿Sabes a dónde vas? ¿Sabes cuál es tu esperanza?", pasaje: "Colosenses 1:3–8", fecha: "2026-08-09", fechaEstimada: true },
-    { numeroMensaje: 3, titulo: "La solución para el error", pasaje: "Colosenses 1:9–10", fecha: "2026-08-16", fechaEstimada: true },
-    { numeroMensaje: 4, titulo: "La victoria de la fe", pasaje: "Colosenses 1:11–14", fecha: "2026-08-23", fechaEstimada: true },
-    { numeroMensaje: 5, titulo: "La supremacía del Señor", pasaje: "Colosenses 1:15–17", fecha: "2026-08-30", fechaEstimada: true },
-    { numeroMensaje: 6, titulo: "Cristo, cabeza de todo", pasaje: "Colosenses 1:18–20", fecha: "2026-09-06" },
-    { numeroMensaje: 7, titulo: "¿Somos amigos o enemigos de Dios?", pasaje: "Colosenses 1:20–23", fecha: "2026-09-13" },
-    { numeroMensaje: 8, titulo: "La preocupación por la iglesia, deber de todos", pasaje: "Colosenses 1:24–29", fecha: "2026-09-20" },
-    { numeroMensaje: 9, titulo: "La lucha por la iglesia", pasaje: "Colosenses 2:1–5", fecha: "2026-09-27" },
-    { numeroMensaje: 10, titulo: "Soportando la presión", pasaje: "Colosenses 2:6–7", fecha: "2026-10-04" },
-    { numeroMensaje: 11, titulo: "Completos en Él", pasaje: "Colosenses 2:8-10", fecha: "2026-10-11", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-11.mp4" },
-    { numeroMensaje: 12, titulo: "El ayer y el hoy", pasaje: "Colosenses 2:11–15", fecha: "2026-10-18", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-12.mp4" }
+    { numeroMensaje: 2, titulo: "¿Sabes a dónde vas? ¿Sabes cuál es tu esperanza?", pasaje: "Colosenses 1:3–8", fecha: "2026-08-09", fechaEstimada: true, audioUrl: "https://videos.ibcdechile.org/audio/colosenses-02.mp3", audioVersion: "r2-etag:23f9986d616bc970fd896e508bd23af7" },
+    { numeroMensaje: 3, titulo: "La solución para el error", pasaje: "Colosenses 1:9–10", fecha: "2026-08-16", fechaEstimada: true, audioUrl: "https://videos.ibcdechile.org/audio/colosenses-03.mp3", audioVersion: "r2-etag:29db4f952b7054786066df58790857ac" },
+    { numeroMensaje: 4, titulo: "La victoria de la fe", pasaje: "Colosenses 1:11–14", fecha: "2026-08-23", fechaEstimada: true, audioUrl: "https://videos.ibcdechile.org/audio/colosenses-04.mp3", audioVersion: "r2-etag:974dd788e04e71742bccd0f1958d90e2" },
+    { numeroMensaje: 5, titulo: "La supremacía del Señor", pasaje: "Colosenses 1:15–17", fecha: "2026-08-30", fechaEstimada: true, audioUrl: "https://videos.ibcdechile.org/audio/colosenses-05.mp3", audioVersion: "r2-etag:16929233b5c3c197c366d411ee9e5001" },
+    { numeroMensaje: 6, titulo: "Cristo, cabeza de todo", pasaje: "Colosenses 1:18–20", fecha: "2026-09-06", audioUrl: "https://videos.ibcdechile.org/audio/colosenses-06.mp3", audioVersion: "r2-etag:e090e1540be836b152fbf365cfd83464" },
+    { numeroMensaje: 7, titulo: "¿Somos amigos o enemigos de Dios?", pasaje: "Colosenses 1:20–23", fecha: "2026-09-13", audioUrl: "https://videos.ibcdechile.org/audio/colosenses-07.mp3", audioVersion: "r2-etag:3154c220185b418f1966f75b6f61bf02" },
+    { numeroMensaje: 8, titulo: "La preocupación por la iglesia, deber de todos", pasaje: "Colosenses 1:24–29", fecha: "2026-09-20", audioUrl: "https://videos.ibcdechile.org/audio/colosenses-08.mp3", audioVersion: "r2-etag:e3d0af41fce3b06efd8c9d36bc094584" },
+    { numeroMensaje: 9, titulo: "La lucha por la iglesia", pasaje: "Colosenses 2:1–5", fecha: "2026-09-27", audioUrl: "https://videos.ibcdechile.org/audio/colosenses-09.mp3", audioVersion: "r2-etag:6f1da6ebc1b49f7aaf3c95e2b7fe0f24" },
+    { numeroMensaje: 10, titulo: "Soportando la presión", pasaje: "Colosenses 2:6–7", fecha: "2026-10-04", audioUrl: "https://videos.ibcdechile.org/audio/colosenses-10.mp3", audioVersion: "r2-etag:db01856cc9149e4c69a979bc237aadf9" },
+    { numeroMensaje: 11, titulo: "Completos en Él", pasaje: "Colosenses 2:8-10", fecha: "2026-10-11", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-11.mp4", audioUrl: "https://videos.ibcdechile.org/audio/colosenses-11.mp3", audioVersion: "r2-etag:1da17894d86a2fa3be33f11f0bfe0fb4" },
+    { numeroMensaje: 12, titulo: "El ayer y el hoy", pasaje: "Colosenses 2:11–15", fecha: "2026-10-18", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-12.mp4", audioUrl: "https://videos.ibcdechile.org/audio/colosenses-12.mp3", audioVersion: "r2-etag:c79f7d0a5a9e7f9602573956d9726e6c" }
 ].map(mensaje => ({
     serie: "Colosenses",
     predicador: "Pastor Sergio Arias Cáceres",
@@ -112,7 +115,8 @@ function cargarColosenses() {
     globalThis.IBCLegacyColosenses = {
         items: mensajesColosenses.map(m => ({ category: 'predicaciones', series: m.serie,
             number: m.numeroMensaje, title: m.titulo, passage: m.pasaje, speaker: m.predicador,
-            date: m.fecha, dateEstimated: !!m.fechaEstimada, videoUrl: m.videoUrl })),
+            date: m.fecha, dateEstimated: !!m.fechaEstimada, videoUrl: m.videoUrl,
+            audioUrl: m.audioUrl || null, audioVersion: m.audioVersion || null })),
         detach: () => selector.removeEventListener('change', mostrarMensaje)
     };
     // Restaurar una selección del navegador sin alterar la carga inicial habitual.

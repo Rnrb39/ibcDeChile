@@ -73,6 +73,59 @@ test('selector pausa, cambia video y MP3 sin autoplay, y no recarga al refrescar
     controller.remove(); assert.equal(document.children.length,0);
 });
 
+test('doce Colosenses reutilizan sus MP3 publicados: selector pausado, refresco y catálogo prioritario', () => {
+    const nodes={contenedorColosenses:{},mensajeColosenses:{value:'1',addEventListener(){}}};
+    const legacy=JSON.parse(JSON.stringify(vm.runInNewContext(source+'\ncargarColosenses(); IBCLegacyColosenses.items;',{
+        document:{addEventListener(){},getElementById(id){return nodes[id];}}
+    })));
+    const manifest=JSON.parse(readFileSync(require.resolve('../app/catalog.json'),'utf8')).sermons;
+    const known=manifest.find(i=>i.id==='colosenses-12');
+    const last=legacy.find(i=>i.number===12);
+    assert.equal(last.audioUrl,known.audioUrl);assert.equal(last.audioVersion,known.audioVersion);
+    for(const item of legacy){
+        const expected=manifest.find(d=>d.series===item.series&&d.number===item.number);
+        assert.equal(item.title,expected.title);assert.equal(item.passage,expected.passage);assert.equal(item.speaker,expected.speaker);
+        assert.equal(item.audioUrl,expected.audioUrl);assert.equal(item.audioVersion,expected.audioVersion);
+    }
+    assert.ok(legacy.every(i=>!i.id&&!i.publicId));
+    const group=lib.organize(legacy,[]).groups[0];assert.equal(group.items.length,12);
+    const document=new Element('document');document.createElement=tag=>new Element(tag);document.createDocumentFragment=()=>new Element('fragment');
+    const ui=vm.runInNewContext(readFileSync(require.resolve('../biblioteca-series.js'),'utf8')+'\nIBCBiblioteca;',{document});
+    const card=new Element('article');document.append(card);const controller=ui.seriesCard(card,group);
+    const select=card.querySelector('select'),audio=card.querySelector('audio');
+    assert.equal(audio.parent.hidden,false);assert.equal(audio.src,legacy[0].audioUrl);assert.equal(audio.paused,true);
+    for(const number of [6,1,11]){audio.paused=false;const item=legacy.find(i=>i.number===number);select.value=item.videoUrl;select.events.change();assert.equal(audio.src,item.audioUrl);assert.equal(audio.dataset.revision,item.audioVersion);assert.equal(audio.parent.hidden,false);assert.equal(audio.paused,true);}
+    select.value=last.videoUrl;select.events.change();
+    assert.equal(audio.parent.hidden,false);assert.equal(audio.src,known.audioUrl);assert.equal(audio.dataset.revision,known.audioVersion);
+    assert.equal(audio.preload,'none');assert.equal(audio.autoplay,undefined);assert.equal(audio.paused,true);
+    audio.paused=false;const loads=audio.loads;controller.update(lib.organize(legacy,[]).groups[0]);
+    assert.equal(audio.loads,loads);assert.equal(audio.paused,false);
+    select.value=legacy[10].videoUrl;select.events.change();assert.equal(audio.src,legacy[10].audioUrl);assert.equal(audio.parent.hidden,false);assert.equal(audio.paused,true);
+    select.value=last.videoUrl;select.events.change();assert.equal(audio.src,known.audioUrl);assert.equal(audio.paused,true);
+    const approved=record({...last,id:'admin-200',publicId:'200',videoUrl:'https://videos.ibcdechile.org/prueba-local-migrada.mp4',audioUrl:'https://videos.ibcdechile.org/audio/prueba-local-migrada.mp3',audioVersion:'aprobada'});
+    const migrated=lib.organize(legacy,[approved]).groups[0];assert.equal(migrated.items.length,12);assert.equal(migrated.items[11].id,approved.id);
+    controller.update(migrated);select.value=approved.id;select.events.change();assert.equal(audio.src,approved.audioUrl);
+    controller.update(lib.organize(legacy,[{...approved,audioUrl:null,audioVersion:null}]).groups[0]);
+    assert.equal(audio.parent.hidden,true);assert.equal(audio.src,null); // No resucitar audio retirado de un DTO aprobado.
+});
+
+test('la tarjeta HTML inicializa audio en mensaje 1 o selección restaurada sin recargar el MP4', () => {
+    const data=vm.runInNewContext(source+'\nmensajesColosenses;',{document:{addEventListener(){}}});
+    for(const initial of [1,12]){
+        const document=new Element('document');document.createElement=tag=>new Element(tag);document.createDocumentFragment=()=>new Element('fragment');
+        const ui=vm.runInNewContext(readFileSync(require.resolve('../biblioteca-series.js'),'utf8')+'\nIBCBiblioteca;',{document});
+        const items=data.map(m=>({series:m.serie,category:'predicaciones',number:m.numeroMensaje,title:m.titulo,videoUrl:m.videoUrl,audioUrl:m.audioUrl,audioVersion:m.audioVersion}));
+        const item=items[initial-1],card=new Element('article'),video=new Element('video'),mediaSource=new Element('source');mediaSource.src=item.videoUrl;video.append(mediaSource);
+        const count=new Element('p'),heading=new Element('h3'),selector=new Element('select'),detail=new Element('div'),link=new Element('a');selector.value=String(initial);
+        card.append(count,heading,selector,detail,video,link);document.append(card);const find=card.querySelector.bind(card);
+        card.querySelector=s=>({'.sermon-serie':count,'h3':heading,'select':selector,'.detalle-mensaje':detail,'video':video,'#enlaceColosenses':link}[s]||find(s));
+        const group={title:'Colosenses',category:'predicaciones',items};const controller=ui.seriesCard(card,group,true),audio=card.querySelector('audio');
+        assert.equal(audio.src,item.audioUrl);assert.equal(audio.parent.hidden,false);assert.equal(audio.paused,true);assert.equal(selector.value,item.videoUrl);
+        assert.equal(video.loads,0);assert.equal(video.querySelector('source').src,item.videoUrl);
+        const loads=audio.loads;audio.paused=false;controller.update(group);assert.equal(audio.loads,loads);assert.equal(audio.paused,false);
+    }
+});
+
 test('colección sin sesiones: preguntas 84, 80 y 75; desconocidas y empates por ID, sin usar fechas', () => {
     const study = (id,date,extra={})=>record({id:'admin-'+id,publicId:id,category:'catecismo-confesion',series:'Estudio del Catecismo y la Confesión Bautista',number:null,date,videoUrl:'video-'+id,...extra});
     const a=study('10','2026-12-31',{title:'Pregunta 999 · capítulo 26'}),b=study('2',null),c=study('3','2026-10-04',{catechismQuestion:75}),d=study('4','2026-01-01',{catechismQuestion:84});
