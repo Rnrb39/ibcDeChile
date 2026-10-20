@@ -6,11 +6,11 @@ Los 12 Colosenses de `script.js` siguen como respaldo, sin identificadores admin
 
 Las series nuevas aparecen al publicar sus metadatos en el catálogo. Taller bíblico y Catecismo y confesión se muestran por separado en Escuela Dominical. Cada serie tiene un selector nativo y un video con `preload="none"`, sin autoplay; MP3 opcional. Cambiar de selección pausa el contenido anterior. Publicaciones recientes conserva todos los registros y permite abrir los anteriores después de los tres primeros. Fechas de calendario se presentan sin conversiones de zona horaria.
 
-## Pendiente editorial confirmado el 19 de octubre de 2026
+## Asociación editorial aprobada el 19 de octubre de 2026
 
-El catálogo público tiene un único registro, ID público `1`, «Introducción a las Teologías Reformadas», categoría `taller_biblico`, MP4 y MP3 disponibles. Sus campos `serie`, `numero_mensaje`, `fecha` y `pasaje_biblico` son nulos. Se muestra en Publicaciones recientes, con fecha desconocida. **No se asigna automáticamente a Teología Reformada ni se inventa su número.**
+El contenido ID público `1`, «Introducción a las Teologías Reformadas», ya fue asociado y aprobado mediante el flujo de corrección de IBC Admin: categoría `taller_biblico`, `serie.titulo: "Teología Reformada"` y `numero_mensaje: 1`. El catálogo público v1 entrega estos metadatos en su revisión `2`; la biblioteca lo incorpora automáticamente a Escuela Dominical y lo conserva en Publicaciones recientes.
 
-En IBC Admin se debe confirmar la asociación con la serie y su número real, y publicar esos metadatos mediante el flujo existente. Si el panel todavía no permite editar/publicar `serie` y `numero_mensaje`, esa es la mejora administrativa pendiente. La web ya admite esos campos. La fecha puede continuar desconocida. Las otras siete clases de referencia no aparecen porque todavía no constan como publicaciones en el catálogo consultado.
+La corrección conservó el ID, título, predicador, `publicado_en`, demás metadatos y enlaces/versiones MP4 y MP3 originales. La fecha de grabación y el pasaje siguen en `null`; se muestra «Fecha desconocida». No se duplicó ni se volvió a subir la grabación. El lector público y el panel ya admiten series escolares; no queda pendiente esa mejora administrativa. Las otras siete clases de referencia no se muestran porque no constan como publicaciones aprobadas.
 
 Ante error remoto permanecen el archivo histórico y, si existe, el último catálogo validado por el cliente compartido, señalado como desactualizado. Una respuesta válida nueva elimina las publicaciones retiradas de la interfaz. No modifica archivos multimedia ni datos administrativos.
 
@@ -18,7 +18,7 @@ Ante error remoto permanecen el archivo histórico y, si existe, el último cat�
 
 Ejecutar `node --test tests/public-site.test.mjs tests/biblioteca-series.test.cjs`, `node scripts/generar-sermones.mjs --check`, las comprobaciones `node --check` de los tres JS modificados y `git diff --check`. Servir la carpeta por HTTP y revisar `sermones.html` e `index.html` en escritorio y móvil: selector, reproducción, MP3, anteriores y navegación. El generador sigue siendo solo el respaldo histórico; no hace falta ejecutarlo por cada publicación del catálogo.
 
-El Pull Request requiere revisión y autorización antes de fusionar. No desplegar desde esta rama.
+La autorización C permite fusionar el PR #14 y publicar mediante GitHub Pages después de esta actualización documental. La fusión debe respetar las protecciones normales del repositorio; no se despliega directamente desde la rama de trabajo.
 
 Escuela Dominical muestra únicamente categorías que ya contienen series publicadas. Las categorías vacías no agregan títulos ni avisos; si todavía no hay ninguna serie escolar clasificada, queda un único enlace a Publicaciones recientes. Verificado en navegador local con categorías pobladas y después del retiro del catálogo de prueba.
 
