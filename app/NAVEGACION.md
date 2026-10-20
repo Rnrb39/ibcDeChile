@@ -6,8 +6,13 @@ Los controles de una serie se muestran cuando se elige una serie o grabación.
 
 Cada serie ofrece Anterior, Siguiente, Escuchar desde el primer mensaje,
 Ir al último mensaje y Elegir otro mensaje. El selector es una lista de botones
-dentro de la pantalla, con diez opciones por grupo y accesos al primer y último
-grupo. No usa ventanas emergentes ni un selector pequeño.
+dentro de la pantalla, con cinco opciones por grupo. Solo ofrece Ver 5 grabaciones
+anteriores y Ver 5 grabaciones siguientes, con la cantidad real del grupo de
+destino y en singular si queda una grabación. Se ocultan los controles sin grupo
+disponible. El indicador muestra, por ejemplo, Grabaciones 6–10 de 35.
+En teléfonos, los dos botones conservan filas separadas, texto ajustable y
+altura mínima de 56 px mediante los estilos existentes. No usa ventanas
+emergentes ni un selector pequeño.
 
 Los mensajes numerados siguen la numeración editorial. Catecismo y Confesión
 conserva la lista en orden descendente por pregunta; no se sustituye por fecha de subida.
@@ -37,10 +42,14 @@ No se guardan MP3 mediante el service worker. No se modifica infraestructura.
 ## Pruebas focalizadas
 
 ```powershell
-node --test app/tests/navigation.test.cjs app/tests/coleccion-sin-numero.test.cjs app/tests/categories-progress.test.cjs app/tests/progress.test.cjs app/tests/catalog.test.cjs app/tests/pwa.test.cjs app/tests/audio-release.test.cjs
+node --test --test-name-pattern="paginación|audios:|Catechism question order|catechism traversal|catechism first|catalog refresh retains keyboard" app/tests/navigation.test.cjs
+node --test --test-name-pattern="opening and every sermon selection" app/tests/audio-release.test.cjs
 ```
 
-Los casos de 1, 12 y 35 grabaciones son ficticios y existen solo en las pruebas.
+El ajuste a grupos de cinco se verificó con 24 pruebas focalizadas, incluyendo
+1, 5, 6, 12 y 35 grabaciones en las tres categorías, grupos parciales, extremos,
+límites de índice y conservación del audio activo al recorrer grupos.
+Los casos son ficticios y existen solo en las pruebas.
 Comprueban primer/último mensaje, grupos e intermedio, continuidad, una sola
 reproducción, ausencia de precarga, publicación durante reproducción, recuperación
 del catálogo, orden del Catecismo, contenido externo como texto y foco de teclado.

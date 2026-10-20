@@ -12,7 +12,7 @@ const NOW = Date.parse('2026-10-16T12:00:00Z');
 const scope = 'https://ibcdechile.org/app/';
 const read = file => fs.readFileSync(path.join(__dirname, '..', file), 'utf8');
 const choices = app => app.ids['sermon-list'].children.map(li=>li.children[0]);
-function choose(app,id){app.ids['first-group'].click();let button;for(let page=0;page<100;page++){button=choices(app).find(candidate=>candidate.dataset.id===id);if(button){button.click();return;}if(app.ids['next-group'].disabled)break;app.ids['next-group'].click();}throw Error('Message unavailable');}
+function choose(app,id){while(!app.ids['previous-group'].disabled)app.ids['previous-group'].click();let button;for(let page=0;page<100;page++){button=choices(app).find(candidate=>candidate.dataset.id===id);if(button){button.click();return;}if(app.ids['next-group'].disabled)break;app.ids['next-group'].click();}throw Error('Message unavailable');}
 
 test('twelve permanent IDs, original confirmed metadata and explicit R2 MP3 revisions', () => {
   assert.equal(catalog.sermons.length,12);
@@ -48,7 +48,7 @@ test('twelve permanent IDs, original confirmed metadata and explicit R2 MP3 revi
     assert.deepEqual(app.fetches,['catalog.json']);
     assert.equal(app.ids['sermon-title'].textContent,'El ayer y el hoy');
     assert.equal(app.ids['series-list'].children.length,1);
-    assert.ok(app.ids['sermon-list'].children.length<=10);
+    assert.ok(app.ids['sermon-list'].children.length<=5);
     for(const item of catalog.sermons) {
       choose(app,item.id);
       assert.equal(app.player.src,'');

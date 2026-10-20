@@ -1,6 +1,6 @@
 'use strict';
 const IBCLibrary = (() => {
-  const PAGE_SIZE = 10;
+  const PAGE_SIZE = 5;
   function key(item) { return JSON.stringify([item.category, item.series || '']); }
   function sequence(items, ascendingQuestions=false) {
     return [...items].sort((a,b) => {

@@ -8,6 +8,52 @@ const base=catalog.sermons[0];
 const records=count=>Array.from({length:count},(_,i)=>({...base,id:`fixture-${i+1}`,number:i+1,title:`Mensaje de prueba ${i+1}`,series:'Serie de prueba',date:'2026-10-20',dateEstimated:false}));
 const choose=(app,id)=>app.ids['sermon-list'].children.find(li=>li.children[0].dataset.id===id).children[0].click();
 
+for(const category of ['predicaciones','catecismo-confesion','taller-biblico']) {
+ for(const count of [1,5,6,12,35])test(`paginación ${category}: ${count} grabaciones, cantidades y límites sin cambiar el audio`,async()=>{
+  const data=records(count).map((item,i)=>({...item,category,...(category==='catecismo-confesion'?{number:null,catechismQuestion:75+i*2}:{})}));
+  const ordered=library.sequence(data),app=await interfaceWith(data);
+  app.select(ordered[0]);
+  app.ids['play-button'].click();app.player.metadata(600);app.player.currentTime=85;
+  const plays=app.player.playCalls,loads=app.player.loadCalls;
+  assert.equal(app.ids['first-group'],undefined);assert.equal(app.ids['last-group'],undefined);
+  const pages=Math.ceil(count/5);
+  for(let index=0;index<pages;index++) {
+   const start=index*5,end=Math.min(start+5,count),nextCount=Math.min(5,count-end);
+   assert.equal(app.ids['message-range'].textContent,`Grabaciones ${start+1}–${end} de ${count}`);
+   assert.deepEqual(app.ids['sermon-list'].children.map(li=>li.children[0].dataset.id),ordered.slice(start,end).map(item=>item.id));
+   assert.equal(app.ids['previous-group'].disabled,index===0);
+   assert.equal(app.ids['previous-group'].hidden,index===0);
+   assert.equal(app.ids['next-group'].disabled,nextCount===0);
+   assert.equal(app.ids['next-group'].hidden,nextCount===0);
+   if(index>0)assert.equal(app.ids['previous-group'].textContent,'Ver 5 grabaciones anteriores');
+   if(nextCount)assert.equal(app.ids['next-group'].textContent,nextCount===1?'Ver 1 grabación siguiente':`Ver ${nextCount} grabaciones siguientes`);
+   app.ids['next-group'].click();
+  }
+  assert.equal(app.ids['message-range'].textContent,`Grabaciones ${(pages-1)*5+1}–${count} de ${count}`);
+  for(let index=pages-1;index>0;index--)app.ids['previous-group'].click();
+  app.ids['previous-group'].click();
+  assert.equal(app.ids['message-range'].textContent,`Grabaciones 1–${Math.min(5,count)} de ${count}`);
+  assert.equal(app.ids['sermon-title'].textContent,ordered[0].title);
+  assert.equal(app.player.currentTime,85);assert.equal(app.player.paused,false);
+  assert.equal(app.player.playCalls,plays);assert.equal(app.player.loadCalls,loads);
+  if(count>5) {
+   app.ids['next-group'].click();choose(app,ordered[5].id);
+   assert.equal(app.ids['sermon-title'].textContent,ordered[5].title);
+   assert.equal(app.player.src,'');assert.equal(app.player.paused,true);
+   assert.equal(app.player.playCalls,plays);
+   assert.equal(JSON.parse(app.storage.getItem(progress.KEY)).id,ordered[0].id);
+  }
+ });
+}
+
+test('paginación limita índices fuera de rango y acepta colecciones vacías',()=>{
+ assert.equal(library.PAGE_SIZE,5);
+ assert.deepEqual(library.page([],9),{index:0,pages:1,start:0,end:0,items:[]});
+ const data=records(12);
+ assert.deepEqual(library.page(data,-1).items,data.slice(0,5));
+ assert.deepEqual(library.page(data,99).items,data.slice(10));
+});
+
 for(const count of [1,12,35])test(`${count} audios: último, primer mensaje, grupos y selección intermedia sin precarga`,async()=>{
  const data=records(count),app=await interfaceWith(data);
  assert.equal(app.ids['sermon-title'].textContent,data[count-1].title);
@@ -21,16 +67,15 @@ for(const count of [1,12,35])test(`${count} audios: último, primer mensaje, gru
  assert.equal(JSON.parse(app.storage.getItem(progress.KEY)).id,data[count-1].id);
  assert.equal(app.ids['message-picker'].open,true);
  assert.equal(app.ids['sermon-title'].textContent,data[0].title);
- assert.ok(app.ids['sermon-list'].children.length<=10);
+ assert.ok(app.ids['sermon-list'].children.length<=5);
  app.ids['first-message'].click();app.player.metadata(600);
  assert.equal(app.ids['sermon-title'].textContent,data[0].title);assert.equal(app.player.paused,false);
  app.player.currentTime=80;app.player.pause();
  app.ids['resume-play'].click();app.player.metadata(600);assert.equal(app.player.currentTime,80);
  app.player.pause();
- if(count>10){app.ids['next-group'].click();assert.match(app.ids['message-range'].textContent,/11–/);choose(app,data[10].id);assert.equal(app.ids['sermon-title'].textContent,data[10].title);assert.equal(app.player.src,'');}
+ if(count>5){app.ids['next-group'].click();assert.match(app.ids['message-range'].textContent,/Grabaciones 6–10/);choose(app,data[5].id);assert.equal(app.ids['sermon-title'].textContent,data[5].title);assert.equal(app.player.src,'');}
  app.ids['last-message'].click();assert.equal(app.ids['sermon-title'].textContent,data[count-1].title);assert.equal(app.player.src,'');
- app.ids['first-group'].click();assert.equal(app.ids['sermon-list'].children[0].children[0].dataset.id,data[0].id);
- app.ids['last-group'].click();assert.ok(app.ids['sermon-list'].children.some(li=>li.children[0].dataset.id===data[count-1].id));
+ assert.ok(app.ids['sermon-list'].children.some(li=>li.children[0].dataset.id===data[count-1].id));
  assert.equal(app.ids['next-message'].disabled,true);
  if(count>1){app.ids['previous-message'].click();assert.equal(app.ids['sermon-title'].textContent,data[count-2].title);app.ids['next-message'].click();assert.equal(app.ids['sermon-title'].textContent,data[count-1].title);}
 });
@@ -139,7 +184,7 @@ test('catechism first and last controls select the matching descending picker pa
  app.ids['last-message'].click();
  assert.equal(app.ids['sermon-title'].textContent,'Pregunta 97');
  assert.equal(app.ids['sermon-list'].children[0].children[0].dataset.id,'q-97');
- assert.equal(app.ids['sermon-list'].children.length,10);
+ assert.equal(app.ids['sermon-list'].children.length,5);
  assert.equal(app.player.paused,true);assert.equal(app.player.src,'');
 });
 

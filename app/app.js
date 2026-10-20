@@ -260,9 +260,15 @@ function renderSeriesNavigation() {
     const target=[...list.children].map(li=>li.children[0]).find(button=>button.dataset.id===focusedId);
     (target || document.getElementById('message-range')).focus();
   }
-  document.getElementById('message-range').textContent='Mensajes '+(page.start+1)+'–'+page.end+' de '+items.length;
-  for(const id of ['previous-group','first-group'])document.getElementById(id).disabled=page.index===0;
-  for(const id of ['next-group','last-group'])document.getElementById(id).disabled=page.index===page.pages-1;
+  document.getElementById('message-range').textContent='Grabaciones '+(page.start+1)+'–'+page.end+' de '+items.length;
+  for(const [id,index,direction] of [['previous-group',page.index-1,'anteriores'],['next-group',page.index+1,'siguientes']]) {
+    const button=document.getElementById(id),available=index>=0 && index<page.pages;
+    button.disabled=!available;button.hidden=!available;
+    if(available) {
+      const count=IBCLibrary.page(items,index).items.length;
+      button.textContent=`Ver ${count} ${count===1?'grabación': 'grabaciones'} ${count===1?(direction==='anteriores'?'anterior':'siguiente'):direction}`;
+    }
+  }
 }
 function changeGroup(index) {
   pickerPage=index;renderSeriesNavigation();
@@ -284,8 +290,6 @@ document.getElementById('last-message').addEventListener('click',()=>{
 });
 document.getElementById('previous-group').addEventListener('click',()=>changeGroup(pickerPage-1));
 document.getElementById('next-group').addEventListener('click',()=>changeGroup(pickerPage+1));
-document.getElementById('first-group').addEventListener('click',()=>changeGroup(0));
-document.getElementById('last-group').addEventListener('click',()=>changeGroup(Math.ceil(currentSeries().length/IBCLibrary.PAGE_SIZE)-1));
 
 async function loadCatalog() {
   if(catalogLoading)return;
