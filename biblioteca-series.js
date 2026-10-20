@@ -4,9 +4,34 @@ const IBCBiblioteca = (() => {
     const categories = { predicaciones: 'Predicación', 'taller-biblico': 'Taller bíblico', 'catecismo-confesion': 'Catecismo y confesión' };
     const text = value => typeof value === 'string' ? value.trim() : '';
     const numbered = item => Number.isInteger(item.number) && item.number > 0;
-    const classified = item => !!categories[item.category] && !!text(item.series) && numbered(item);
+    const numberOptional = item => item.category === 'catecismo-confesion' && item.number === null;
+    const classified = item => !!categories[item.category] && !!text(item.series) && (numbered(item) || numberOptional(item));
     const groupKey = item => JSON.stringify([item.category, text(item.series)]);
     const itemKey = item => item.id || item.videoUrl;
+    const numberLabel = item => numbered(item) ? `${item.category === 'predicaciones' ? 'Mensaje' : item.category === 'catecismo-confesion' ? 'Grabación' : 'Clase'} ${item.number}` : '';
+    const optionLabel = item => `${numbered(item) ? item.number + '. ' : ''}${item.title}`;
+
+    function collectionOrder(a, b) {
+        const day = item => !item.dateEstimated && dateLabel(item) !== 'Fecha desconocida' ? item.date : '';
+        const dates = day(b).localeCompare(day(a));
+        if (dates) return dates;
+        const left = String(a.publicId || itemKey(a)), right = String(b.publicId || itemKey(b));
+        return /^\d+$/.test(left) && /^\d+$/.test(right) ? left.length - right.length || left.localeCompare(right) : left.localeCompare(right, 'es');
+    }
+
+    // Solo marcas explícitas en la descripción editorial; no se infieren temas ni tiempos.
+    function chapters(description) {
+        const result = [], seen = new Set();
+        for (const line of text(description).split(/\r?\n/)) {
+            const m = /^(?:(\d{1,2}):)?(\d{1,3}):([0-5]\d)\s+[—–-]\s+(.{1,180})$/.exec(line.trim());
+            if (!m || m[1] && Number(m[2]) > 59) continue;
+            const seconds = Number(m[1] || 0) * 3600 + Number(m[2]) * 60 + Number(m[3]);
+            if (seen.has(seconds)) continue;
+            seen.add(seconds); result.push({ seconds, label: line.trim() });
+            if (result.length === 20) break;
+        }
+        return result;
+    }
 
     function dateLabel(item) {
         const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(item.date || '');
@@ -34,7 +59,7 @@ const IBCBiblioteca = (() => {
     // Solo coincidencias exactas: URL, o categoría/serie/número/título/pasaje.
     // Es una deduplicación visual; no asigna IDs administrativos a los históricos.
     function sameRecording(a, b) {
-        return a.videoUrl === b.videoUrl || classified(a) && classified(b) && groupKey(a) === groupKey(b) &&
+        return a.videoUrl === b.videoUrl || classified(a) && classified(b) && numbered(a) && numbered(b) && groupKey(a) === groupKey(b) &&
             a.number === b.number && text(a.title) === text(b.title) &&
             !!text(a.passage) && text(a.passage) === text(b.passage);
     }
@@ -51,10 +76,10 @@ const IBCBiblioteca = (() => {
             const list = groups.get(key).items;
             if (!list.some(other => sameRecording(other, item))) list.push(item);
         }
-        for (const group of groups.values()) group.items.sort((a, b) => a.number - b.number || a.title.localeCompare(b.title, 'es'));
+        for (const group of groups.values()) group.items.sort(group.category === 'catecismo-confesion' ? collectionOrder : (a, b) => a.number - b.number || a.title.localeCompare(b.title, 'es'));
         return { groups: [...groups.values()], pending: published.filter(item => !classified(item)).map(item => ({
             publicId: item.publicId, title: item.title,
-            missing: [!text(item.series) && 'serie', !numbered(item) && 'numero_mensaje'].filter(Boolean)
+            missing: [!text(item.series) && 'serie', !numbered(item) && !numberOptional(item) && 'numero_mensaje'].filter(Boolean)
         })) };
     }
 
@@ -71,7 +96,7 @@ const IBCBiblioteca = (() => {
             video = card.querySelector('video'); link = card.querySelector('#enlaceColosenses');
         } else {
             card.className = 'sermon-tarjeta'; count = create('p', 'sermon-serie'); heading = create('h3', 'titulo-sermon-tarjeta');
-            const label = create('label', 'selector-mensaje-label'); label.textContent = 'Seleccionar mensaje o clase';
+            const label = create('label', 'selector-mensaje-label'); label.textContent = group.category === 'catecismo-confesion' ? 'Seleccionar grabación' : 'Seleccionar mensaje o clase';
             selector = create('select', 'selector-mensaje'); label.append(selector);
             detail = create('div', 'detalle-mensaje'); detail.setAttribute('aria-live', 'polite'); detail.setAttribute('aria-atomic', 'true');
             const frame = create('div', 'video-responsive sermon-video'); video = create('video');
@@ -84,7 +109,13 @@ const IBCBiblioteca = (() => {
         const audio = create('audio'); audio.controls = true; audio.preload = 'none';
         audioArea.append(audioLabel, audio); card.append(audioArea);
         video.addEventListener('play', () => pauseOthers(video)); audio.addEventListener('play', () => pauseOthers(audio));
-        let items = [], selected = hydrated ? group.items.find(i => String(i.number) === selector.value) || group.items[0] : null, signature = '';
+        let items = [], selected = hydrated ? group.items.find(i => String(i.number) === selector.value || itemKey(i) === selector.value) || group.items[0] : null, signature = '', pendingSeek = null;
+        const seek = () => {
+            if (pendingSeek === null || video.readyState < 1) return;
+            if (Number.isFinite(video.duration) && pendingSeek < video.duration) video.currentTime = pendingSeek;
+            pendingSeek = null;
+        };
+        video.addEventListener('loadedmetadata', seek);
         const setMedia = (media, url, revision, force) => {
             if (media.getAttribute('src') === (url || '') && media.dataset.revision === (revision || '') && !force) return;
             // El video histórico tiene un source HTML; no se recarga si es el mismo.
@@ -95,6 +126,7 @@ const IBCBiblioteca = (() => {
             media.dataset.revision = revision || ''; media.load();
         };
         const show = (item, userChange) => {
+            pendingSeek = null; video.preload = 'none';
             if (userChange) { video.pause(); audio.pause(); }
             setMedia(video, item.videoUrl, item.videoVersion, userChange);
             setMedia(audio, item.audioUrl, item.audioVersion, userChange);
@@ -103,10 +135,31 @@ const IBCBiblioteca = (() => {
             link.href = item.videoUrl; audioArea.hidden = !item.audioUrl;
             const fragment = document.createDocumentFragment();
             for (const [tag, value, cls] of [
-                ['p', `${item.category === 'predicaciones' ? 'Mensaje' : 'Clase'} ${item.number}`, 'sermon-serie'],
+                ['p', numberLabel(item), 'sermon-serie'],
                 ['h4', item.title], ['p', item.passage, 'sermon-referencia'],
                 ['p', item.speaker, 'sermon-predicador'], ['p', dateLabel(item), 'sermon-fecha']
             ]) if (value) { const node = create(tag, cls); node.textContent = value; fragment.append(node); }
+            if (text(item.description)) {
+                const description = create('details', 'descripcion-grabacion');
+                const summary = create('summary'); summary.textContent = 'Descripción y referencias';
+                const body = create('p'); body.textContent = item.description;
+                description.append(summary, body); fragment.append(description);
+            }
+            const parts = chapters(item.description);
+            if (parts.length) {
+                const nav = create('div', 'partes-grabacion');
+                const intro = create('p'); intro.textContent = 'Ir a una parte del video (queda en pausa):'; nav.append(intro);
+                for (const part of parts) {
+                    const button = create('button'); button.type = 'button'; button.textContent = part.label;
+                    button.addEventListener('click', () => {
+                        video.pause(); audio.pause(); pendingSeek = part.seconds;
+                        if (video.readyState >= 1) seek();
+                        else { video.preload = 'metadata'; video.load(); }
+                    });
+                    nav.append(button);
+                }
+                fragment.append(nav);
+            }
             detail.replaceChildren(fragment); selected = item;
         };
         selector.addEventListener('change', () => { const item = items.find(i => itemKey(i) === selector.value); if (item) show(item, true); });
@@ -115,11 +168,11 @@ const IBCBiblioteca = (() => {
             const previous = selected;
             const item = items.find(i => previous && itemKey(i) === itemKey(previous)) ||
                 items.find(i => previous && i.videoUrl === previous.videoUrl) || items[0];
-            const noun = group.category === 'predicaciones' ? (items.length === 1 ? 'mensaje' : 'mensajes') : (items.length === 1 ? 'clase' : 'clases');
+            const noun = group.category === 'predicaciones' ? (items.length === 1 ? 'mensaje' : 'mensajes') : group.category === 'catecismo-confesion' ? (items.length === 1 ? 'grabación disponible' : 'grabaciones disponibles') : (items.length === 1 ? 'clase' : 'clases');
             count.textContent = `${items.length} ${noun}`; heading.textContent = group.title;
             const options = JSON.stringify(items.map(i => [itemKey(i), i.number, i.title]));
             if (options !== signature) {
-                selector.replaceChildren(...items.map(i => { const o = create('option'); o.value = itemKey(i); o.textContent = `${i.number}. ${i.title}`; return o; }));
+                selector.replaceChildren(...items.map(i => { const o = create('option'); o.value = itemKey(i); o.textContent = optionLabel(i); return o; }));
                 signature = options;
             }
             selector.value = itemKey(item);
@@ -129,7 +182,7 @@ const IBCBiblioteca = (() => {
         return { update, remove() { video.pause(); audio.pause(); card.remove(); } };
     }
 
-    return { categories, classified, groupKey, itemKey, dateLabel, recent, sameRecording, organize, pauseOthers, seriesCard };
+    return { categories, classified, groupKey, itemKey, dateLabel, numberLabel, optionLabel, collectionOrder, chapters, recent, sameRecording, organize, pauseOthers, seriesCard };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = IBCBiblioteca;
 else globalThis.IBCBiblioteca = IBCBiblioteca;
