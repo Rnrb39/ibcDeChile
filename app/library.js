@@ -2,12 +2,12 @@
 const IBCLibrary = (() => {
   const PAGE_SIZE = 10;
   function key(item) { return JSON.stringify([item.category, item.series || '']); }
-  function sequence(items) {
+  function sequence(items, ascendingQuestions=false) {
     return [...items].sort((a,b) => {
       if(a.category === 'catecismo-confesion') {
         const aq=Number.isSafeInteger(a.catechismQuestion)?a.catechismQuestion:null;
         const bq=Number.isSafeInteger(b.catechismQuestion)?b.catechismQuestion:null;
-        if(aq!==null || bq!==null)return aq===null?1:bq===null?-1:bq-aq;
+        if(aq!==null || bq!==null)return aq===null?1:bq===null?-1:ascendingQuestions?aq-bq:bq-aq;
       }
       if(a.number && b.number)return a.number-b.number;
       if(a.number || b.number)return a.number?-1:1;
@@ -16,6 +16,7 @@ const IBCLibrary = (() => {
       return aDate.localeCompare(bDate);
     });
   }
+  function traversal(items) { return sequence(items,true); }
   function groups(items,category) {
     const result=new Map();
     for(const item of items.filter(item=>item.category===category)) {
@@ -32,9 +33,12 @@ const IBCLibrary = (() => {
     return {index:selected,pages,start,end:Math.min(start+PAGE_SIZE,items.length),items:items.slice(start,start+PAGE_SIZE)};
   }
   function label(item) {
-    if(item.category==='catecismo-confesion' && Number.isSafeInteger(item.catechismQuestion))return `Pregunta ${item.catechismQuestion} · ${item.title}`;
+    if(item.category==='catecismo-confesion' && Number.isSafeInteger(item.catechismQuestion)) {
+      const question=new RegExp(`\\bpregunta\\s*[:.º°-]?\\s*${item.catechismQuestion}(?!\\d)`,'i');
+      return question.test(item.title)?item.title:`Pregunta ${item.catechismQuestion} · ${item.title}`;
+    }
     return `${item.number ? `${item.number}. ` : ''}${item.title}`;
   }
-  return {PAGE_SIZE,key,sequence,groups,page,label};
+  return {PAGE_SIZE,key,sequence,traversal,groups,page,label};
 })();
 if(typeof module!=='undefined' && module.exports)module.exports=IBCLibrary;

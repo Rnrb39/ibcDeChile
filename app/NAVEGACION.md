@@ -10,7 +10,12 @@ dentro de la pantalla, con diez opciones por grupo y accesos al primer y último
 grupo. No usa ventanas emergentes ni un selector pequeño.
 
 Los mensajes numerados siguen la numeración editorial. Catecismo y Confesión
-conserva el orden descendente por pregunta; no se sustituye por fecha de subida.
+conserva la lista en orden descendente por pregunta; no se sustituye por fecha de subida.
+Su recorrido es ascendente: Siguiente elige la siguiente pregunta disponible de
+número mayor y Anterior la de número menor. El primer mensaje corresponde a la
+pregunta menor disponible y el último a la mayor, sin completar huecos.
+Si el título ya incluye su número de pregunta, se muestra íntegro una sola vez,
+siempre como texto.
 Los registros sin número no reciben números inventados. No se cambia el catálogo.
 
 Se mantiene un único reproductor MP3. Seleccionar otro mensaje pausa y desconecta

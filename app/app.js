@@ -233,6 +233,7 @@ function renderSchoolCategory(category, items) {
 function currentSeries() {
   return currentItem ? IBCLibrary.sequence(recordings.filter(item=>hasAudio(item) && IBCLibrary.key(item)===IBCLibrary.key(currentItem))) : [];
 }
+function currentTraversal() { return IBCLibrary.traversal(currentSeries()); }
 function seriesChoice(group) {
   const button=document.createElement('button');
   button.type='button';button.className='sermon-choice';button.dataset.series=group.key;
@@ -245,7 +246,7 @@ function seriesChoice(group) {
   return button;
 }
 function renderSeriesNavigation() {
-  const items=currentSeries(),position=items.findIndex(item=>item.id===currentId);
+  const items=currentSeries(),traversal=currentTraversal(),position=traversal.findIndex(item=>item.id===currentId);
   document.getElementById('series-navigation').hidden=position<0 || !browsingSeries;
   if(position<0)return;
   document.getElementById('selected-series').textContent=currentItem.series || 'Grabaciones';
@@ -268,18 +269,18 @@ function changeGroup(index) {
   document.getElementById('message-range').focus();
 }
 document.getElementById('previous-message').addEventListener('click',()=>{
-  const items=currentSeries(),index=items.findIndex(item=>item.id===currentId);
+  const items=currentTraversal(),index=items.findIndex(item=>item.id===currentId);
   if(index>0)selectSermon(items[index-1],true);
 });
 document.getElementById('next-message').addEventListener('click',()=>{
-  const items=currentSeries(),index=items.findIndex(item=>item.id===currentId);
+  const items=currentTraversal(),index=items.findIndex(item=>item.id===currentId);
   if(index>=0 && index<items.length-1)selectSermon(items[index+1],true);
 });
 document.getElementById('first-message').addEventListener('click',()=>{
-  const item=currentSeries()[0];if(item){selectSermon(item,true);startAudio();}
+  const item=currentTraversal()[0];if(item){selectSermon(item,true);startAudio();}
 });
 document.getElementById('last-message').addEventListener('click',()=>{
-  const items=currentSeries();if(items.length)selectSermon(items[items.length-1],true);
+  const items=currentTraversal();if(items.length)selectSermon(items[items.length-1],true);
 });
 document.getElementById('previous-group').addEventListener('click',()=>changeGroup(pickerPage-1));
 document.getElementById('next-group').addEventListener('click',()=>changeGroup(pickerPage+1));

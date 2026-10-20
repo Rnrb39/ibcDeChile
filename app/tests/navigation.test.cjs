@@ -86,6 +86,63 @@ test('external titles stay plain text and video-only records never load multimed
  assert.equal(onlyVideo.ids['retry-catalog'].hidden,false);assert.equal(onlyVideo.mediaAssignments.length,0);
 });
 
+test('catechism labels preserve complete titles without repeating their own question number',async()=>{
+ const item={...base,category:'catecismo-confesion',series:'Catecismo',number:null,catechismQuestion:77};
+ for(const title of ['Catecismo Bautista — Pregunta 77: El mensaje completo','PREGUNTA 77','Pregunta: 77','<img src=x onerror=alert(1)> Pregunta 77']) {
+  assert.equal(library.label({...item,title}),title);
+ }
+ for(const title of ['Pregunta 770','Pregunta 177','Pregunta 78','El mensaje completo']) {
+  assert.equal(library.label({...item,title}),`Pregunta 77 · ${title}`);
+ }
+ const title='Catecismo Bautista — Pregunta 77 <script>alert(1)</script>';
+ const app=await interfaceWith([{...item,title}]);
+ assert.equal(app.ids['sermon-title'].textContent,title);
+ assert.equal(app.ids['sermon-list'].children[0].children[0].children[0].textContent,title);
+ assert.equal(app.ids['catecismo-confesion-recordings'].children.find(node=>node.tag==='h3').textContent,title);
+});
+
+test('catechism traversal ascends through available questions while the picker stays descending',async()=>{
+ const data=[80,75,77].map(q=>({...base,id:`q-${q}`,category:'catecismo-confesion',series:'Catecismo',number:null,catechismQuestion:q,title:`Pregunta ${q}`}));
+ const app=await interfaceWith(data);
+ const selected=q=>assert.equal(app.ids['sermon-title'].textContent,`Pregunta ${q}`);
+ const visual=()=>app.ids['sermon-list'].children.map(li=>li.children[0].dataset.id);
+ app.select(data[2]);selected(77);
+ assert.deepEqual(visual(),['q-80','q-77','q-75']);
+ app.ids['next-message'].click();selected(80);
+ assert.equal(app.ids['next-message'].disabled,true);
+ assert.equal(app.ids['previous-message'].disabled,false);
+ app.ids['previous-message'].click();selected(77);
+ app.ids['previous-message'].click();selected(75);
+ assert.equal(app.ids['previous-message'].disabled,true);
+ assert.equal(app.ids['next-message'].disabled,false);
+ assert.equal(app.player.src,'');assert.equal(app.player.playCalls,0);
+ app.ids['first-message'].click();app.player.metadata(600);selected(75);
+ assert.equal(app.player.paused,false);
+ app.player.currentTime=85;
+ app.ids['last-message'].click();selected(80);
+ assert.equal(JSON.parse(app.storage.getItem(progress.KEY)).id,'q-75');
+ assert.equal(app.player.paused,true);assert.equal(app.player.src,'');
+ assert.equal(app.player.playCalls,1);
+ data.push({...data[0],id:'q-84',catechismQuestion:84,title:'Pregunta 84'});
+ await app.reload();selected(80);
+ app.ids['next-message'].click();selected(84);
+ assert.deepEqual(visual(),['q-84','q-80','q-77','q-75']);
+ assert.equal(app.player.src,'');assert.equal(app.player.playCalls,1);
+});
+
+test('catechism first and last controls select the matching descending picker page',async()=>{
+ const data=Array.from({length:12},(_,i)=>({...base,id:`q-${75+i*2}`,category:'catecismo-confesion',series:'Catecismo',number:null,catechismQuestion:75+i*2,title:`Pregunta ${75+i*2}`}));
+ const app=await interfaceWith(data);
+ app.ids['first-message'].click();app.player.metadata(600);
+ assert.equal(app.ids['sermon-title'].textContent,'Pregunta 75');
+ assert.deepEqual(app.ids['sermon-list'].children.map(li=>li.children[0].dataset.id),['q-77','q-75']);
+ app.ids['last-message'].click();
+ assert.equal(app.ids['sermon-title'].textContent,'Pregunta 97');
+ assert.equal(app.ids['sermon-list'].children[0].children[0].dataset.id,'q-97');
+ assert.equal(app.ids['sermon-list'].children.length,10);
+ assert.equal(app.player.paused,true);assert.equal(app.player.src,'');
+});
+
 test('catalog refresh retains keyboard focus in the message picker',async()=>{
  const app=await interfaceWith(records(35));
  app.ids['series-list'].children[0].click();
