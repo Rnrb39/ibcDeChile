@@ -73,6 +73,7 @@ test('Catechism question order is descending, independent of upload dates; serie
  assert.deepEqual(library.sequence(data).map(item=>item.catechismQuestion),[84,80,75]);
  assert.deepEqual(app.ids['sermon-list'].children.map(li=>li.children[0].dataset.id),['q-84','q-80','q-75']);
  assert.deepEqual(library.sequence(records(12).reverse()).map(item=>item.number),Array.from({length:12},(_,i)=>i+1));
+ assert.doesNotThrow(()=>library.sequence([{...base,number:null,date:123},{...base,number:null,date:{invalid:true}}]));
 });
 
 test('external titles stay plain text and video-only records never load multimedia',async()=>{

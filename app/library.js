@@ -11,7 +11,9 @@ const IBCLibrary = (() => {
       }
       if(a.number && b.number)return a.number-b.number;
       if(a.number || b.number)return a.number?-1:1;
-      return (a.date || '').localeCompare(b.date || '');
+      const aDate=typeof a.date==='string'?a.date:'';
+      const bDate=typeof b.date==='string'?b.date:'';
+      return aDate.localeCompare(bDate);
     });
   }
   function groups(items,category) {
