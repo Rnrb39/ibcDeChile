@@ -1,7 +1,7 @@
 'use strict';
 const CACHE_PREFIX = `ibc-pwa-${new URL(self.registration.scope).pathname}-`;
-const CACHE_NAME = `${CACHE_PREFIX}v11-pregunta-catecismo`;
-const FILES = ['./', 'index.html', 'app.css', 'audio.css', 'audio-catalog.js', 'catalog-utils.js', 'playback-progress.js', 'app.js', 'pwa.js', 'catalog.json', '../catalogo-config.js', '../catalogo-publico.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
+const CACHE_NAME = `${CACHE_PREFIX}v12-navegacion-accesible`;
+const FILES = ['./', 'index.html', 'app.css', 'audio.css', 'audio-catalog.js', 'library.js', 'catalog-utils.js', 'playback-progress.js', 'app.js', 'pwa.js', 'catalog.json', '../catalogo-config.js', '../catalogo-publico.js', 'manifest.webmanifest', 'icons/icon-192.png', 'icons/icon-512.png', 'icons/apple-touch-icon.png'];
 const SHELL_URLS = new Set(FILES.map(path => new URL(path, self.registration.scope).href));
 self.addEventListener('install', event => {
   // Revalidate even if the browser HTTP cache still has an earlier release.

@@ -58,7 +58,7 @@ test('production manifest, local references and real PNG dimensions are valid be
   }
   for(const [,reference] of read('index.html').matchAll(/(?:src|href)="([^"]+)"/g)) {
     if(reference.startsWith('#'))continue;
-    assert.ok(new URL(reference,scope).href.startsWith(scope));
+    assert.ok(new URL(reference,scope).href.startsWith(scope) || ['../catalogo-config.js','../catalogo-publico.js'].includes(reference));
     assert.ok(fs.existsSync(path.join(root,reference)),reference);
   }
 });
@@ -68,8 +68,8 @@ test('installation revalidates shell; cleanup deletes only this app old cache', 
   await harness.lifecycle('install');
   for(const request of harness.observed.installed) {
     assert.equal(request.cache,'reload');
-    assert.ok(request.url.startsWith(scope));
-    assert.ok(fs.existsSync(path.join(root,new URL(request.url).pathname.slice(5) || 'index.html')));
+    assert.ok(request.url.startsWith(scope) || [origin+'/catalogo-config.js',origin+'/catalogo-publico.js'].includes(request.url));
+    assert.ok(fs.existsSync(path.join(root,request.url.startsWith(scope)?new URL(request.url).pathname.slice(5)||'index.html':'../'+new URL(request.url).pathname.slice(1))));
   }
   assert.ok(harness.observed.installed.some(request=>request.url===scope+'pwa.js'));
   await harness.lifecycle('activate');

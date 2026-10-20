@@ -2,6 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 const vm = require('node:vm');
 const model = require('../../audio-catalog.js');
+const library=require('../../library.js');
 const progressModel = require('../../playback-progress.js');
 const publicModel=require('../../../catalogo-publico.js');
 const root = path.join(__dirname, '../..');
@@ -61,10 +62,9 @@ async function interfaceWith(records, options = {}) {
   player.play = async () => { player.playCalls++; if (options.playError) throw Error('play refused'); player.paused=false;player.emit('play'); };
   player.load = () => {player.loadCalls++; player.currentSrc=player.src;player.currentTime=0;player.duration=NaN;player.readyState=0;player.emit('emptied'); };
   player.metadata = duration => {player.duration=duration;player.readyState=4;player.emit('loadedmetadata');player.emit('durationchange');player.emit('canplay');};
-  const video=ids['video-player'];video.pause=()=>{video.paused=true;};video.load=()=>{};video.play=async()=>{video.paused=false;};
   const context = vm.createContext({
-    IBCPublicCatalogConfig:{enabled:!!options.publicCatalog},IBCPublicCatalog:{...publicModel,create:opts=>publicModel.create({...opts,fetcher:async()=>Response.json(options.publicCatalog.value)})},
-    IBCAudioCatalog:model, IBCPlaybackProgress:{...progressModel,createStore:provider=>progressModel.createStore(provider,()=>clock)},
+    IBCPublicCatalogConfig:{enabled:!!options.publicCatalog},IBCPublicCatalog:{...publicModel,create:opts=>publicModel.create({...opts,fetcher:async()=>{if(options.publicError)throw Error('offline');return Response.json(options.publicCatalog.value);}})},
+    IBCLibrary:library, IBCAudioCatalog:model, IBCPlaybackProgress:{...progressModel,createStore:provider=>progressModel.createStore(provider,()=>clock)},
     Date:class extends Date { static now() {return clock;} }, document, navigator:{onLine:true},
     window:{location:{href:baseUrl.href,hostname:baseUrl.hostname},localStorage:storage,addEventListener:(type,fn)=>(windowEvents[type] ||= []).push(fn),setInterval:fn=>timers.push(fn)},
     fetch:async url=>{
@@ -83,6 +83,7 @@ async function interfaceWith(records, options = {}) {
     tick:ms=>{clock+=ms;timers.forEach(fn=>fn());},
     advanceClock:ms=>{clock+=ms;},
     hide:()=>{document.visibilityState='hidden';(documentEvents.visibilitychange || []).forEach(fn=>fn());},
+    show:()=>{document.visibilityState='visible';(documentEvents.visibilitychange || []).forEach(fn=>fn());},
     pagehide:()=>{(windowEvents.pagehide || []).forEach(fn=>fn());},
     setOnline:online=>{context.navigator.onLine=online;(windowEvents[online?'online':'offline'] || []).forEach(fn=>fn());}
   };

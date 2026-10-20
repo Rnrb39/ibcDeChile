@@ -136,6 +136,8 @@ for (const category of categories.filter(category=>category!=='predicaciones')) 
     assert.equal(older.children[0].textContent,'Ver grabaciones anteriores');
     const choice=older.children[1].children[0].children[0];
     choice.click();
+    assert.equal(app.player.paused,true);
+    app.ids['play-button'].click();app.player.metadata(300);
     assert.equal(saved(app.storage).id,items[category].id);
     assert.equal(saved(app.storage).position,80);
     app.player.metadata(300);app.player.currentTime=90;app.player.pause();
