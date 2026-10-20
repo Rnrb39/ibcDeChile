@@ -9,12 +9,14 @@ const IBCBiblioteca = (() => {
     const groupKey = item => JSON.stringify([item.category, text(item.series)]);
     const itemKey = item => item.id || item.videoUrl;
     const numberLabel = item => numbered(item) ? `${item.category === 'predicaciones' ? 'Mensaje' : item.category === 'catecismo-confesion' ? 'Grabación' : 'Clase'} ${item.number}` : '';
-    const optionLabel = item => `${numbered(item) ? item.number + '. ' : ''}${item.title}`;
+    const questionLabel = item => item.category === 'catecismo-confesion' && Number.isSafeInteger(item.catechismQuestion) && item.catechismQuestion > 0 ? `Pregunta ${item.catechismQuestion}` : '';
+    const optionLabel = item => `${questionLabel(item) ? questionLabel(item) + ' · ' : ''}${numbered(item) ? item.number + '. ' : ''}${item.title}`;
 
     function collectionOrder(a, b) {
-        const day = item => !item.dateEstimated && dateLabel(item) !== 'Fecha desconocida' ? item.date : '';
-        const dates = day(b).localeCompare(day(a));
-        if (dates) return dates;
+        const question = item => questionLabel(item) ? item.catechismQuestion : 0;
+        const questions = question(b) - question(a);
+        if (questions) return questions;
+        // Sin pregunta confirmada o en empate: ID estable, nunca fechas inferidas.
         const left = String(a.publicId || itemKey(a)), right = String(b.publicId || itemKey(b));
         return /^\d+$/.test(left) && /^\d+$/.test(right) ? left.length - right.length || left.localeCompare(right) : left.localeCompare(right, 'es');
     }
@@ -135,7 +137,7 @@ const IBCBiblioteca = (() => {
             link.href = item.videoUrl; audioArea.hidden = !item.audioUrl;
             const fragment = document.createDocumentFragment();
             for (const [tag, value, cls] of [
-                ['p', numberLabel(item), 'sermon-serie'],
+                ['p', numberLabel(item), 'sermon-serie'], ['p', questionLabel(item), 'sermon-referencia'],
                 ['h4', item.title], ['p', item.passage, 'sermon-referencia'],
                 ['p', item.speaker, 'sermon-predicador'], ['p', dateLabel(item), 'sermon-fecha']
             ]) if (value) { const node = create(tag, cls); node.textContent = value; fragment.append(node); }
@@ -170,7 +172,7 @@ const IBCBiblioteca = (() => {
                 items.find(i => previous && i.videoUrl === previous.videoUrl) || items[0];
             const noun = group.category === 'predicaciones' ? (items.length === 1 ? 'mensaje' : 'mensajes') : group.category === 'catecismo-confesion' ? (items.length === 1 ? 'grabación disponible' : 'grabaciones disponibles') : (items.length === 1 ? 'clase' : 'clases');
             count.textContent = `${items.length} ${noun}`; heading.textContent = group.title;
-            const options = JSON.stringify(items.map(i => [itemKey(i), i.number, i.title]));
+            const options = JSON.stringify(items.map(i => [itemKey(i), i.number, i.catechismQuestion, i.title]));
             if (options !== signature) {
                 selector.replaceChildren(...items.map(i => { const o = create('option'); o.value = itemKey(i); o.textContent = optionLabel(i); return o; }));
                 signature = options;
@@ -182,7 +184,7 @@ const IBCBiblioteca = (() => {
         return { update, remove() { video.pause(); audio.pause(); card.remove(); } };
     }
 
-    return { categories, classified, groupKey, itemKey, dateLabel, numberLabel, optionLabel, collectionOrder, chapters, recent, sameRecording, organize, pauseOthers, seriesCard };
+    return { categories, classified, groupKey, itemKey, dateLabel, numberLabel, questionLabel, optionLabel, collectionOrder, chapters, recent, sameRecording, organize, pauseOthers, seriesCard };
 })();
 if (typeof module !== 'undefined' && module.exports) module.exports = IBCBiblioteca;
 else globalThis.IBCBiblioteca = IBCBiblioteca;

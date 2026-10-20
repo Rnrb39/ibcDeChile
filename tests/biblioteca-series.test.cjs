@@ -73,17 +73,21 @@ test('selector pausa, cambia video y MP3 sin autoplay, y no recarga al refrescar
     controller.remove(); assert.equal(document.children.length,0);
 });
 
-test('colección sin números: fechas confirmadas primero y fechas desconocidas por ID estable', () => {
+test('colección sin sesiones: preguntas 84, 80 y 75; desconocidas y empates por ID, sin usar fechas', () => {
     const study = (id,date,extra={})=>record({id:'admin-'+id,publicId:id,category:'catecismo-confesion',series:'Estudio del Catecismo y la Confesión Bautista',number:null,date,videoUrl:'video-'+id,...extra});
-    const a=study('10',null),b=study('2',null),c=study('3','2026-10-04'),d=study('4','2026-10-11');
-    const result=lib.organize([], [a,d,b,c]);
-    assert.deepEqual(result.groups[0].items.map(i=>i.publicId),['4','3','2','10']);
+    const a=study('10','2026-12-31',{title:'Pregunta 999 · capítulo 26'}),b=study('2',null),c=study('3','2026-10-04',{catechismQuestion:75}),d=study('4','2026-01-01',{catechismQuestion:84});
+    const e=study('5','2026-11-01',{catechismQuestion:80}),f=study('6','2026-12-31',{catechismQuestion:84});
+    const result=lib.organize([], [a,e,d,b,f,c]);
+    assert.deepEqual(result.groups[0].items.map(i=>i.publicId),['4','6','5','3','2','10']);
     assert.deepEqual(result.pending,[]);
     assert.equal(lib.classified({...a,category:'taller-biblico'}),false);
     assert.equal(lib.classified({...a,category:'predicaciones'}),false);
     for(const number of [0,-1,1.5,undefined])assert.equal(lib.classified({...a,number}),false);
     assert.equal(lib.optionLabel({...a,title:'Pregunta doctrinal confirmada'}),'Pregunta doctrinal confirmada');
     assert.equal(lib.numberLabel(a),'');
+    assert.equal(lib.numberLabel(d),'');
+    assert.equal(lib.optionLabel(d),'Pregunta 84 · '+d.title);
+    assert.equal(lib.questionLabel(a),'');
     assert.equal(lib.sameRecording(a,{...a,videoUrl:'otra-grabacion'}),false);
 });
 
