@@ -35,7 +35,8 @@ const mensajesColosenses = [
     { numeroMensaje: 9, titulo: "La lucha por la iglesia", pasaje: "Colosenses 2:1–5", fecha: "2026-09-27" },
     { numeroMensaje: 10, titulo: "Soportando la presión", pasaje: "Colosenses 2:6–7", fecha: "2026-10-04" },
     { numeroMensaje: 11, titulo: "Completos en Él", pasaje: "Colosenses 2:8-10", fecha: "2026-10-11", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-11.mp4" },
-    { numeroMensaje: 12, titulo: "El ayer y el hoy", pasaje: "Colosenses 2:11–15", fecha: "2026-10-18", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-12.mp4" }
+    // Audio ya publicado y verificado en app/catalog.json; no inferir enlaces para otros mensajes.
+    { numeroMensaje: 12, titulo: "El ayer y el hoy", pasaje: "Colosenses 2:11–15", fecha: "2026-10-18", predicador: "Pastor Sergio Arias Cáceres", videoUrl: "https://videos.ibcdechile.org/colosenses-12.mp4", audioUrl: "https://videos.ibcdechile.org/audio/colosenses-12.mp3", audioVersion: "r2-etag:c79f7d0a5a9e7f9602573956d9726e6c" }
 ].map(mensaje => ({
     serie: "Colosenses",
     predicador: "Pastor Sergio Arias Cáceres",
@@ -112,7 +113,8 @@ function cargarColosenses() {
     globalThis.IBCLegacyColosenses = {
         items: mensajesColosenses.map(m => ({ category: 'predicaciones', series: m.serie,
             number: m.numeroMensaje, title: m.titulo, passage: m.pasaje, speaker: m.predicador,
-            date: m.fecha, dateEstimated: !!m.fechaEstimada, videoUrl: m.videoUrl })),
+            date: m.fecha, dateEstimated: !!m.fechaEstimada, videoUrl: m.videoUrl,
+            audioUrl: m.audioUrl || null, audioVersion: m.audioVersion || null })),
         detach: () => selector.removeEventListener('change', mostrarMensaje)
     };
     // Restaurar una selección del navegador sin alterar la carga inicial habitual.

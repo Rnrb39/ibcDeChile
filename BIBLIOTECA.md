@@ -46,3 +46,33 @@ Las comprobaciones específicas son `node --test tests/biblioteca-series.test.cj
 Resultado de esta ampliación: 8 pruebas específicas y 4 regresiones seleccionadas aprobadas, sintaxis y `git diff --check` sin errores. HTML histórico sincronizado. Navegador: escritorio 1280 px y móviles 320/390 px sin desbordamiento; YouTube horizontal, MP4 vertical, pantalla completa, MP3, selección por teclado y salto pausado comprobados. PWA móvil: selección y reproducción real de MP3 con metadatos simulados, sin número inventado. Admin móvil: guardar/previsualizar/aprobar exclusivamente en una base efímera. Ninguna de estas pruebas creó publicaciones reales.
 
 Ajuste por pregunta: contrato v1 ampliado con `pregunta_catecismo` opcional; el lector tolera DTO antiguos que omiten el campo y rechaza valores inválidos. Se conserva el HTML histórico. Validación específica: 84/80/75 con fechas contradictorias, empates y preguntas desconocidas; campo separado de sesiones y referencias; PWA compatible. La migración de Admin se ensayó sobre una publicación local existente y conservó exactamente su catálogo y medios. Orden de instalación: lector público, web/PWA, respaldo y migración aditiva, Admin, revisión editorial/aprobación. No se aplica nada a producción desde este PR.
+
+## Corrección local: audio de Colosenses 12
+
+Diagnóstico del 20-10-2026, después del despliegue del PR #15: la D1 de producción
+identificada y el catálogo público (HTTP 200, revisión 2) contienen únicamente el
+contenido ID 1 de Teología Reformada, con MP4/MP3 verificados y asociados. No hay
+un registro actual de Colosenses 12 ni una asociación de su audio en esa D1.
+No se deduce de esto cómo se publicó anteriormente ni se reconstruyen registros.
+
+La PWA publicada sí registra `colosenses-12` y su MP3 existente. La consulta HEAD
+confirmó HTTP 200, `audio/mpeg`, 23791086 bytes y ETag
+`c79f7d0a5a9e7f9602573956d9726e6c`, coincidentes con `app/catalog.json`.
+El respaldo de la web conservaba el MP4 pero omitía ese audio, y la exportación
+`IBCLegacyColosenses` tampoco transportaba campos de audio: esa es la causa
+demostrada. No es un audio perdido por caché o por la proyección del catálogo.
+
+`script.js` reutiliza exclusivamente la URL/versión ya publicadas de ese MP3 y las
+transmite al reproductor existente. No se crean enlaces para los demás mensajes,
+IDs administrativos ni nuevas publicaciones. Un DTO aprobado coincidente sigue
+reemplazando al respaldo; no se mezcla su audio con el histórico, ni se resucita
+un audio que un DTO aprobado haya retirado. `sermones.html` renueva la versión de
+`script.js` para evitar caché antigua. La PWA y sus datos permanecen intactos.
+
+Pruebas: 8 de biblioteca (incluida la regresión 12→11→12, refresco y precedencia
+del catálogo) y 5 regresiones de datos/HTML/menú/Facebook/galería aprobadas.
+Sintaxis, HTML sincronizado y diff correctos. Navegador local con copia de lectura
+del catálogo real: reproducción efectiva del MP3, pausa/ocultación al pasar al 11,
+retorno al 12 sin autoplay, 320/390 px sin desbordamiento y sin errores JS.
+Ninguna escritura en D1/R2 ni cambios administrativos. Pendiente de autorización
+para fusionar/publicar únicamente esta corrección web mediante GitHub Pages.
