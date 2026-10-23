@@ -119,35 +119,16 @@ for (const from of categories) for (const to of categories.filter(category=>cate
   });
 }
 
-for (const category of categories.filter(category=>category!=='predicaciones')) {
-  test(`${category}: latest and older school recording buttons preserve outgoing checkpoint`, async () => {
-    const app=await interfaceWith(records,{now:NOW});
-    app.ids['play-button'].click();app.player.metadata(300);app.player.currentTime=70;
-    const container=app.ids[`${category}-recordings`];
-    const play=container.children.find(node=>node.tag==='button');
-    assert.equal(play.textContent,'Reproducir');
-    // Starting via this explicit Reproducir button is intentional, not autoplay.
-    play.click();assert.equal(app.player.playCalls,2);
-    assert.equal(saved(app.storage).id,items.predicaciones.id);
-    assert.equal(saved(app.storage).position,70);
-    app.player.metadata(300);app.player.currentTime=80;
-    const older=container.children.find(node=>node.tag==='details');
-    assert.equal(older.open,false);
-    assert.equal(older.children[0].textContent,'Ver grabaciones anteriores');
-    const choice=older.children[1].children[0].children[0];
-    choice.click();
-    assert.equal(app.player.paused,true);
-    app.ids['play-button'].click();app.player.metadata(300);
-    assert.equal(saved(app.storage).id,items[category].id);
-    assert.equal(saved(app.storage).position,80);
-    app.player.metadata(300);app.player.currentTime=90;app.player.pause();
-    const oldItem=school.find(item=>item.category===category && item.number===1);
-    assert.equal(saved(app.storage).id,oldItem.id);
-    const reopened=await interfaceWith(records,{now:NOW,storage:app.storage});
-    assert.equal(reopened.player.playCalls,0);
-    assert.equal(reopened.ids['resume-title'].textContent,oldItem.title);
-  });
-}
+for(const category of categories.filter(value=>value!=='predicaciones'))test(category+': cambiar desde la biblioteca guarda el mensaje saliente sin reproducir el nuevo',async()=>{
+ const app=await interfaceWith(records,{now:NOW});
+ app.select(items.predicaciones);app.ids['play-button'].click();app.player.metadata(300);app.player.currentTime=70;
+ app.ids['player-back'].click();app.ids['library-back'].click();app.ids['open-'+category].click();
+ const selected=app.ids['sermon-list'].children[0].children[0];
+ selected.click();assert.equal(app.player.playCalls,1);assert.equal(app.player.paused,true);assert.equal(app.player.src,'');
+ assert.equal(saved(app.storage).id,items.predicaciones.id);assert.equal(saved(app.storage).position,70);
+ app.ids['play-button'].click();app.player.metadata(300);app.player.currentTime=90;app.player.pause();
+ assert.equal(saved(app.storage).id,selected.dataset.id);
+});
 
 test('category fixtures never become public catalog entries', () => {
   assert.equal(catalog.sermons.length,12);

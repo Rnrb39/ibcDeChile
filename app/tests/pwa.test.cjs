@@ -138,6 +138,7 @@ test('text and focus colors meet contrast thresholds', () => {
     return .2126*rgb[0]+.7152*rgb[1]+.0722*rgb[2];
   }
   function contrast(a,b) { const values=[luminance(a),luminance(b)].sort((a,b)=>b-a);return (values[0]+.05)/(values[1]+.05); }
-  for(const [text,background] of [['20342e','ffffff'],['58625d','f6f4ee'],['58625d','e9efeb'],['446356','ffffff'],['ffffff','183d35'],['ffffff','24594c']]) assert.ok(contrast(text,background)>=4.5,`${text}/${background}`);
-  assert.ok(contrast('a9630b','ffffff')>=3);
+  const css=read('app.css'),color=name=>css.match(new RegExp(`--${name}:#([a-f0-9]{6})`))[1];
+  for(const [text,background] of [[color('ink'),color('paper')],[color('muted'),color('paper')],[color('muted'),'f4f3ef'],[color('muted'),'ffffff'],[color('navy'),'ffffff'],['ffffff',color('navy')],['ffffff',color('navy-hover')]]) assert.ok(contrast(text,background)>=4.5,`${text}/${background}`);
+  assert.ok(contrast(color('navy'),'ffffff')>=3);
 });

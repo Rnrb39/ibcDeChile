@@ -3,6 +3,7 @@ const path = require('node:path');
 const vm = require('node:vm');
 const model = require('../../audio-catalog.js');
 const library=require('../../library.js');
+const viewsScript=fs.readFileSync(path.join(__dirname,'../../views.js'),'utf8');
 const progressModel = require('../../playback-progress.js');
 const publicModel=require('../../../catalogo-publico.js');
 const root = path.join(__dirname, '../..');
@@ -20,6 +21,12 @@ async function interfaceWith(records, options = {}) {
   const windowEvents = {};
   const documentEvents = {};
   const timers = [];
+  const timeouts=new Map();let timeoutId=0;
+  const historyEntries=[];let historyIndex=-1;
+  const history={
+    pushState(state){historyEntries.splice(historyIndex+1);historyEntries.push(state);historyIndex++;},
+    replaceState(state){if(historyIndex<0)historyIndex=0;historyEntries[historyIndex]=state;}
+  };
   const fetches = [];
   const mediaAssignments = [];
   const baseUrl = new URL(options.url || 'https://ibcdechile.org/app/');
@@ -66,21 +73,24 @@ async function interfaceWith(records, options = {}) {
     IBCPublicCatalogConfig:{enabled:!!options.publicCatalog},IBCPublicCatalog:{...publicModel,create:opts=>publicModel.create({...opts,fetcher:async()=>{if(options.publicError)throw Error('offline');return Response.json(options.publicCatalog.value);}})},
     IBCLibrary:library, IBCAudioCatalog:model, IBCPlaybackProgress:{...progressModel,createStore:provider=>progressModel.createStore(provider,()=>clock)},
     Date:class extends Date { static now() {return clock;} }, document, navigator:{onLine:true},
-    window:{location:{href:baseUrl.href,hostname:baseUrl.hostname},localStorage:storage,addEventListener:(type,fn)=>(windowEvents[type] ||= []).push(fn),setInterval:fn=>timers.push(fn)},
+    window:{history,location:{href:baseUrl.href,hostname:baseUrl.hostname},localStorage:storage,addEventListener:(type,fn)=>(windowEvents[type] ||= []).push(fn),setInterval:fn=>timers.push(fn),setTimeout:(fn,delay)=>{timeouts.set(++timeoutId,{fn,due:clock+delay});return timeoutId;},clearTimeout:id=>timeouts.delete(id)},
     fetch:async url=>{
       fetches.push(url);
+      if(options.catalogGate)await options.catalogGate;
       if (options.catalogError) throw Error('Network unavailable');
       if (options.catalogInvalid) return {ok:true,json:async()=>{throw Error('Invalid JSON');}};
       return {ok:!options.catalogStatus || options.catalogStatus===200,json:async()=>({version:1,sermons:records})};
     }
   });
+  vm.runInContext(viewsScript, context);
   vm.runInContext(script, context);
   await new Promise(setImmediate);
   return {
     ids, player, document, storage, fetches, mediaAssignments,
     reload:()=>context.loadCatalog(),
+    historyBack:()=>{if(historyIndex>0){historyIndex--;for(const fn of windowEvents.popstate || [])fn({state:historyEntries[historyIndex]});}},
     select:(item, moveFocus=true)=>context.selectSermon(item, moveFocus),
-    tick:ms=>{clock+=ms;timers.forEach(fn=>fn());},
+    tick:ms=>{clock+=ms;timers.forEach(fn=>fn());for(const [id,timer] of [...timeouts])if(timer.due<=clock){timeouts.delete(id);timer.fn();}},
     advanceClock:ms=>{clock+=ms;},
     hide:()=>{document.visibilityState='hidden';(documentEvents.visibilitychange || []).forEach(fn=>fn());},
     show:()=>{document.visibilityState='visible';(documentEvents.visibilitychange || []).forEach(fn=>fn());},

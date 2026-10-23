@@ -1,69 +1,88 @@
-# Navegación accesible de audios
+# Interfaz accesible de la PWA de audio
 
-La pantalla inicial mantiene el último sermón, el botón grande Reproducir,
-la continuidad de escucha y los accesos a Predicaciones y Escuela dominical.
-Los controles de una serie se muestran cuando se elige una serie o grabación.
+## Vistas y navegación
 
-Cada serie ofrece Anterior, Siguiente, Escuchar desde el primer mensaje,
-Ir al último mensaje y Elegir otro mensaje. El selector es una lista de botones
-dentro de la pantalla, con cinco opciones por grupo. Solo ofrece Ver 5 grabaciones
-anteriores y Ver 5 grabaciones siguientes, con la cantidad real del grupo de
-destino y en singular si queda una grabación. Se ocultan los controles sin grupo
-disponible. El indicador muestra, por ejemplo, Grabaciones 6–10 de 35.
-En teléfonos, los dos botones conservan filas separadas, texto ajustable y
-altura mínima de 56 px mediante los estilos existentes. No usa ventanas
-emergentes ni un selector pequeño.
+- Inicio: logotipo auténtico, IBC de Chile, Juntos en la Palabra y tres accesos
+  directos a Predicaciones, Catecismo y Confesión y Taller Bíblico.
+- Biblioteca: una única serie abre directamente sus grabaciones. Varias series
+  comparten el selector paginado. Se muestran tres opciones por página, con
+  Anterior, Siguiente y un botón para volver. No se recortan los títulos.
+- Reproductor: título real, pasaje si existe, posición y duración. Tres botones
+  en una fila: −15, reproducción/pausa central y +15. El control central usa el
+  símbolo habitual y una etiqueta visible y accesible Reproducir/Pausar; así
+  la ampliación del texto no comprime una palabra dentro del botón.
+- El predicador y la fecha se muestran bajo el título y el pasaje, en líneas
+  separadas. Una fecha desconocida se indica como Fecha por confirmar.
+  Más opciones conserva la serie, controles nativos y recorrido entre mensajes.
+  La continuidad ofrece continuar o empezar desde el principio.
+- Volver, cambiar de vista y paginar no pausan ni sustituyen audio. Seleccionar
+  una grabación guarda el avance saliente y espera una acción para reproducir.
+- El botón Atrás del teléfono recupera las vistas. El foco se mueve al título de
+  la nueva vista. La carga inicial no cambia una categoría ya abierta.
 
-Los mensajes numerados siguen la numeración editorial. Catecismo y Confesión
-conserva la lista en orden descendente por pregunta; no se sustituye por fecha de subida.
-Su recorrido es ascendente: Siguiente elige la siguiente pregunta disponible de
-número mayor y Anterior la de número menor. El primer mensaje corresponde a la
-pregunta menor disponible y el último a la mayor, sin completar huecos.
-Si el título ya incluye su número de pregunta, se muestra íntegro una sola vez,
-siempre como texto.
-Los registros sin número no reciben números inventados. No se cambia el catálogo.
+`views.js` gestiona solamente vistas, listas y foco. `app.js` conserva el único
+reproductor, las consultas al catálogo y los eventos de progreso. Se reutilizan
+`library.js`, `audio-catalog.js` y `playback-progress.js`. No hay dependencias nuevas.
 
-Se mantiene un único reproductor MP3. Seleccionar otro mensaje pausa y desconecta
-el anterior sin cargar el nuevo; solo una acción de reproducción explícita carga
-audio. Los estados Reproduciendo/Pausado se anuncian con texto. El progreso y
-los controles de quince segundos conservan el módulo existente.
+El aviso de fallo del catálogo es temporal (12 segundos) y tiene Cerrar. No
+desaparece mientras Cerrar conserva el foco. El último resultado se consulta en
+Estado del catálogo desde Inicio, con anuncio accesible separado del aviso.
+Cerrar no recarga ni modifica la navegación, el catálogo o el audio. El mismo
+fallo no vuelve a anunciarse hasta recuperarse o realizar un reintento explícito.
+Al volver la conexión se programa un único reintento, respetando el mínimo de
+30 segundos entre consultas. Un fallo de actualización no declara que el
+dispositivo esté sin internet; esa indicación usa el estado de conexión del
+navegador. Los errores sin catálogo disponible conservan un estado visible en
+la biblioteca, además del historial accesible en Inicio.
 
-El catálogo se consulta al abrir, al recuperar conexión/volver a primer plano
-(con un límite de una consulta cada treinta segundos) y cada cinco minutos
-mientras la pantalla está activa. Se conservan cliente, endpoint y contrato
-existentes. Una actualización no cambia el audio activo ni la selección. Ante
-errores, datos inválidos o respuesta vacía no se sustituye una biblioteca válida
-por una lista vacía. No se pausa por bloquear la pantalla.
+## Identidad e información
 
-La caché pasa a v12-navegacion-accesible para distribuir el nuevo módulo
-library.js y los recursos actualizados. Se preservan manifiesto, iconos y /app/.
-No se guardan MP3 mediante el service worker. No se modifica infraestructura.
+Colores tomados de `main.css` de la web: azul #1b2a4a, dorado #c5a059, fondo
+#f9f9fb y texto #25282d. El dorado es decorativo, no se usa para texto pequeño.
+El fondo es una variación tonal suave sin fotografías ni texturas. El reproductor
+usa una tarjeta clara, bordes suaves y sombra discreta; los accesos para volver
+conservan flecha, texto y un área táctil de al menos 48 px.
+La tipografía de lectura usa fuentes del dispositivo, con títulos en Georgia,
+sin descargar fuentes externas. `assets/logo.jpeg` es una copia idéntica del
+logotipo original de la iglesia. No se modifica el original.
 
-## Pruebas focalizadas
+Se conservan catálogo, IDs, MP3, fechas, pasajes, títulos y clasificaciones.
+Las listas conservan el orden editorial de las series. El catecismo conserva su
+lista descendente y el recorrido lógico ascendente entre preguntas existentes.
+Los títulos externos se insertan con textContent, nunca como HTML.
 
-```powershell
-node --test --test-name-pattern="paginación|audios:|Catechism question order|catechism traversal|catechism first|catalog refresh retains keyboard" app/tests/navigation.test.cjs
-node --test --test-name-pattern="opening and every sermon selection" app/tests/audio-release.test.cjs
-```
+## Continuidad e instalación
 
-El ajuste a grupos de cinco se verificó con 24 pruebas focalizadas, incluyendo
-1, 5, 6, 12 y 35 grabaciones en las tres categorías, grupos parciales, extremos,
-límites de índice y conservación del audio activo al recorrer grupos.
-Los casos son ficticios y existen solo en las pruebas.
-Comprueban primer/último mensaje, grupos e intermedio, continuidad, una sola
-reproducción, ausencia de precarga, publicación durante reproducción, recuperación
-del catálogo, orden del Catecismo, contenido externo como texto y foco de teclado.
+No hay fuente multimedia al abrir ni al seleccionar. Solo una acción explícita
+carga el MP3. Se conservan las reglas de progreso: 30 segundos significativos,
+últimos 30 segundos como final, invalidación por versión y caducidad a 90 días.
+Ocultar la página guarda el avance y nunca pausa el audio.
 
-Revisión local: reproducción real del último sermón y de mensajes históricos,
-pausa/continuar, selección por intervalos, anchos de 320, 390 y 1280 píxeles,
-controles superiores a 48 px y ausencia de desplazamiento horizontal. Se comprobó
-texto al 200% mediante una copia temporal con fuente raíz de 40 px, sin cambiar
-la fuente de producción de 20 px. Esa copia no se incluye en Git.
+La identidad del manifiesto (id, start_url, scope, nombre e iconos) no cambia.
+Solo cambian los colores de presentación. La caché v13-vistas-accesibles incluye
+el módulo de vistas y la copia del logotipo. La estrategia de actualización y
+activación por botón se conserva; no se cachean MP3 ni se intercepta la web.
 
-El navegador local conservó el respaldo válido cuando falló la consulta del
-catálogo automático; el servicio público respondió HTTP 200 y su respuesta fue
-validada con el consumidor existente. No se cambiaron CORS ni el contrato.
+## Verificación local
 
-Pendiente en dispositivos físicos: TalkBack/VoiceOver, ampliación configurada por
-el usuario y continuidad con pantalla apagada. La revisión local no sustituye
-esas pruebas. No se despliega ni fusiona sin autorización del responsable.
+Pruebas focalizadas: navegación y categorías, carga diferida, foco, selección sin
+reproducción, barra de posición, progreso, catálogo válido y fallos, instalación
+y actualización. Se conservan las pruebas de metadatos confirmados y de ausencia
+de dependencias del prototipo de audio o de archivos locales.
+
+Revisión de navegador: 320 × 568, 390 × 700 y tablet. Se permite desplazamiento
+vertical con títulos largos, avisos, opciones de continuidad o texto ampliado.
+La comprobación de texto al 200% usa una copia temporal con raíz de 40 px; no
+sustituye la ampliación real del sistema operativo ni las pruebas con lectores
+de pantalla. No se cambia el tamaño de fuente de producción de 20 px.
+
+El catálogo público permite CORS únicamente desde https://ibcdechile.org.
+Desde localhost se conserva el catálogo incluido y se muestra aviso al fallar
+la actualización pública. No se cambia esta política ni la configuración
+compartida. Las categorías de Escuela Dominical se prueban automáticamente con
+fixtures, sin añadir datos ficticios al catálogo público.
+
+Pendiente en dispositivos: Samsung S25 FE y Galaxy A10s, pantalla apagada,
+segundo plano, TalkBack/VoiceOver, ampliación nativa e instalación/actualización
+real por HTTPS. Las pruebas simuladas no garantizan el comportamiento de cada
+sistema operativo. No se publica esta rama sin autorización.
