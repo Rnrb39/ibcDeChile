@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta name="theme-color" content="#183d35">
+  <meta name="theme-color" content="#1b2a4a">
   <meta name="description" content="Escucha las predicaciones y enseñanzas de IBC de Chile.">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-title" content="IBC de Chile">
@@ -16,95 +16,103 @@
   <script src="catalog-utils.js" defer></script>
   <script src="audio-catalog.js" defer></script>
   <script src="library.js" defer></script>
+  <script src="views.js" defer></script>
   <script src="playback-progress.js" defer></script>
   <script src="../catalogo-config.js" defer></script><script src="../catalogo-publico.js" defer></script>
   <script src="app.js" defer></script>
   <script src="pwa.js" defer></script>
 </head>
 <body>
-  <a class="skip-link" href="#contenido">Ir al contenido</a>
+  <a id="skip-link" class="skip-link" href="#contenido">Ir al contenido</a>
   <header class="brand">
-    <img src="icons/icon-192.png" width="56" height="56" alt="">
+    <img src="assets/logo.jpeg" width="72" height="54" alt="">
     <div><p class="brand-name">IBC de Chile</p><p class="brand-subtitle">Juntos en la Palabra</p></div>
   </header>
   <main id="contenido" tabindex="-1">
-    <section class="sermon" aria-labelledby="player-heading">
-      <div class="section-top"><p class="eyebrow">PARA ESCUCHAR Y COMPARTIR</p><h1 id="player-heading" class="visually-hidden" tabindex="-1">Escuchar predicación</h1><p id="audio-availability" class="hint" role="status"></p></div>
-      <p id="catalog-status" class="status" role="status">Cargando las predicaciones…</p>
-      <aside id="resume-panel" class="resume-panel" aria-labelledby="resume-heading" hidden>
-        <h2 id="resume-heading">Continuar escuchando</h2>
-        <p id="resume-title"></p>
-        <button id="resume-play" class="primary-button" type="button" aria-controls="player">Continuar</button>
-        <button id="restart-play" class="secondary-button" type="button" aria-controls="player">Escuchar desde el principio</button>
-      </aside>
-      <div id="sermon-content" hidden>
-        <div id="audio-controls" class="audio-frame" hidden><audio id="player" controls preload="none" aria-labelledby="sermon-title">Tu navegador no permite reproducir este audio.</audio></div>
-        <div class="sermon-body">
-          <p id="sermon-series" class="eyebrow"></p>
-          <h2 id="sermon-title" tabindex="-1"></h2>
-          <p id="sermon-passage" class="passage"></p>
-          <p id="sermon-meta" class="metadata"></p>
-          <button id="play-button" class="primary-button" type="button">▶ Reproducir sermón</button>
-          <div class="seek-controls" role="group" aria-label="Moverse por la predicación">
-            <button id="seek-back" class="secondary-button" type="button" aria-controls="player" disabled>Retroceder 15 segundos</button>
-            <button id="seek-forward" class="secondary-button" type="button" aria-controls="player" disabled>Avanzar 15 segundos</button>
-          </div>
-          <p id="seek-status" class="status" role="status"></p>
-          <p id="player-state" class="status" role="status"></p>
-          <p id="playback-status" class="status" role="status"></p>
-          <p id="progress-status" class="hint" role="status"></p>
-          <button id="retry-audio" class="secondary-button" type="button" hidden>Volver a intentar el audio</button>
-          <p id="latest-note" class="hint">El mensaje más reciente con audio disponible.</p>
-          <section id="series-navigation" aria-labelledby="selected-series" hidden>
-            <h3 id="selected-series" class="recording-title"></h3>
-            <div class="message-navigation" role="group" aria-label="Cambiar de mensaje">
-              <button id="previous-message" class="secondary-button" type="button">Anterior</button>
-              <button id="next-message" class="secondary-button" type="button">Siguiente</button>
-            </div>
-            <button id="first-message" class="secondary-button" type="button">Escuchar desde el primer mensaje</button>
-            <button id="last-message" class="secondary-button" type="button">Ir al último mensaje</button>
-            <details id="message-picker">
-              <summary>Elegir otro mensaje</summary>
-              <p id="message-range" class="hint" role="status" tabindex="-1"></p>
-              <ol id="sermon-list" class="sermon-list"></ol>
-              <div class="message-navigation" role="group" aria-label="Grupos de mensajes">
-                <button id="previous-group" class="secondary-button" type="button">Ver 5 grabaciones anteriores</button>
-                <button id="next-group" class="secondary-button" type="button">Ver 5 grabaciones siguientes</button>
-              </div>
-            </details>
-          </section>
-          <details id="transcript" hidden><summary>Leer el mensaje</summary><div id="transcript-text" class="transcript"></div></details>
-        </div>
-      </div>
-      <button id="retry-catalog" class="secondary-button" type="button" hidden>Volver a cargar las predicaciones</button>
-      <noscript><p>Activa JavaScript para ver el catálogo y reproducir las predicaciones.</p></noscript>
+    <section id="home-view" class="view home-view" aria-labelledby="home-heading">
+      <h1 id="home-heading" tabindex="-1">Escucha la Palabra</h1>
+      <nav class="home-categories" aria-label="Enseñanzas de la iglesia">
+        <button id="open-predicaciones" class="category-button" type="button">Predicaciones<span aria-hidden="true">›</span></button>
+        <button id="open-catecismo-confesion" class="category-button" type="button">Catecismo y Confesión<span aria-hidden="true">›</span></button>
+        <button id="open-taller-biblico" class="category-button" type="button">Taller Bíblico<span aria-hidden="true">›</span></button>
+      </nav>
+      <button id="open-saved" class="secondary-button continue-button" type="button" hidden>Continuar escuchando</button>
+      <details id="catalog-details" class="catalog-details" hidden><summary>Estado del catálogo</summary><p id="catalog-last-status"></p><button id="retry-catalog" class="text-button" type="button">Intentar actualización</button></details>
+      <details class="install-help"><summary>Instalar en mi teléfono</summary><p>En Android: menú de Chrome → Instalar aplicación o Añadir a pantalla de inicio.</p><p>En iPhone: Safari → Compartir → Añadir a pantalla de inicio.</p></details>
     </section>
 
-    <nav class="sections" aria-label="Más enseñanzas">
-      <details id="sermons-section" class="section-card">
-        <summary><span class="section-icon" aria-hidden="true">▷</span><span>Predicaciones y series</span><span class="chevron" aria-hidden="true">+</span></summary>
-        <div class="section-content">
-          <h2>Predicaciones y series</h2>
-          <p class="hint">Elige una serie. Podrás recorrer sus mensajes sin salir de esta pantalla.</p>
-          <div id="series-list" class="sermon-list"></div>
+    <section id="library-view" class="view" aria-labelledby="library-heading" hidden>
+      <div class="view-toolbar"><button id="library-back" class="back-button" type="button">← Inicio</button></div>
+      <h1 id="library-heading" tabindex="-1">Predicaciones</h1>
+      <div id="series-list" class="recording-list"></div>
+      <p id="library-empty" class="empty-message" hidden>Próximamente estarán disponibles las grabaciones</p>
+      <div id="message-picker" hidden>
+        <ol id="sermon-list" class="recording-list"></ol>
+      </div>
+      <p id="message-range" class="visually-hidden" role="status" tabindex="-1"></p>
+      <nav id="group-navigation" class="page-navigation" aria-label="Páginas de grabaciones">
+        <button id="previous-group" class="secondary-button" type="button">Anterior</button>
+        <button id="next-group" class="secondary-button" type="button">Siguiente</button>
+      </nav>
+      <button id="return-player" class="text-button" type="button" hidden>Volver al reproductor</button>
+    </section>
+
+    <section id="player-view" class="view player-view" aria-labelledby="sermon-title" hidden>
+      <div class="view-toolbar"><button id="player-back" class="back-button" type="button">← Grabaciones</button></div>
+      <p id="player-heading" class="visually-hidden">Escuchar predicación</p>
+      <div id="sermon-content" hidden>
+        <h1 id="sermon-title" tabindex="-1"></h1>
+        <p id="sermon-passage" class="passage"></p>
+        <p id="sermon-meta" class="metadata"></p>
+        <div class="listening-progress">
+          <label for="playback-position" class="visually-hidden">Posición de escucha</label>
+          <input id="playback-position" type="range" min="0" max="0" value="0" step="1" aria-controls="player" disabled>
+          <div class="time-display"><span id="elapsed-time">00:00</span><span id="total-time">--:--</span></div>
         </div>
-      </details>
-      <details class="section-card">
-        <summary><span class="section-icon" aria-hidden="true">▤</span><span>Escuela dominical</span><span class="chevron" aria-hidden="true">+</span></summary>
-        <div class="section-content school-options">
-          <details class="school-option"><summary>Catecismo y confesión</summary><div id="catecismo-confesion-recordings"><p>Próximamente estarán disponibles las grabaciones</p></div></details>
-          <details class="school-option"><summary>Taller bíblico</summary><div id="taller-biblico-recordings"><p>Próximamente estarán disponibles las grabaciones</p></div></details>
+        <div class="playback-controls" role="group" aria-label="Reproducción de audio">
+          <button id="seek-back" class="seek-button" type="button" aria-label="Retroceder 15 segundos" aria-controls="player" disabled>−15<span aria-hidden="true">seg.</span></button>
+          <button id="play-button" class="primary-button" type="button" aria-label="Reproducir" aria-controls="player">▶</button>
+          <button id="seek-forward" class="seek-button" type="button" aria-label="Avanzar 15 segundos" aria-controls="player" disabled>+15<span aria-hidden="true">seg.</span></button>
         </div>
-      </details>
-    </nav>
-    <p id="connection-status" class="connection-status" role="status" hidden>Sin conexión. Puedes consultar el catálogo guardado. Para escuchar necesitas conexión al servidor del audio.</p>
-    <aside id="update-notice" class="update-notice" aria-label="Actualización disponible" hidden>
-      <p role="status">Hay una nueva versión disponible. Puedes actualizar cuando termines de escuchar.</p>
-      <button id="update-app" class="secondary-button" type="button">Actualizar aplicación</button>
-      <p class="hint">Al actualizar se recargará la aplicación.</p>
+        <p id="play-caption" class="play-caption" aria-hidden="true">Reproducir</p>
+        <p id="player-state" class="visually-hidden" role="status"></p>
+        <p id="seek-status" class="visually-hidden" role="status"></p>
+        <p id="playback-status" class="status" role="status"></p>
+        <button id="retry-audio" class="secondary-button" type="button" hidden>Volver a intentar</button>
+        <aside id="resume-panel" class="resume-panel" aria-labelledby="resume-heading" hidden>
+          <h3 id="resume-heading">Continuar escuchando</h3>
+          <p id="resume-title"></p>
+          <button id="resume-play" class="primary-button" type="button" aria-controls="player">Continuar</button>
+          <button id="restart-play" class="secondary-button" type="button" aria-controls="player">Escuchar desde el principio</button>
+        </aside>
+        <details class="message-options">
+          <summary>Más opciones</summary>
+          <p id="sermon-series" class="metadata"></p>
+          <section id="series-navigation" aria-label="Recorrer mensajes" hidden>
+            <h3 id="selected-series" class="visually-hidden"></h3>
+            <div class="page-navigation"><button id="previous-message" class="secondary-button" type="button">Anterior</button><button id="next-message" class="secondary-button" type="button">Siguiente</button></div>
+            <button id="first-message" class="secondary-button" type="button">Escuchar desde el primer mensaje</button>
+            <button id="last-message" class="secondary-button" type="button">Ir al último mensaje</button>
+          </section>
+          <div id="audio-controls" hidden><audio id="player" controls preload="none" aria-labelledby="sermon-title">Tu navegador no permite reproducir este audio.</audio></div>
+        </details>
+        <details id="transcript" hidden><summary>Leer el mensaje</summary><div id="transcript-text" class="transcript"></div></details>
+      </div>
+    </section>
+    <p id="catalog-loading" class="visually-hidden" role="status"></p>
+    <p id="catalog-announcement" class="visually-hidden" role="status" aria-live="polite" aria-atomic="true"></p>
+    <aside id="catalog-notice" class="catalog-toast" aria-label="Aviso del catálogo" hidden>
+      <p id="catalog-status"></p>
+      <button id="close-catalog-notice" class="text-button" type="button">Cerrar</button>
     </aside>
-    <details class="install-help"><summary>Instalar en mi teléfono</summary><p>En Android, abre el menú de Chrome y elige «Instalar aplicación» o «Añadir a pantalla de inicio».</p><p>En iPhone, abre esta página en Safari, toca Compartir y elige «Añadir a pantalla de inicio».</p><p>Para escuchar necesitas conexión a Internet. No se descargan los audios al abrir la aplicación.</p></details>
+    <p id="progress-status" class="status" role="status"></p>
+    <p id="connection-status" class="status" role="status" hidden>Sin conexión. Para escuchar necesitas conexión al servidor del audio.</p>
+    <aside id="update-notice" class="update-notice" aria-label="Actualización disponible" hidden>
+      <p role="status">Hay una nueva versión disponible.</p>
+      <button id="update-app" class="secondary-button" type="button">Actualizar aplicación</button>
+      <p class="hint">Actualiza cuando termines de escuchar.</p>
+    </aside>
+    <noscript><p>Activa JavaScript para ver las grabaciones y reproducir el audio.</p></noscript>
   </main>
-  <footer>Primera Iglesia Bíblica Cristiana de Chile<br><span>Una iglesia centrada en Jesucristo.</span></footer>
 </body>
 </html>

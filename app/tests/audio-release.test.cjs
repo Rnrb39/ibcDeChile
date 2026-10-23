@@ -159,7 +159,7 @@ test('installed identity and /app/ scope are preserved; audio shell has no prelo
 });
 
 test('production resources and tests are independent of the excluded prototype and local media',()=>{
-  for(const file of ['index.html','app.js','audio-catalog.js','library.js','pwa.js','sw.js','manifest.webmanifest','catalog.json']) {
+  for(const file of ['index.html','app.js','audio-catalog.js','library.js','views.js','pwa.js','sw.js','manifest.webmanifest','catalog.json']) {
     const source=read(file);
     assert.doesNotMatch(source,/["'`][A-Za-z]:[\\/]|file:\/\/|xampp|ibcDeChile\//i);
     assert.doesNotMatch(source,/["'`](?:\.\.\/|\.\/)?(?:app\/)?audio\/|local\/catalog\.local\.json/);
@@ -184,7 +184,7 @@ test('video-to-audio upgrade precaches a complete new shell before deleting only
     fetch:async()=>{throw Error('offline after upgrade');}
   });
   let pending;events.install({waitUntil:task=>pending=task});await pending;
-  assert.equal(cacheName,'ibc-pwa-/app/-v12-navegacion-accesible');
+  assert.equal(cacheName,'ibc-pwa-/app/-v13-vistas-accesibles');
   assert.match(stored.get(scope),/<audio\b/);assert.doesNotMatch(stored.get(scope),/<video\b/);
   assert.equal(JSON.parse(stored.get(scope+'catalog.json')).sermons.length,12);
   assert.ok(stored.has(scope+'audio-catalog.js') && stored.has(scope+'audio.css'));

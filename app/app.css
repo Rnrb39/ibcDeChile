@@ -1,517 +1,84 @@
 :root {
   color-scheme:light;
-  --green:#183d35;
-  --green-light:#e9efeb;
-  --paper:#f6f4ee;
-  --ink:#20342e;
-  --muted:#58625d;
-  --line:#d4dcd5;
-  --white:#fff;
+  --navy:#1b2a4a;
+  --navy-hover:#3b4e73;
+  --gold:#c5a059;
+  --paper:#f9f9fb;
+  --ink:#25282d;
+  --muted:#5b616b;
+  --line:#e2e4e9;
   font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
   font-size:20px;
-  line-height:1.55;
-  color:var(--ink);
-  background:var(--paper)
-}
-
-* {
-  box-sizing:border-box
-}
-
-body {
-  margin:0;
-  padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left)
-}
-
-button,summary,a {
-  -webkit-tap-highlight-color:transparent
-}
-
-button {
-  font:inherit;
-  cursor:pointer
-}
-
-button:disabled {
-  cursor:default;
-  opacity:.7
-}
-
-button,summary {
-  touch-action:manipulation
-}
-
-button:focus-visible,summary:focus-visible,a:focus-visible,video:focus-visible,[tabindex]:focus-visible {
-  outline:4px solid #a9630b;
-  outline-offset:5px
-}
-
-button,summary {
-  min-height:56px
-}
-
-[hidden] {
-  display:none!important
-}
-
-p,h1,h2 {
-  margin:0
-}
-
-p+p {
-  margin-top:.8rem
-}
-
-.brand {
-  max-width:840px;
-  margin:auto;
-  display:flex;
-  align-items:center;
-  gap:.7rem;
-  padding:.75rem 1.2rem
-}
-
-.brand img {
-  border-radius:50%;
-  flex-shrink:0
-}
-
-.brand-name {
-  font-weight:750;
-  font-size:1.1rem
-}
-
-.brand-subtitle {
-  font-size:.9rem;
-  color:var(--muted);
-  margin:0
-}
-
-main {
-  width:min(100% - 2.4rem,792px);
-  margin:0 auto
-}
-
-.sermon {
-  background:var(--white);
-  border:1px solid var(--line);
-  border-radius:20px;
-  overflow:hidden;
-  box-shadow:0 6px 24px #183d3507
-}
-
-.section-top {
-  padding:1.2rem 1.4rem 1rem;
-  position:relative
-}
-
-/* Keep the section heading available to screen readers without visual height. */
-.visually-hidden {
-  position:absolute;
-  width:1px;
-  height:1px;
-  padding:0;
-  margin:-1px;
-  overflow:hidden;
-  clip:rect(0,0,0,0);
-  clip-path:inset(50%);
-  white-space:nowrap;
-  border:0;
-}
-
-.eyebrow {
-  font-size:.8rem;
-  font-weight:750;
-  letter-spacing:.09em;
-  color:#446356
-}
-
-h1 {
-  font-family:Georgia,"Times New Roman",serif;
-  font-size:2rem;
-  font-weight:500;
-  line-height:1.2;
-  margin-top:.2rem
-}
-
-h2 {
-  font-size:1.4rem;
-  line-height:1.3
-}
-
-.video-frame {
-  background:#10211d;
-  aspect-ratio:16/9
-}
-
-video {
-  display:block;
-  width:100%;
-  height:100%;
-  object-fit:contain
-}
-
-.sermon-body {
-  padding:1.2rem 1.4rem 1.4rem
-}
-
-.sermon-body h2 {
-  margin:.3rem 0;
-  font-size:1.2rem;
-  line-height:1.4
-}
-
-.passage {
-  font-weight:650
-}
-
-.metadata {
-  font-size:.95rem;
-  color:var(--muted);
-  margin:.5rem 0 1rem
-}
-
-.primary-button,.secondary-button {
-  display:block;
-  width:100%;
-  border-radius:12px;
-  padding:.7rem 1rem;
-  font-weight:700;
-  border:2px solid var(--green)
-}
-
-.primary-button {
-  color:#fff;
-  background:var(--green)
-}
-
-.primary-button:hover {
-  background:#24594c
-}
-
-.secondary-button {
-  background:#fff;
-  color:var(--green);
-  margin:.7rem 0
-}
-
-.hint {
-  color:var(--muted);
-  font-size:.9rem;
-  margin:.7rem 0 0
-}
-
-.status:empty {
-  display:none
-}
-
-.status {
-  font-size:.95rem;
-  margin:.7rem 0
-}
-
-.sermon>#catalog-status:not(:empty),.sermon>#retry-catalog {
-  margin:1rem;
-  width:auto
-}
-
-.sections {
-  display:grid;
-  gap:.8rem;
-  margin-top:1.2rem
-}
-
-.section-card {
-  border:1px solid var(--line);
-  border-radius:16px;
-  background:#fff;
-  overflow:hidden
-}
-
-.section-card>summary {
-  display:flex;
-  gap:.8rem;
-  align-items:center;
-  padding:1rem 1.2rem;
-  cursor:pointer;
-  font-size:1.12rem;
-  font-weight:750;
-  list-style:none
-}
-
-.section-card>summary::-webkit-details-marker {
-  display:none
-}
-
-/* Keep focus visible inside containers with rounded, clipped edges. */
-.section-card>summary:focus-visible,video:focus-visible {
-  outline-offset:-5px;
-}
-
-.section-icon {
-  display:grid;
-  place-items:center;
-  background:var(--green-light);
-  border-radius:12px;
-  width:48px;
-  height:48px;
-  flex:none;
-  color:var(--green);
-  font-size:1.5rem
-}
-
-.chevron {
-  margin-left:auto;
-  font-size:1.4rem;
-  font-weight:400
-}
-
-.section-card[open]>.section-content {
-  border-top:1px solid var(--line)
-}
-
-.section-card[open]>summary .chevron {
-  transform:rotate(45deg)
-}
-
-.section-content {
-  padding:1.1rem 1.2rem
-}
-
-.sermon-list {
-  list-style:none;
-  margin:1rem 0 0;
-  padding:0;
-  display:grid;
-  gap:.6rem
-}
-
-.sermon-choice {
-  width:100%;
-  text-align:left;
-  border:1px solid var(--line);
-  border-radius:12px;
-  padding:.8rem 1rem;
-  background:#fff;
-  color:var(--ink)
-}
-
-.sermon-choice:hover {
-  background:var(--paper)
-}
-
-.sermon-choice[aria-current=true] {
-  border:2px solid var(--green);
-  background:var(--green-light)
-}
-
-.choice-title {
-  display:block;
-  font-weight:700
-}
-
-.choice-meta {
-  display:block;
-  font-size:.9rem;
-  color:var(--muted);
-  margin-top:.2rem
-}
-
-.school-options {
-  display:grid;
-  gap:.7rem
-}
-
-.school-option {
-  background:var(--paper);
-  border-radius:12px;
-  padding:.2rem .8rem
-}
-
-.school-option>summary {
-  font-weight:650;
-  cursor:pointer;
-  padding:.6rem 0
-}
-
-.school-option p {
-  padding:.4rem 0 .8rem
-}
-
-.install-help {
-  margin:1.4rem 0;
-  color:var(--muted);
-  font-size:.9rem
-}
-
-.install-help summary {
-  cursor:pointer;
-  padding:.5rem 0
-}
-
-.connection-status {
-  border-left:5px solid #a9630b;
-  background:#fff1d8;
-  padding:1rem;
-  margin-top:1rem
-}
-
-.transcript {
-  white-space:pre-wrap;
-  margin-top:1rem
-}
-
-#transcript {
-  margin-top:1rem
-}
-
-#transcript summary {
-  cursor:pointer;
-  font-weight:700;
-  padding:.6rem 0
-}
-
-footer {
-  text-align:center;
-  padding:1rem 1.2rem 2rem;
-  color:var(--green);
-  font-size:.9rem
-}
-
-footer span {
-  color:var(--muted);
-  font-size:.85rem
-}
-
-.skip-link {
-  position:absolute;
-  top:-100px;
-  left:1rem;
-  background:#fff;
-  padding:1rem;
-  z-index:10
-}
-
-.skip-link:focus {
-  top:0
-}
-
-@media(max-width:520px) {
-  .brand {
-    padding:.65rem .85rem;
-    gap:.5rem
-  }
-  .brand img {
-    width:46px;
-    height:46px
-  }
-  .brand-subtitle {
-    font-size:.8rem
-  }
-  main {
-    width:calc(100% - 1.2rem)
-  }
-  .section-top,.sermon-body {
-    padding:1rem
-  }
-  h1 {
-    font-size:1.8rem
-  }
-  h2 {
-    font-size:1.3rem
-  }
-  .section-card>summary {
-    padding:.85rem .75rem;
-    font-size:1.05rem;
-    gap:.6rem
-  }
-  .section-icon {
-    width:38px;
-    height:42px
-  }
-  .section-content {
-    padding:1rem .75rem
-  }
-  .sermon-choice {
-    padding:.7rem
-  }
-  .brand-name {
-    font-size:1rem
-  }
-}
-
-.older-recordings {
-  margin-top:1rem;
-}
-.older-recordings>summary {
-  cursor:pointer;
-  padding:.8rem;
-  border:2px solid var(--green);
-  border-radius:12px;
-  color:var(--green);
-  background:var(--white);
-  font-weight:700;
-  overflow-wrap:anywhere;
-}
-.recording-title {
-  margin:.5rem 0;
-  font-size:1.15rem;
   line-height:1.4;
-  overflow-wrap:anywhere;
+  color:var(--ink);
+  background:linear-gradient(145deg,#f9f9fb,#f4f3ef);
 }
-.school-play {
-  margin-bottom:1rem;
+* {box-sizing:border-box;}
+body {margin:0;min-height:100vh;padding:env(safe-area-inset-top) env(safe-area-inset-right) env(safe-area-inset-bottom) env(safe-area-inset-left);}
+[hidden] {display:none!important;}
+button,input,summary {font:inherit;touch-action:manipulation;-webkit-tap-highlight-color:transparent;}
+button,summary {cursor:pointer;}
+button {min-height:52px;min-width:0;border-radius:12px;padding:.65rem .85rem;line-height:1.25;white-space:normal;overflow-wrap:anywhere;}
+button:disabled {opacity:.55;cursor:default;}
+button:focus-visible,summary:focus-visible,input:focus-visible,a:focus-visible,[tabindex]:focus-visible {outline:3px solid var(--navy);outline-offset:4px;}
+h1,h2,h3,p {margin:0;}
+h1,h2,h3 {color:var(--navy);line-height:1.25;overflow-wrap:anywhere;}
+h1,h2 {font-family:Georgia,"Times New Roman",serif;font-size:1.45rem;}
+h3 {font-size:1rem;}
+.brand {display:flex;align-items:center;gap:.7rem;max-width:640px;margin:auto;padding:.75rem 1rem;border-bottom:1px solid var(--line);line-height:1.25;}
+.brand img {width:64px;height:48px;object-fit:contain;flex:none;}
+.brand-name {font-family:Georgia,"Times New Roman",serif;font-size:1.1rem;font-weight:700;color:var(--navy);}
+.brand-subtitle {font-size:.8rem;color:var(--muted);}
+main {max-width:640px;margin:auto;padding:.7rem 1rem 1.3rem;}
+.view {min-width:0;}
+.home-view {padding-top:.8rem;}
+.home-view h1 {margin-bottom:1rem;font-size:1.4rem;}
+.home-categories {display:grid;gap:.7rem;}
+.category-button {display:flex;align-items:center;justify-content:space-between;gap:.6rem;text-align:left;width:100%;min-height:76px;padding:.9rem 1rem;background:#fff;color:var(--navy);border:1px solid var(--line);border-left:4px solid var(--gold);box-shadow:0 3px 12px #1b2a4a08;font-weight:700;}
+.category-button span {font-size:1.5rem;font-weight:400;}
+.category-button:hover,.sermon-choice:hover {background:#edf0f5;}
+.primary-button {background:var(--navy);color:#fff;border:2px solid var(--navy);font-weight:700;}
+.primary-button:hover {background:var(--navy-hover);}
+.secondary-button {background:#fff;border:1px solid var(--navy);color:var(--navy);font-weight:600;}
+.back-button,.text-button {color:var(--navy);background:transparent;border:0;padding:.45rem .2rem;text-align:left;text-decoration:underline;text-underline-offset:.2em;}
+.view-toolbar {display:flex;align-items:center;min-height:48px;margin-bottom:.2rem;}
+.back-button {text-decoration:none;min-height:48px;padding:.4rem .65rem;font-size:1.05rem;font-weight:600;border:1px solid var(--line);border-radius:10px;background:#ffffffb3;}
+#library-heading {margin-bottom:.5rem;}
+.recording-list {display:grid;gap:.45rem;list-style:none;padding:0;margin:0;}
+.recording-list li {min-width:0;}
+.sermon-choice {display:block;text-align:left;width:100%;background:#fff;color:var(--navy);border:1px solid var(--line);padding:.6rem .75rem;}
+.sermon-choice[aria-current=true] {border-color:var(--navy);box-shadow:inset 3px 0 var(--gold);}
+.choice-title {display:block;font-size:1rem;font-weight:650;line-height:1.3;}
+.choice-meta {display:block;font-size:.82rem;color:var(--muted);line-height:1.3;margin-top:.2rem;}
+.choice-meta:empty {display:none;}
+.page-navigation {display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:.65rem;margin-top:.7rem;}
+#group-navigation button:only-child {grid-column:1/-1;}
+#return-player {display:block;margin-top:.4rem;}
+.empty-message {padding:1rem 0;color:var(--muted);}
+.continue-button {width:100%;margin-top:.75rem;}
+.install-help {margin-top:1rem;color:var(--muted);font-size:.9rem;}
+summary {min-height:48px;padding:.6rem .1rem;color:var(--navy);overflow-wrap:anywhere;}
+.install-help p {margin:.6rem 0;}
+.catalog-details {margin-top:.6rem;font-size:.9rem;}
+.catalog-details p {color:var(--muted);margin:.4rem 0;}
+.catalog-toast {position:fixed;z-index:20;inset:auto max(12px,env(safe-area-inset-right)) max(12px,env(safe-area-inset-bottom)) max(12px,env(safe-area-inset-left));max-width:600px;max-height:70vh;overflow-y:auto;margin:auto;padding:.75rem 1rem;background:#fff;border:1px solid var(--line);border-top:3px solid var(--gold);border-radius:14px;box-shadow:0 8px 28px #1b2a4a18;font-size:.9rem;}
+.catalog-toast button {display:block;margin-left:auto;min-height:48px;padding:.35rem .65rem;}
+.status {font-size:.9rem;margin-top:.7rem;overflow-wrap:anywhere;}
+.status:empty {display:none;}
+.metadata {font-size:.9rem;color:var(--muted);margin:.6rem 0;overflow-wrap:anywhere;}
+.hint {font-size:.85rem;color:var(--muted);}
+.update-notice {border:1px solid var(--navy);border-top:3px solid var(--gold);padding:.8rem;border-radius:12px;margin-top:1rem;background:#fff;}
+.update-notice button {width:100%;margin:.6rem 0;}
+.transcript {white-space:pre-wrap;line-height:1.65;}
+.visually-hidden {position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0;}
+.skip-link {position:fixed;top:-100px;left:1rem;z-index:10;background:#fff;color:var(--navy);padding:.6rem;}
+.skip-link:focus {top:.5rem;}
+@media(max-width:359px) {
+  .brand {padding:.45rem 14px;gap:.55rem;}
+  main {padding:9px 14px 12px;}
+  .brand img {width:56px;height:42px;}
+  .category-button {padding:.75rem;min-height:72px;}
+  .sermon-choice {padding:.45rem .6rem;}
 }
-
-.update-notice {
-  background:var(--white);
-  border:2px solid var(--green);
-  border-radius:12px;
-  margin-top:1rem;
-  padding:1rem;
-}
-
-.resume-panel {
-  margin:0 1rem 1rem;
-  padding:1rem;
-  border:2px solid var(--green);
-  border-radius:12px;
-  background:var(--green-light);
-}
-.resume-panel h2 {
-  font-size:1.2rem;
-}
-#resume-title {
-  margin:.5rem 0 1rem;
-  overflow-wrap:anywhere;
-}
-.seek-controls {
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:.6rem;
-  margin-top:.6rem;
-}
-.seek-controls button {
-  margin:0;
-}
-.hint:empty {
-  display:none;
-}
-.message-navigation {
-  display:grid;
-  grid-template-columns:repeat(2,minmax(0,1fr));
-  gap:.6rem;
-}
-.message-navigation button {margin:.5rem 0;min-width:0;}
-#series-navigation {border-top:1px solid var(--line);margin-top:1rem;padding-top:1rem;}
-#message-picker>summary {padding:.8rem;border:2px solid var(--green);border-radius:12px;font-weight:700;cursor:pointer;}
-button,summary,.brand div {overflow-wrap:anywhere;min-width:0;}
-.sermon-list li {min-width:0;}
-@media(max-width:520px) {
-  .message-navigation {grid-template-columns:1fr;}
-}
-@media(max-width:420px) {
-  .seek-controls {
-    grid-template-columns:1fr;
-  }
-}
+@media(prefers-reduced-motion:no-preference) {button {transition:background-color .15s;}}
+@media(forced-colors:active) {.sermon-choice[aria-current=true] {border:2px solid Highlight;}}
