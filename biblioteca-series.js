@@ -1,11 +1,13 @@
 'use strict';
 // Organización de la interfaz. La única fuente remota sigue siendo IBCPublicCatalog.
 const IBCBiblioteca = (() => {
+    let cardSequence = 0;
     const categories = { predicaciones: 'Predicación', 'taller-biblico': 'Taller bíblico', 'catecismo-confesion': 'Catecismo y confesión' };
     const text = value => typeof value === 'string' ? value.trim() : '';
     const numbered = item => Number.isInteger(item.number) && item.number > 0;
     const numberOptional = item => item.category === 'catecismo-confesion' && item.number === null;
     const classified = item => !!categories[item.category] && !!text(item.series) && (numbered(item) || numberOptional(item));
+    const individual = item => item.category === 'predicaciones' && !text(item.series);
     const groupKey = item => JSON.stringify([item.category, text(item.series)]);
     const itemKey = item => item.id || item.videoUrl;
     const numberLabel = item => numbered(item) ? `${item.category === 'predicaciones' ? 'Mensaje' : item.category === 'catecismo-confesion' ? 'Grabación' : 'Clase'} ${item.number}` : '';
@@ -79,7 +81,14 @@ const IBCBiblioteca = (() => {
             if (!list.some(other => sameRecording(other, item))) list.push(item);
         }
         for (const group of groups.values()) group.items.sort(group.category === 'catecismo-confesion' ? collectionOrder : (a, b) => a.number - b.number || a.title.localeCompare(b.title, 'es'));
-        return { groups: [...groups.values()], pending: published.filter(item => !classified(item)).map(item => ({
+        // El catálogo público ya contiene solo publicaciones. No mezclar el archivo histórico
+        // ni mensajes con serie incompleta con las predicaciones independientes.
+        const individuals = published.filter(individual);
+        if (individuals.length) groups.set('predicaciones-individuales', {
+            key: 'predicaciones-individuales', category: 'predicaciones',
+            title: 'Predicaciones individuales', items: individuals
+        });
+        return { groups: [...groups.values()], pending: published.filter(item => !classified(item) && !individual(item)).map(item => ({
             publicId: item.publicId, title: item.title,
             missing: [!text(item.series) && 'serie', !numbered(item) && !numberOptional(item) && 'numero_mensaje'].filter(Boolean)
         })) };
@@ -98,14 +107,17 @@ const IBCBiblioteca = (() => {
             video = card.querySelector('video'); link = card.querySelector('#enlaceColosenses');
         } else {
             card.className = 'sermon-tarjeta'; count = create('p', 'sermon-serie'); heading = create('h3', 'titulo-sermon-tarjeta');
-            const label = create('label', 'selector-mensaje-label'); label.textContent = group.category === 'catecismo-confesion' ? 'Seleccionar grabación' : 'Seleccionar mensaje o clase';
-            selector = create('select', 'selector-mensaje'); label.append(selector);
+            const label = create('label', 'selector-mensaje-label'); label.textContent = group.category === 'catecismo-confesion' ? 'Seleccionar grabación' : group.category === 'predicaciones' ? 'Seleccionar mensaje' : 'Seleccionar mensaje o clase';
+            selector = create('select', 'selector-mensaje'); selector.id = `biblioteca-mensaje-${++cardSequence}`; label.htmlFor = selector.id;
             detail = create('div', 'detalle-mensaje'); detail.setAttribute('aria-live', 'polite'); detail.setAttribute('aria-atomic', 'true');
             const frame = create('div', 'video-responsive sermon-video'); video = create('video');
             video.controls = true; video.playsInline = true; video.preload = 'none'; frame.append(video);
             link = create('a', 'btn-principal'); link.textContent = 'Abrir video ↗'; link.target = '_blank'; link.rel = 'noopener noreferrer';
-            card.append(count, heading, label, detail, frame, link);
+            detail.id = `${selector.id}-detalle`; video.id = `${selector.id}-video`;
+            selector.setAttribute('aria-controls', `${detail.id} ${video.id}`);
+            card.append(count, heading, label, selector, detail, frame, link);
         }
+        card.className = 'sermon-tarjeta serie-selector';
         const audioArea = create('div', 'serie-audio'); audioArea.hidden = true;
         const audioLabel = create('p'); audioLabel.textContent = 'Escuchar audio MP3';
         const audio = create('audio'); audio.controls = true; audio.preload = 'none';
@@ -137,10 +149,14 @@ const IBCBiblioteca = (() => {
             link.href = item.videoUrl; audioArea.hidden = !item.audioUrl;
             const fragment = document.createDocumentFragment();
             for (const [tag, value, cls] of [
-                ['p', numberLabel(item), 'sermon-serie'], ['p', questionLabel(item), 'sermon-referencia'],
+                ['p', numberLabel(item), 'sermon-serie'], ['p', questionLabel(item), 'sermon-referencia mensaje-pregunta'],
                 ['h4', item.title], ['p', item.passage, 'sermon-referencia'],
                 ['p', item.speaker, 'sermon-predicador'], ['p', dateLabel(item), 'sermon-fecha']
-            ]) if (value) { const node = create(tag, cls); node.textContent = value; fragment.append(node); }
+            ]) {
+                const node = create(tag, cls); node.textContent = value || '';
+                if (!value) node.setAttribute('aria-hidden', 'true');
+                fragment.append(node);
+            }
             if (text(item.description)) {
                 const description = create('details', 'descripcion-grabacion');
                 const summary = create('summary'); summary.textContent = 'Descripción y referencias';

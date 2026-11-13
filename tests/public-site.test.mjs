@@ -93,7 +93,7 @@ test('galería reserva doce celdas antes de JavaScript y versiones actuales', ()
     const gallery = readFileSync(new URL('galeria.html', root), 'utf8');
     assert.equal((gallery.match(/class="galeria-reserva"/g) || []).length, 12);
     assert.match(gallery, /main\.css\?v=cls-20261017/);
-    assert.match(html, /main\.css\?v=preguntas-20261020/);
+    assert.match(html, /main\.css\?v=alineacion-20261112/);
     assert.match(html, /script\.js\?v=audio-colosenses-20261020/);
     assert.match(gallery, /script\.js\?v=cls-20261017/);
 });
