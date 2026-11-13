@@ -36,6 +36,22 @@ test('recientes conserva todos, deduplica y ordena fechas confirmadas sin invent
     for (const date of [null, '2026-02-30', 'undefined']) assert.equal(lib.dateLabel({date}), 'Fecha desconocida');
 });
 
+test('predicaciones individuales reúne solo publicaciones sin serie, por fecha descendente', () => {
+    const independent = (id, date, extra = {}) => record({ id, videoUrl: id, series: null, number: null, date, ...extra });
+    const older = independent('anterior', '2026-10-18');
+    const latest = independent('reciente', '2026-11-08');
+    const study = independent('escuela', '2026-11-09', { category: 'taller-biblico' });
+    const incomplete = independent('serie-incompleta', '2026-11-10', { series: 'Colosenses' });
+    const result = lib.organize(history, [older, study, incomplete, latest, latest]);
+    const group = result.groups.find(g => g.key === 'predicaciones-individuales');
+    assert.equal(group.title, 'Predicaciones individuales');
+    assert.deepEqual(group.items, [latest, older]);
+    assert.equal(result.groups.find(g => g.title === 'Colosenses').items.length, 12);
+    assert.deepEqual(result.pending.map(i => i.title), [incomplete.title, study.title]);
+    assert.equal(lib.recent([older, study, incomplete, latest]).length, 4);
+    assert.ok(!lib.organize(history, []).groups.some(g => g.key === group.key));
+});
+
 // DOM mínimo para comprobar las transiciones de medios, sin dependencias externas.
 class Element {
     constructor(tag) { this.tag = tag; this.children = []; this.attributes = {}; this.dataset = {}; this.events = {}; this.paused = true; this.loads = 0; this.pauses = 0; }
@@ -52,6 +68,32 @@ class Element {
     load() { this.loads++; this.readyState = 0; this.currentTime = 0; this.duration = NaN; }
     remove() { this.parent.children = this.parent.children.filter(n=>n!==this); }
 }
+
+test('individuales selecciona el más reciente y cambia datos, MP4 y MP3 en pausa', () => {
+    const document = new Element('document');
+    document.createElement = tag => new Element(tag); document.createDocumentFragment = () => new Element('fragment');
+    const ui = vm.runInNewContext(readFileSync(require.resolve('../biblioteca-series.js'), 'utf8') + '\nIBCBiblioteca;', { document });
+    const older = record({ id: 'anterior', series: null, number: null, date: '2026-10-18', videoUrl: 'anterior.mp4', audioUrl: null });
+    const latest = record({ id: 'reciente', series: null, number: null, date: '2026-11-08', title: 'Mensaje reciente', passage: 'Marcos 5:1-20', speaker: 'Predicador de prueba', videoUrl: 'reciente.mp4', audioUrl: 'reciente.mp3' });
+    const group = lib.organize([], [older, latest]).groups[0];
+    const card = new Element('article'); document.append(card);
+    const controller = ui.seriesCard(card, group);
+    const video = card.querySelector('video'), audio = card.querySelector('audio'), select = card.querySelector('select');
+    assert.equal(card.querySelector('p').textContent, '2 mensajes');
+    assert.equal(select.value, latest.id); assert.equal(video.src, latest.videoUrl);
+    assert.equal(audio.src, latest.audioUrl); assert.equal(video.paused, true);
+    assert.equal(card.querySelector('h4').textContent, latest.title);
+    const details = card.querySelector('div').children.map(n => n.textContent);
+    assert.ok(details.includes(latest.passage)); assert.ok(details.includes(latest.speaker));
+    assert.ok(details.includes('8 de noviembre de 2026'));
+    video.paused = false; select.value = older.id; select.events.change();
+    assert.equal(video.src, older.videoUrl); assert.equal(video.paused, true);
+    assert.equal(audio.parent.hidden, true); assert.equal(audio.src, null);
+    controller.update(group); assert.equal(select.value, older.id);
+    select.value = latest.id; select.events.change();
+    assert.equal(audio.src, latest.audioUrl); assert.equal(audio.parent.hidden, false);
+    assert.equal(audio.paused, true); assert.equal(video.autoplay, undefined);
+});
 test('selector pausa, cambia video y MP3 sin autoplay, y no recarga al refrescar sin cambios', () => {
     const document = new Element('document'); document.createElement = tag=>new Element(tag); document.createDocumentFragment = ()=>new Element('fragment');
     const ui = vm.runInNewContext(readFileSync(require.resolve('../biblioteca-series.js'),'utf8') + '\nIBCBiblioteca;', { document });

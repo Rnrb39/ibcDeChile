@@ -127,6 +127,39 @@ p { margin: 0 0 1rem; }
 .series-grid > .sermones-lista { display: contents; }
 .series-grid .sermon-tarjeta { min-width: 0; overflow-wrap: anywhere; }
 @media (min-width: 900px) { .series-grid .video-responsive { max-height: 300px; } }
+/* Las tarjetas con selector comparten filas de altura natural, incluso al cambiar
+   a un título largo. Los campos vacíos no añaden texto ni numeración ficticia. */
+.serie-selector .detalle-mensaje > :empty { margin: 0; }
+.serie-selector .sermon-video { max-height: none; aspect-ratio: 16 / 9; }
+@media (min-width: 900px) {
+    .series-grid { row-gap: 0; }
+    .series-grid .sermon-tarjeta { grid-row: span 15; margin-bottom: 24px; }
+    .series-grid .serie-selector {
+        display: grid; grid-template-rows: subgrid; row-gap: 0; align-self: stretch;
+    }
+    .serie-selector > .sermon-serie { grid-row: 1; }
+    .serie-selector > h3 { grid-row: 2; }
+    .serie-selector > label { grid-row: 3; }
+    .serie-selector > select { grid-row: 4; align-self: start; }
+    .serie-selector > .detalle-mensaje {
+        grid-row: 5 / span 8; display: grid; grid-template-rows: subgrid; row-gap: 0;
+    }
+    .serie-selector .detalle-mensaje > .sermon-serie { grid-row: 1; }
+    .serie-selector .detalle-mensaje > .mensaje-pregunta { grid-row: 2; }
+    .serie-selector .detalle-mensaje > h4 { grid-row: 3; }
+    .serie-selector .detalle-mensaje > .sermon-referencia:not(.mensaje-pregunta) { grid-row: 4; }
+    .serie-selector .detalle-mensaje > .sermon-predicador { grid-row: 5; }
+    .serie-selector .detalle-mensaje > .sermon-fecha { grid-row: 6; }
+    .serie-selector .detalle-mensaje > .descripcion-grabacion { grid-row: 7; }
+    .serie-selector .detalle-mensaje > .partes-grabacion { grid-row: 8; }
+    .serie-selector .detalle-mensaje > * { align-self: start; }
+    .serie-selector > .sermon-video { grid-row: 13; align-self: start; }
+    .serie-selector > .btn-principal { grid-row: 14; align-self: start; justify-self: start; }
+    .serie-selector > .serie-audio { grid-row: 15; align-self: start; }
+}
+@media (max-width: 899px) {
+    .serie-selector .detalle-mensaje > :empty { display: none; }
+}
 .descripcion-grabacion { margin-block: 16px; }
 .descripcion-grabacion summary { cursor: pointer; padding-block: 8px; }
 .descripcion-grabacion p { white-space: pre-wrap; margin-top: 8px; }
